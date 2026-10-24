@@ -22,8 +22,8 @@ Fecha: **2026-10-24**. Este documento refleja el trabajo posterior a la auditor�
 | Moderación | Pantalla para cuentas con custom claim `admin`; publicación mediante función autorizada. | La claim se verifica también en servidor. No se asigna desde la app. |
 | Privacidad remota | Separación entre observaciones privadas y `publishedPrices` sin identificadores de autor/moderador; borrado de contribuciones y favoritos al borrar cuenta. | Pruebas de autoría y borrado; política TTL para la marca de seguridad de cuenta. |
 | Configuración | `.env.example`, validación de entornos, protección de emuladores con proyecto `demo-`; `.env` deja de seguirse por Git. `.env.local` contiene la configuración pública verificada del proyecto existente. | Nube desactivada por defecto. Firestore y Auth reales preparados; [estado remoto](FIREBASE_REAL.md). |
-| Calidad | ESLint, Prettier, TypeScript, Jest, Playwright, emuladores, CI y Dependabot. | Workflow definido; ejecución en GitHub y protección de ramas dependen de su activación en el repositorio remoto. |
-| Identidad | Nombre SinGluten, iconos propios reproducibles desde SVG, textos españoles, tema claro/oscuro, permisos de cámara sin micrófono. | Identificadores nativos de desarrollo definidos; confirmar antes de registrar la app en tiendas. |
+| Calidad | ESLint, Prettier, TypeScript, Jest, Playwright, emuladores, CI y Dependabot. | Los cinco jobs de GitHub pasaron para `f2f5c42`; protección de ramas por revisar. |
+| Identidad | Nombre SinGluten, iconos propios reproducibles desde SVG, textos españoles, tema claro/oscuro, permisos de cámara sin micrófono. | Branding provisional: no convence al propietario y no está aprobado. Replanteamiento priorizado en la [hoja de ruta](HOJA_DE_RUTA.md). |
 | Operación | Exportación/borrado local, atribución, privacidad, perfiles EAS y telemetría técnica opcional sin historial ni códigos. | Endpoint de telemetría no configurado; no se ha medido estabilidad de una beta real. |
 
 ## Verificaciones realizadas
@@ -53,7 +53,7 @@ Los tests web utilizan respuestas de producto controladas, con datos de prueba. 
 
 La biblioteca móvil utiliza SQLite como almacén transaccional con metadatos acotados y fichas separadas. En navegador se usa IndexedDB para evitar la dependencia de WebAssembly y cabeceras especiales de SQLite web. Las interfaces del repositorio permiten evolucionar las consultas sin acoplarlas a las pantallas.
 
-El empaquetado Android limita Metro a dos procesos. El plugin `withAndroidBuildInputs` excluye artefactos y la copia de dependencias antigua del cálculo de entradas de Gradle: ignorarlas solo en Metro no evitaba que Gradle recorriera esos archivos antes de arrancar el empaquetador. La copia permanece conservada. La preview local genera un manifiesto de artefacto y el workflow de CI construye una preview ARM64 equivalente; la ejecución remota de ese workflow sigue pendiente.
+El empaquetado Android limita Metro a dos procesos. El plugin `withAndroidBuildInputs` excluye artefactos y la copia de dependencias antigua del cálculo de entradas de Gradle: ignorarlas solo en Metro no evitaba que Gradle recorriera esos archivos antes de arrancar el empaquetador. La copia permanece conservada. La preview local genera un manifiesto de artefacto y el workflow de CI construye una preview ARM64 equivalente; el [run remoto de la base `f2f5c42`](https://github.com/gonsals/gluten-free-supermarkets/actions/runs/40048795691) terminó correctamente, incluida la compilación Android.
 
 La sincronización es manual: si no hay red falla de forma visible y conserva los cambios locales para el siguiente intento. No se ha implementado un servicio de sincronización permanente en segundo plano. Solo se suben favoritos y sus fichas; el historial permanece local. Los precios se comparten mediante una acción aparte y nunca al guardarlos en el cuaderno privado.
 

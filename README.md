@@ -67,8 +67,12 @@ Las pruebas usan exclusivamente el proyecto ficticio `demo-sin-gluten`. No neces
 
 ## Documentación
 
+La [hoja de ruta vigente](docs/HOJA_DE_RUTA.md) organiza los siguientes pasos y las mejoras futuras. **El branding actual es provisional y no está aprobado por el propietario**; su revisión es el primer paso de diseño.
+
 | Documento | Uso |
 | --- | --- |
+| [Próximos pasos y mejoras futuras](docs/HOJA_DE_RUTA.md) | Orden de trabajo, revisión prioritaria de branding, criterios de lanzamiento y evolución sin costes de backend. |
+| [Revisión de branding](docs/BRANDING.md) | Brief, tres direcciones de diseño y comparativa visual navegable en claro/oscuro. |
 | [Implementación y verificación](docs/IMPLEMENTACION.md) | Qué está aplicado, pruebas y límites actuales. |
 | [Dependencias y seguridad](docs/DEPENDENCIAS.md) | Versiones, decisiones de compatibilidad y avisos pendientes. |
 | [Despliegue y pruebas](docs/DESPLIEGUE_Y_PRUEBAS.md) | Configuración local, emuladores, nube, builds y operación. |

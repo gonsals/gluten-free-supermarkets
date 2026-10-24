@@ -4,12 +4,14 @@
 
 ## Seguimiento de ejecución
 
+Para decidir el trabajo siguiente, consultar la [hoja de ruta vigente](HOJA_DE_RUTA.md). El branding implementado es provisional y **no está aprobado por el propietario**; la nueva hoja prioriza su replanteamiento y conserva aquí el plan original como trazabilidad.
+
 | IDs | Estado del código y evidencia | Pendiente para cerrar el criterio completo |
 | --- | --- | --- |
 | B-01 | Stack actualizado conjuntamente, lockfiles, comprobaciones y exportaciones. | Validación nativa completa, especialmente iOS. |
 | B-02 | Auditorías comparadas, correcciones compatibles y control de excepciones temporales en CI. | Resolver/evaluar los avisos transitivos antes de publicar. |
 | B-03 a B-06 | Dependencias antiguas retiradas, Node/npm fijados, tests útiles, lint y configuración segura local. | Revisión de configuración del entorno real al activarlo. |
-| B-07 | Workflow de app, servidor y seguridad definido. | Primera ejecución remota y protección de rama. |
+| B-07 | Workflow ejecutado correctamente en GitHub para la base `f2f5c42`, incluidos app, Firebase, dependencias, secretos y Android. | Revisar protección de rama y mantener controles por cambio. |
 | G-01 a G-03 | Dominio versionado, cliente único y control de consulta con pruebas. | Revisión experta del lenguaje y de las reglas. |
 | G-04 a G-06 | Cámara, entrada manual y ficha implementadas; recuperación web probada. | Cámara física, lectores de pantalla y fuentes ampliadas nativas. |
 | M-01 a M-05 | Biblioteca, persistencia, offline, identidad, ayuda, exportación y borrado implementados. | Validación de uso y accesibilidad en dispositivos. |
@@ -149,4 +151,4 @@ P3: búsqueda avanzada por nombre/categoría, lista de compra, alternativas, map
 
 Una tarea queda terminada cuando cumple sus criterios, tiene verificación adecuada y documentación actualizada. Un hito se cierra con el recorrido completo probado, sin bloqueos conocidos y con sus limitaciones explícitas. Registrar responsable, evidencia y fecha al ejecutarlo; no marcarlo completado únicamente porque el código compile.
 
-El primer bloque recomendado es **B-01 a B-04 + G-01**: recuperar la base de pruebas y fijar el núcleo de interpretación antes de añadir funcionalidades.
+El primer bloque del plan original era **B-01 a B-04 + G-01**. La base técnica y el núcleo de interpretación ya están implementados; el orden pendiente se mantiene en la [hoja de ruta vigente](HOJA_DE_RUTA.md), con revisión de branding, validación experta y controles de publicación.

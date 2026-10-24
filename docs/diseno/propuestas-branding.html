@@ -1,0 +1,1110 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="color-scheme" content="light dark" />
+    <title>SinGluten · Tres direcciones de marca</title>
+    <style>
+      :root {
+        --paper: #f5f4ef;
+        --panel: #fff;
+        --ink: #242727;
+        --muted: #616561;
+        --line: #d7d9d1;
+        --inset: #eaece5;
+        color-scheme: light;
+      }
+      :root[data-theme="dark"] {
+        --paper: #151718;
+        --panel: #202324;
+        --ink: #f4f4ef;
+        --muted: #bdc2be;
+        --line: #444a47;
+        --inset: #2c3230;
+        color-scheme: dark;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        background: var(--paper);
+        color: var(--ink);
+        font-family: Inter, "Segoe UI", Arial, sans-serif;
+        -webkit-font-smoothing: antialiased;
+      }
+      button,
+      select {
+        font: inherit;
+      }
+      button {
+        cursor: pointer;
+      }
+      button:focus-visible,
+      select:focus-visible,
+      a:focus-visible {
+        outline: 3px solid #c85832;
+        outline-offset: 4px;
+      }
+      svg {
+        width: 22px;
+        height: 22px;
+        flex-shrink: 0;
+      }
+      .skip {
+        position: absolute;
+        top: -90px;
+        left: 20px;
+        padding: 15px;
+        background: var(--panel);
+        color: var(--ink);
+        z-index: 3;
+      }
+      .skip:focus {
+        top: 12px;
+      }
+      .shell {
+        max-width: 1460px;
+        margin: auto;
+        padding: 0 48px;
+      }
+      .masthead {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 20px;
+        padding: 27px 0;
+        border-bottom: 1px solid var(--line);
+      }
+      .wordmark {
+        font-size: 21px;
+        font-weight: 750;
+        letter-spacing: -1px;
+        display: flex;
+        align-items: center;
+        gap: 11px;
+      }
+      .wordmark svg {
+        width: 29px;
+        height: 29px;
+      }
+      .edition,
+      .eyebrow {
+        font-family: Consolas, "Courier New", monospace;
+        font-size: 11px;
+        letter-spacing: 1.5px;
+        text-transform: uppercase;
+        line-height: 1.7;
+      }
+      .edition {
+        color: var(--muted);
+        text-align: right;
+      }
+      .intro {
+        display: grid;
+        grid-template-columns: 1.1fr 1fr;
+        align-items: end;
+        gap: 50px;
+        padding: 55px 0 40px;
+      }
+      .eyebrow {
+        color: var(--muted);
+        margin: 0 0 17px;
+      }
+      h1 {
+        font-size: clamp(38px, 4.3vw, 65px);
+        line-height: 1.02;
+        letter-spacing: -3px;
+        font-weight: 650;
+        margin: 0;
+        max-width: 700px;
+      }
+      h1 em {
+        font-family: Georgia, serif;
+        font-weight: 400;
+      }
+      .intro-copy {
+        margin: 0 0 4px;
+        color: var(--muted);
+        font-size: 16px;
+        line-height: 1.7;
+        max-width: 440px;
+      }
+      .intro-copy strong {
+        color: var(--ink);
+        font-weight: 600;
+      }
+      .toolbar {
+        border-block: 1px solid var(--line);
+        display: flex;
+        flex-wrap: wrap;
+        gap: 18px 28px;
+        align-items: center;
+        justify-content: space-between;
+        padding: 16px 0;
+        margin-bottom: 31px;
+      }
+      .view-group {
+        display: flex;
+        gap: 5px;
+        flex-wrap: wrap;
+      }
+      .view-group button,
+      .theme-button {
+        min-height: 44px;
+        padding: 10px 17px;
+        border: 1px solid transparent;
+        background: transparent;
+        color: var(--muted);
+        border-radius: 7px;
+        font-size: 13px;
+        font-weight: 650;
+      }
+      .view-group button[aria-pressed="true"] {
+        color: var(--paper);
+        background: var(--ink);
+      }
+      .theme-button {
+        display: flex;
+        gap: 8px;
+        align-items: center;
+        border-color: var(--line);
+        color: var(--ink);
+      }
+      .toolbar-end {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 15px;
+        align-items: center;
+      }
+      .state-label {
+        color: var(--muted);
+        font-size: 12px;
+        display: flex;
+        align-items: center;
+        gap: 9px;
+      }
+      select {
+        border: 1px solid var(--line);
+        background: var(--panel);
+        color: var(--ink);
+        min-height: 44px;
+        border-radius: 7px;
+        padding: 9px;
+        max-width: 205px;
+        font-size: 12px;
+      }
+      [hidden] {
+        display: none !important;
+      }
+      .proposals {
+        display: grid;
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+        gap: 26px;
+      }
+      .direction-head {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+        margin-bottom: 14px;
+      }
+      .direction-head h2 {
+        font-size: 17px;
+        letter-spacing: -0.35px;
+        margin: 0;
+        font-weight: 650;
+      }
+      .direction-head span {
+        color: var(--muted);
+        font-size: 10px;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+      }
+      .phone-stage {
+        padding: 22px;
+        background: var(--inset);
+        border-radius: 15px;
+      }
+      .phone {
+        background: var(--app-bg);
+        color: var(--app-ink);
+        border: 1px solid var(--app-line);
+        border-radius: 29px;
+        overflow: hidden;
+        box-shadow: 0 10px 22px #0000000a;
+        max-width: 355px;
+        margin: auto;
+      }
+      .phone-top {
+        font-size: 10px;
+        font-weight: 700;
+        padding: 17px 22px 0;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+      .phone-top svg {
+        width: 30px;
+        height: 14px;
+      }
+      .app-header {
+        padding: 23px 20px 19px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+      }
+      .app-brand {
+        display: flex;
+        align-items: center;
+        gap: 9px;
+        font-size: 19px;
+        font-weight: 750;
+        letter-spacing: -0.7px;
+      }
+      .app-brand .brand-symbol {
+        width: 31px;
+        height: 31px;
+        background: var(--app-accent);
+        border-radius: 9px;
+        padding: 5px;
+        color: var(--app-on-accent);
+      }
+      .app-header .local {
+        font-size: 9px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.6px;
+        color: var(--app-muted);
+      }
+      .app-main {
+        padding: 0 20px 22px;
+        min-height: 457px;
+      }
+      .app-kicker {
+        font-size: 9px;
+        font-weight: 700;
+        letter-spacing: 1.1px;
+        text-transform: uppercase;
+        margin: 4px 0 13px;
+        color: var(--app-muted);
+      }
+      .app-title {
+        font-size: 31px;
+        font-weight: 750;
+        letter-spacing: -1.3px;
+        line-height: 1.08;
+        margin: 0 0 13px;
+      }
+      .app-copy {
+        color: var(--app-muted);
+        font-size: 12px;
+        line-height: 1.65;
+        margin: 0 0 20px;
+      }
+      .scan-art {
+        height: 112px;
+        background: var(--app-soft);
+        border-radius: 14px;
+        margin: 20px 0;
+        position: relative;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        overflow: hidden;
+      }
+      .scan-art:before,
+      .scan-art:after {
+        content: "";
+        position: absolute;
+        width: 23px;
+        height: 23px;
+        border: 2px solid var(--app-accent);
+      }
+      .scan-art:before {
+        left: 22px;
+        top: 19px;
+        border-right: 0;
+        border-bottom: 0;
+        border-radius: 4px 0 0;
+      }
+      .scan-art:after {
+        right: 22px;
+        bottom: 19px;
+        border-left: 0;
+        border-top: 0;
+        border-radius: 0 0 4px;
+      }
+      .barcode {
+        width: 122px;
+        height: 53px;
+        color: var(--app-accent);
+        transform: rotate(-8deg);
+      }
+      .primary,
+      .secondary {
+        width: 100%;
+        min-height: 46px;
+        border-radius: 10px;
+        font-size: 12px;
+        font-weight: 650;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        gap: 8px;
+        padding: 10px;
+      }
+      .primary {
+        background: var(--app-accent);
+        color: var(--app-on-accent);
+        border: 1px solid var(--app-accent);
+      }
+      .secondary {
+        margin-top: 8px;
+        color: var(--app-ink);
+        border: 1px solid var(--app-line);
+        background: transparent;
+      }
+      .primary svg,
+      .secondary svg {
+        width: 17px;
+        height: 17px;
+      }
+      .section-row {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+        margin: 24px 0 12px;
+        font-size: 12px;
+        font-weight: 700;
+      }
+      .section-row small {
+        font-weight: 400;
+        color: var(--app-muted);
+        font-size: 10px;
+      }
+      .saved-product {
+        display: flex;
+        gap: 11px;
+        align-items: center;
+        border: 1px solid var(--app-line);
+        background: var(--app-surface);
+        border-radius: 11px;
+        padding: 11px;
+        width: 100%;
+        color: var(--app-ink);
+        text-align: left;
+      }
+      .pack {
+        width: 35px;
+        height: 44px;
+        border: 1px solid var(--app-line);
+        border-radius: 4px 4px 7px 7px;
+        background: var(--app-soft);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        color: var(--app-accent);
+        flex-shrink: 0;
+      }
+      .saved-product strong {
+        font-size: 11px;
+        display: block;
+        margin-bottom: 5px;
+      }
+      .saved-product small {
+        font-size: 9px;
+        color: var(--app-muted);
+        line-height: 1.5;
+        display: block;
+      }
+      .saved-product > svg {
+        margin-left: auto;
+        width: 15px;
+      }
+      .app-nav {
+        border-top: 1px solid var(--app-line);
+        display: flex;
+        padding: 9px 5px 12px;
+        justify-content: space-around;
+        gap: 5px;
+      }
+      .nav-item {
+        display: grid;
+        justify-items: center;
+        gap: 4px;
+        font-size: 8px;
+        color: var(--app-muted);
+        padding: 2px;
+      }
+      .nav-item svg {
+        width: 17px;
+        height: 17px;
+      }
+      .nav-item.active {
+        color: var(--app-accent);
+        font-weight: 750;
+      }
+      .product-hero {
+        display: flex;
+        gap: 13px;
+        align-items: center;
+        margin: 7px 0 20px;
+      }
+      .product-hero .pack {
+        width: 56px;
+        height: 76px;
+      }
+      .product-hero h3 {
+        font-size: 23px;
+        letter-spacing: -0.75px;
+        line-height: 1.12;
+        margin: 0 0 7px;
+      }
+      .product-hero p {
+        margin: 0;
+        font-size: 10px;
+        line-height: 1.6;
+        color: var(--app-muted);
+      }
+      .assessment {
+        padding: 15px;
+        background: var(--state-bg);
+        color: var(--state-ink);
+        border: 1px solid var(--state-line);
+        border-radius: 12px;
+        margin-bottom: 17px;
+      }
+      .assessment > svg {
+        margin-bottom: 9px;
+      }
+      .assessment h4 {
+        font-size: 17px;
+        line-height: 1.25;
+        letter-spacing: -0.3px;
+        margin: 0 0 9px;
+      }
+      .assessment p {
+        font-size: 10px;
+        line-height: 1.7;
+        margin: 0;
+      }
+      .source {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 6px;
+        margin: 14px 0 18px;
+        font-size: 9px;
+        color: var(--app-muted);
+        line-height: 1.6;
+      }
+      .evidence {
+        border-top: 1px solid var(--app-line);
+        padding: 13px 0;
+      }
+      .evidence strong {
+        display: block;
+        font-size: 11px;
+        margin-bottom: 6px;
+      }
+      .evidence p {
+        font-size: 10px;
+        line-height: 1.6;
+        margin: 0;
+        color: var(--app-muted);
+      }
+      .state-list {
+        display: grid;
+        gap: 11px;
+      }
+      .state-list .assessment {
+        margin: 0;
+      }
+      .state-list .assessment h4 {
+        font-size: 13px;
+      }
+      .state-list .assessment svg {
+        width: 17px;
+        height: 17px;
+        margin-bottom: 5px;
+      }
+      .direction-description {
+        font-size: 13px;
+        line-height: 1.7;
+        color: var(--muted);
+        margin: 17px 0 12px;
+      }
+      .swatches {
+        display: flex;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 7px;
+        font-family: Consolas, monospace;
+        font-size: 10px;
+        color: var(--muted);
+      }
+      .swatch {
+        width: 18px;
+        height: 18px;
+        border-radius: 50%;
+        border: 1px solid #80808060;
+      }
+      .direction-type {
+        margin: 12px 0 0;
+        color: var(--muted);
+        font-size: 11px;
+        line-height: 1.6;
+      }
+      .b .app-title,
+      .b .product-hero h3 {
+        font-family: Georgia, "Times New Roman", serif;
+        font-weight: 400;
+        letter-spacing: -0.9px;
+      }
+      .b .app-title {
+        font-size: 34px;
+      }
+      .b .primary,
+      .b .secondary {
+        border-radius: 5px;
+      }
+      .b .scan-art {
+        border-radius: 60px 60px 12px 12px;
+      }
+      .b .brand-symbol {
+        border-radius: 50%;
+      }
+      .c .app-title {
+        font-weight: 850;
+        letter-spacing: -1.8px;
+        font-size: 33px;
+      }
+      .c .scan-art,
+      .c .primary,
+      .c .secondary,
+      .c .saved-product {
+        border-radius: 4px;
+      }
+      .c .brand-symbol {
+        border-radius: 5px;
+      }
+      .c .scan-art .barcode {
+        transform: rotate(0);
+      }
+      .review-note {
+        margin: 43px 0 0;
+        padding: 26px 0;
+        border-block: 1px solid var(--line);
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 30px;
+      }
+      .review-note h2 {
+        font-size: 17px;
+        margin: 0 0 10px;
+        letter-spacing: -0.4px;
+      }
+      .review-note p {
+        margin: 0;
+        font-size: 13px;
+        color: var(--muted);
+        line-height: 1.8;
+        max-width: 560px;
+      }
+      footer {
+        padding: 25px 0 35px;
+        display: flex;
+        gap: 15px;
+        justify-content: space-between;
+        color: var(--muted);
+        font-size: 11px;
+        line-height: 1.7;
+      }
+      #announcement {
+        min-height: 20px;
+        color: var(--muted);
+        margin: 15px 0 0;
+        font-size: 12px;
+      }
+      @media (min-width: 1500px) {
+        .phone-stage {
+          padding: 30px;
+        }
+      }
+      @media (max-width: 1100px) {
+        .shell {
+          padding: 0 25px;
+        }
+        .proposals {
+          gap: 16px;
+        }
+        .phone-stage {
+          padding: 12px;
+        }
+        .app-header {
+          padding-inline: 16px;
+        }
+        .app-main {
+          padding-inline: 16px;
+        }
+        .app-title {
+          font-size: 28px;
+        }
+        .b .app-title {
+          font-size: 30px;
+        }
+        .c .app-title {
+          font-size: 29px;
+        }
+        .local {
+          display: none;
+        }
+      }
+      @media (max-width: 780px) {
+        .shell {
+          padding: 0 21px;
+        }
+        .masthead {
+          padding: 21px 0;
+        }
+        .edition {
+          font-size: 9px;
+        }
+        .intro {
+          grid-template-columns: 1fr;
+          gap: 21px;
+          padding: 35px 0 28px;
+        }
+        h1 {
+          letter-spacing: -2px;
+        }
+        .intro-copy {
+          font-size: 14px;
+          max-width: 550px;
+        }
+        .toolbar {
+          gap: 12px;
+        }
+        .toolbar-end {
+          width: 100%;
+          justify-content: space-between;
+        }
+        .proposals {
+          grid-template-columns: 1fr;
+          gap: 32px;
+        }
+        .phone-stage {
+          padding: 22px;
+        }
+        .phone {
+          max-width: 355px;
+        }
+        .app-title {
+          font-size: 31px;
+        }
+        .b .app-title {
+          font-size: 34px;
+        }
+        .c .app-title {
+          font-size: 33px;
+        }
+        .local {
+          display: block;
+        }
+        .review-note {
+          grid-template-columns: 1fr;
+        }
+        footer {
+          flex-direction: column;
+        }
+      }
+      @media print {
+        .toolbar,
+        .skip,
+        #announcement {
+          display: none;
+        }
+        .shell {
+          padding: 0;
+        }
+        .phone-stage {
+          padding: 8px;
+        }
+        .proposals {
+          gap: 12px;
+        }
+        .intro {
+          padding: 20px 0;
+        }
+        .review-note {
+          margin-top: 20px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <a class="skip" href="#proposals">Saltar a las propuestas</a>
+    <div class="shell">
+      <header class="masthead">
+        <div class="wordmark">
+          <svg viewBox="0 0 28 28" fill="none" aria-hidden="true">
+            <path
+              d="M3 10V3h7m8 0h7v7M3 18v7h7m8 0h7v-7M9 9v10m5-10v10m5-10v10"
+              stroke="currentColor"
+              stroke-width="2"
+            /></svg
+          >SinGluten<span
+            style="
+              font-weight: 400;
+              color: var(--muted);
+              font-size: 12px;
+              letter-spacing: 0;
+            "
+            >/ estudio de marca</span
+          >
+        </div>
+        <div class="edition">01 — Exploración<br />24 octubre 2026</div>
+      </header>
+      <main>
+        <section class="intro" aria-labelledby="page-title">
+          <div>
+            <p class="eyebrow">Tres direcciones · Una misma utilidad</p>
+            <h1 id="page-title">La compra,<br />con más <em>claridad.</em></h1>
+          </div>
+          <p class="intro-copy">
+            Una identidad por encontrar. Tres formas de acercar la información
+            del producto a quien compra.<br /><strong
+              >El branding anterior queda como provisional.</strong
+            >
+            Estas propuestas abren la revisión; ninguna está aprobada.
+          </p>
+        </section>
+        <div class="toolbar" aria-label="Opciones de comparación">
+          <div class="view-group" role="group" aria-label="Pantalla de muestra">
+            <button type="button" data-view="home" aria-pressed="true">
+              01 Inicio
+            </button>
+            <button type="button" data-view="product" aria-pressed="false">
+              02 Ficha
+            </button>
+            <button type="button" data-view="states" aria-pressed="false">
+              03 Estados
+            </button>
+          </div>
+          <div class="toolbar-end">
+            <label class="state-label" id="state-control" hidden
+              >Resultado<select id="assessment">
+                <option value="free">Declaración sin gluten</option>
+                <option value="unknown">Datos insuficientes</option>
+                <option value="conflict">Datos contradictorios</option>
+                <option value="gluten">Gluten declarado</option>
+              </select></label
+            >
+            <button
+              type="button"
+              class="theme-button"
+              id="theme"
+              aria-pressed="false"
+            >
+              <span aria-hidden="true">◐</span> Tema oscuro
+            </button>
+          </div>
+        </div>
+        <section
+          class="proposals"
+          id="proposals"
+          aria-label="Tres propuestas de branding"
+        ></section>
+        <p id="announcement" role="status" aria-live="polite">
+          Prototipo visual · Datos ficticios · Sin conexión a servicios
+        </p>
+        <section class="review-note" aria-label="Criterios de revisión">
+          <div>
+            <p class="eyebrow">Punto de partida recomendado</p>
+            <h2>A · Tinta, por su claridad</h2>
+            <p>
+              La opción más directa para consultar una ficha durante la compra.
+              La recomendación es de diseño, pendiente de contrastarla con tus
+              preferencias y con pruebas de uso. Mesa aporta calidez; Pulso
+              ofrece más carácter gráfico.
+            </p>
+          </div>
+          <div>
+            <p class="eyebrow">Qué estamos decidiendo</p>
+            <h2>Personalidad, sin cambiar la evidencia</h2>
+            <p>
+              Compara legibilidad, tono y sensación de marca. Las tres conservan
+              la misma fuente y los mismos estados. SinGluten es un nombre de
+              trabajo. Los símbolos son originales de esta exploración y no
+              representan sellos de certificación.
+            </p>
+          </div>
+        </section>
+      </main>
+      <footer>
+        <span
+          >Estudio local de diseño · Sin recursos externos, cuentas ni
+          analítica.</span
+        ><span
+          >Propuestas provisionales · No es la aplicación de producción.</span
+        >
+      </footer>
+    </div>
+    <script>
+      const icons = {
+        scan: '<path d="M4 9V4h5m6 0h5v5M4 15v5h5m6 0h5v-5M8 8v8m4-8v8m4-8v8"/>',
+        home: '<path d="m3 10 9-7 9 7v11h-6v-7H9v7H3Z"/>',
+        book: '<rect x="5" y="3" width="14" height="18" rx="2"/><path d="M9 3v18m3-13h4m-4 4h4"/>',
+        price: '<path d="M3 3h9l9 9-9 9-9-9Z"/><circle cx="8" cy="8" r="1"/>',
+        more: '<circle cx="5" cy="12" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/>',
+        arrow: '<path d="m9 5 7 7-7 7"/>',
+        check: '<circle cx="12" cy="12" r="9"/><path d="m8 12 3 3 5-6"/>',
+        unknown:
+          '<circle cx="12" cy="12" r="9"/><path d="M9 9a3 3 0 1 1 5 2c-2 1-2 2-2 3m0 3h.01"/>',
+        conflict: '<path d="m12 3 10 18H2Z"/><path d="M12 9v5m0 3h.01"/>',
+        gluten: '<circle cx="12" cy="12" r="9"/><path d="m6 6 12 12"/>',
+        heart:
+          '<path d="M20 5c-3-3-7-1-8 1-1-2-5-4-8-1-4 4 0 9 8 15 8-6 12-11 8-15Z"/>',
+        grain:
+          '<path d="M12 21V4m0 7C5 11 5 5 5 5s7 0 7 6Zm0 6c-7 0-7-6-7-6s7 0 7 6Zm0-9c0-6 7-6 7-6s0 6-7 6Zm0 6c0-6 7-6 7-6s0 6-7 6Z"/>',
+        bars: '<path d="M2 2v20M6 2v20M9 2v20M14 2v20M18 2v20M22 2v20"/>',
+      };
+      const svg = (name, cls = "") =>
+        `<svg class="${cls}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${icons[name]}</svg>`;
+      const directions = [
+        {
+          id: "a",
+          name: "A · Tinta",
+          mood: "Digital / serena",
+          description:
+            "Azul profundo, aire y jerarquía directa. Una identidad discreta que deja el protagonismo a la información.",
+          type: "Sistema sans · Símbolo: encuadre y lectura",
+          symbol: "scan",
+          colors: ["#233FBA", "#E9EDFB", "#F7F8FC"],
+          light: {
+            bg: "#F7F8FC",
+            surface: "#FFFFFF",
+            ink: "#172343",
+            muted: "#56617B",
+            accent: "#233FBA",
+            "on-accent": "#FFFFFF",
+            soft: "#E9EDFB",
+            line: "#D7DDEA",
+          },
+          dark: {
+            bg: "#111A2D",
+            surface: "#19243C",
+            ink: "#F2F5FF",
+            muted: "#B1BED8",
+            accent: "#B6C6FF",
+            "on-accent": "#152247",
+            soft: "#263555",
+            line: "#40506F",
+          },
+        },
+        {
+          id: "b",
+          name: "B · Mesa",
+          mood: "Editorial / cercana",
+          description:
+            "Papel cálido, terracota y titulares editoriales. Una marca más humana, conectada con el gesto cotidiano de comprar.",
+          type: "Georgia + sistema sans · Símbolo: una M abierta",
+          symbol: null,
+          colors: ["#A43F28", "#F3E5D4", "#FCF8F0"],
+          light: {
+            bg: "#FCF8F0",
+            surface: "#FFFCF7",
+            ink: "#332B26",
+            muted: "#726052",
+            accent: "#A43F28",
+            "on-accent": "#FFFFFF",
+            soft: "#F3E5D4",
+            line: "#DDCDBD",
+          },
+          dark: {
+            bg: "#251E1A",
+            surface: "#312722",
+            ink: "#FFF2E3",
+            muted: "#D2BCA9",
+            accent: "#F5B699",
+            "on-accent": "#3B2117",
+            soft: "#49342B",
+            line: "#685043",
+          },
+        },
+        {
+          id: "c",
+          name: "C · Pulso",
+          mood: "Gráfica / expresiva",
+          description:
+            "Grafito y lima, geometría y contraste. Más presencia visual y una estética de herramienta contemporánea.",
+          type: "Sistema sans de peso alto · Símbolo: barras en movimiento",
+          symbol: "bars",
+          colors: ["#D5ED57", "#232724", "#F4F6EF"],
+          light: {
+            bg: "#F4F6EF",
+            surface: "#FFFFFF",
+            ink: "#232724",
+            muted: "#5B6359",
+            accent: "#303B20",
+            "on-accent": "#EDFFA3",
+            soft: "#D5ED57",
+            line: "#CFD6C8",
+          },
+          dark: {
+            bg: "#191D18",
+            surface: "#242A21",
+            ink: "#F1F7E8",
+            muted: "#BAC7AE",
+            accent: "#D5ED57",
+            "on-accent": "#202A13",
+            soft: "#354225",
+            line: "#4A5840",
+          },
+        },
+      ];
+      const states = {
+        free: {
+          title: "Figura como sin gluten",
+          copy: "La fuente incluye una declaración sin gluten. No es una certificación de esta app.",
+          icon: "check",
+        },
+        unknown: {
+          title: "Información insuficiente",
+          copy: "Faltan datos para mostrar una declaración concluyente. Consulta el etiquetado del envase.",
+          icon: "unknown",
+        },
+        conflict: {
+          title: "Datos contradictorios",
+          copy: "La fuente incluye declaraciones incompatibles. Revisa el etiquetado; no se muestra un resultado positivo.",
+          icon: "conflict",
+        },
+        gluten: {
+          title: "La fuente declara gluten",
+          copy: "Los datos de origen incluyen una declaración de gluten. Revisa la información del producto.",
+          icon: "gluten",
+        },
+      };
+      let view = "home",
+        dark = false;
+      const themeButton = document.querySelector("#theme");
+      function stateColors(kind) {
+        if (kind === "free")
+          return dark
+            ? { bg: "#203B32", ink: "#C0F0D7", line: "#507C66" }
+            : { bg: "#E8F3EC", ink: "#24583D", line: "#A9C9B4" };
+        if (kind === "unknown")
+          return dark
+            ? { bg: "#41351D", ink: "#FFE0A0", line: "#8E7644" }
+            : { bg: "#FFF1D5", ink: "#77500D", line: "#DCC18C" };
+        return dark
+          ? { bg: "#472B2C", ink: "#FFD0CC", line: "#98615C" }
+          : { bg: "#FAEAE6", ink: "#8A302B", line: "#D5A59D" };
+      }
+      function assessment(kind) {
+        const s = states[kind],
+          c = stateColors(kind);
+        return `<div class="assessment" style="--state-bg:${c.bg};--state-ink:${c.ink};--state-line:${c.line}">${svg(s.icon)}<h4>${s.title}</h4><p>${s.copy}</p></div>`;
+      }
+      function home() {
+        return `<p class="app-kicker">Tu compra, a tu ritmo</p><h3 class="app-title">Conoce lo que<br />te llevas.</h3><p class="app-copy">Consulta la información sobre gluten.<br />Guarda lo que quieras volver a encontrar.</p><div class="scan-art">${svg("bars", "barcode")}</div><button type="button" class="primary" data-demo="scan">${svg("scan")}Escanear producto</button><button type="button" class="secondary" data-demo="manual">Introducir código</button><div class="section-row">Tu biblioteca<small>Ejemplo guardado</small></div><button type="button" class="saved-product" data-demo="saved"><span class="pack">${svg("grain")}</span><span><strong>Galletas de arroz</strong><small>Marca de ejemplo<br />Guardado · disponible sin conexión</small></span>${svg("arrow")}</button>`;
+      }
+      function product() {
+        const kind = document.querySelector("#assessment").value;
+        const extra =
+          kind === "unknown"
+            ? "No disponibles en este ejemplo."
+            : kind === "conflict" || kind === "gluten"
+              ? "La fuente de ejemplo declara gluten."
+              : "La fuente de ejemplo no aporta información de trazas.";
+        return `<p class="app-kicker">Ficha de ejemplo</p><div class="product-hero"><span class="pack">${svg("grain")}</span><div><h3>Galletas<br />de arroz</h3><p>Marca de ejemplo · 130 g<br />Producto ficticio</p></div></div>${assessment(kind)}<div class="source"><span>Open Food Facts<br />Fuente ilustrativa</span><span>Consulta de ejemplo<br />24 oct 2026</span></div><div class="evidence"><strong>Ingredientes</strong><p>${kind === "unknown" ? "No disponibles en este ejemplo." : "Texto de ejemplo; consulta el envase real."}</p></div><div class="evidence"><strong>Alérgenos y trazas</strong><p>${extra}</p></div><button type="button" class="secondary" data-demo="favorite" aria-pressed="false">${svg("heart")}Guardar en favoritos</button>`;
+      }
+      function allStates() {
+        return `<p class="app-kicker">La evidencia antes que el color</p><h3 class="app-title" style="font-size:26px">Cuatro estados.<br />Sin atajos.</h3><p class="app-copy">Mismo significado en cada dirección visual.</p><div class="state-list">${Object.keys(states).map(assessment).join("")}</div>`;
+      }
+      function render() {
+        document.documentElement.dataset.theme = dark ? "dark" : "light";
+        themeButton.setAttribute("aria-pressed", String(dark));
+        themeButton.innerHTML = `<span aria-hidden="true">◐</span> ${dark ? "Tema claro" : "Tema oscuro"}`;
+        document.querySelector("#state-control").hidden = view !== "product";
+        document
+          .querySelectorAll("[data-view]")
+          .forEach((b) =>
+            b.setAttribute("aria-pressed", String(b.dataset.view === view)),
+          );
+        document.querySelector("#proposals").innerHTML = directions
+          .map((d) => {
+            const palette = dark ? d.dark : d.light;
+            const vars = Object.entries(palette)
+              .map(([k, v]) => `--app-${k}:${v}`)
+              .join(";");
+            const symbol = d.symbol
+              ? svg(d.symbol, "brand-symbol")
+              : '<svg class="brand-symbol" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 19V5l9 9 9-9v14"/></svg>';
+            return `<article class="direction ${d.id}" aria-label="${d.name}"><div class="direction-head"><h2>${d.name}</h2><span>${d.mood}</span></div><div class="phone-stage"><div class="phone" style="${vars}"><div class="phone-top"><span>9:41</span><svg viewBox="0 0 30 14" fill="currentColor" aria-hidden="true"><rect x="1" y="8" width="3" height="5"/><rect x="6" y="5" width="3" height="8"/><rect x="11" y="2" width="3" height="11"/><rect x="18" y="3" width="10" height="9" rx="2"/></svg></div><div class="app-header"><div class="app-brand">${symbol}SinGluten</div><span class="local">Sin cuenta</span></div><div class="app-main">${view === "home" ? home() : view === "product" ? product() : allStates()}</div><div class="app-nav" aria-label="Ejemplo de navegación, sin interacción">${[
+              ["home", "Inicio"],
+              ["scan", "Escanear"],
+              ["book", "Biblioteca"],
+              ["price", "Precios"],
+            ]
+              .map(
+                ([i, label]) =>
+                  `<span class="nav-item ${i === (view === "home" ? "home" : "scan") ? "active" : ""}">${svg(i)}${label}</span>`,
+              )
+              .join(
+                "",
+              )}</div></div></div><p class="direction-description">${d.description}</p><div class="swatches" aria-label="Colores principales">${d.colors.map((c) => `<span class="swatch" style="background:${c}" aria-hidden="true"></span><span>${c}</span>`).join("")}</div><p class="direction-type">${d.type}</p></article>`;
+          })
+          .join("");
+      }
+      document.querySelectorAll("[data-view]").forEach((button) =>
+        button.addEventListener("click", () => {
+          view = button.dataset.view;
+          render();
+          document.querySelector("#announcement").textContent =
+            "Comparación actualizada · " +
+            button.textContent +
+            " · Datos ficticios";
+        }),
+      );
+      document.querySelector("#assessment").addEventListener("change", () => {
+        render();
+        document.querySelector("#announcement").textContent =
+          "Resultado de ejemplo: " +
+          states[document.querySelector("#assessment").value].title;
+      });
+      themeButton.addEventListener("click", () => {
+        dark = !dark;
+        render();
+        document.querySelector("#announcement").textContent =
+          "Las tres propuestas se muestran en tema " +
+          (dark ? "oscuro" : "claro") +
+          ".";
+      });
+      document
+        .querySelector("#proposals")
+        .addEventListener("click", (event) => {
+          const button = event.target.closest("[data-demo]");
+          if (!button) return;
+          if (button.dataset.demo === "favorite") {
+            const saved = button.getAttribute("aria-pressed") !== "true";
+            button.setAttribute("aria-pressed", String(saved));
+            button.innerHTML =
+              svg("heart") +
+              (saved ? "Guardado en esta maqueta" : "Guardar en favoritos");
+            document.querySelector("#announcement").textContent =
+              "Simulación visual: no se han guardado datos reales.";
+          } else {
+            view = "product";
+            render();
+            document.querySelector("#announcement").textContent =
+              "Ficha ficticia de muestra. Esta maqueta no utiliza cámara ni consulta productos.";
+          }
+        });
+      render();
+    </script>
+  </body>
+</html>
