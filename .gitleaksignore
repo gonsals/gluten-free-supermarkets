@@ -1,0 +1,3 @@
+# Exact historical finding only. Key revoked in Google Cloud on 2026-10-24.
+# See docs/SEGURIDAD_CREDENCIALES.md. Reintroducing it in any new commit still fails.
+91ce46fb2862de5ab92518bf759acaa71a322a79:.env:gcp-api-key:2

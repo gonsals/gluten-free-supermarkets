@@ -1,47 +1,54 @@
 {
-    "expo": {
-        "name": "gluten-free-supermarkets",
-        "slug": "gluten-free-supermarkets",
-        "version": "1.0.0",
-        "orientation": "portrait",
-        "icon": "./assets/images/icon.png",
-        "scheme": "myapp",
+  "expo": {
+    "name": "SinGluten",
+    "slug": "gluten-free-supermarkets",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/images/icon.png",
+    "scheme": "singluten",
 
-        "newArchEnabled": true,
-
-        "userInterfaceStyle": "automatic",
-        "splash": {
-            "image": "./assets/images/splash.png",
-            "resizeMode": "contain",
-            "backgroundColor": "#444444"
-        },
-        "ios": {
-            "supportsTablet": true
-        },
-        "android": {
-            "adaptiveIcon": {
-                "foregroundImage": "./assets/images/adaptive-icon.png",
-                "backgroundColor": "#444444"
-            }
-        },
-        "web": {
-            "bundler": "metro",
-            "output": "static",
-            "favicon": "./assets/images/favicon.png"
-        },
-        "plugins": [
-            "expo-router",
-            [
-                "expo-camera",
-                {
-                    "cameraPermission": "Allow $(PRODUCT_NAME) to access your camera",
-                    "microphonePermission": "Allow $(PRODUCT_NAME) to access your microphone",
-                    "recordAudioAndroid": true
-                }
-            ]
-        ],
-        "experiments": {
-            "typedRoutes": true
+    "userInterfaceStyle": "automatic",
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.tumarre.singluten"
+    },
+    "android": {
+      "package": "com.tumarre.singluten",
+      "allowBackup": false,
+      "blockedPermissions": [
+        "android.permission.READ_EXTERNAL_STORAGE",
+        "android.permission.WRITE_EXTERNAL_STORAGE",
+        "android.permission.RECORD_AUDIO"
+      ],
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/images/adaptive-icon.png",
+        "backgroundColor": "#F6F8F3"
+      }
+    },
+    "web": {
+      "bundler": "metro",
+      "output": "single",
+      "favicon": "./assets/images/favicon.png"
+    },
+    "plugins": [
+      "./plugins/withWindowsCmake",
+      "./plugins/withAndroidBuildInputs",
+      "expo-router",
+      [
+        "expo-splash-screen",
+        { "image": "./assets/images/splash.png", "imageWidth": 200, "backgroundColor": "#F6F8F3" }
+      ],
+      [
+        "expo-camera",
+        {
+          "cameraPermission": "SinGluten necesita la cámara para leer el código de barras del alimento. También puedes introducirlo manualmente.",
+          "microphonePermission": false,
+          "recordAudioAndroid": false
         }
+      ]
+    ],
+    "experiments": {
+      "typedRoutes": true
     }
+  }
 }

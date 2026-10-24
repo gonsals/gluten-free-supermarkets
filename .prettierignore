@@ -1,0 +1,14 @@
+node_modules
+node_modules-sdk52
+dist
+.expo
+coverage
+test-results
+playwright-report
+package-lock.json
+functions/package-lock.json
+functions/lib
+tests/cloud/generated.cjs
+android
+ios
+docs
