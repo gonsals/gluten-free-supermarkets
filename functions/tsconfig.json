@@ -1,0 +1,4 @@
+{
+  "compilerOptions": { "strict": true, "target": "ES2023", "module": "Node16", "moduleResolution": "Node16", "esModuleInterop": true, "skipLibCheck": true, "noEmit": true },
+  "include": ["src/**/*.ts", "../src/domain/barcode.ts", "../src/domain/price.ts"]
+}

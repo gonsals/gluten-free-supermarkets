@@ -1,169 +1,103 @@
+# SinGluten
 
-# Supermercados sin Gluten - Escáner de Productos 👋
+App de compra en **Expo 58, React 19 y React Native 0.88**, con consulta de alimentos por código de barras, información sobre gluten basada en evidencia, biblioteca sin conexión y anotaciones de precios por tienda.
 
-¡Bienvenido al proyecto! Esta aplicación está diseñada para ayudar a las personas con intolerancia al gluten a identificar productos aptos mediante el escaneo de códigos de barras. Actualmente estamos en una etapa inicial de desarrollo.
+**Estado: MVP implementado y en validación.** La app y el servidor tienen pruebas automatizadas. El proyecto Firebase real ya tiene autenticación por correo y Firestore con reglas e índices desplegados; las funciones y la activación de nube en la app siguen pendientes. No se ha publicado en tiendas. El estado remoto y sus límites están en [Firebase real](docs/FIREBASE_REAL.md).
 
----
+## Funcionalidades
 
-## Estado Actual 🛠️
+- Inicio propio, navegación en español, iconos de marca y tema claro/oscuro.
+- Entrada manual EAN/UPC con validación de formato y dígito de control, conservando ceros iniciales.
+- Cámara trasera, linterna, permisos y recuperación mediante entrada manual. La cámara se desmonta al perder foco o pasar a segundo plano.
+- Cliente único de Open Food Facts con campos acotados, timeout, cancelación, reintento limitado, caché de no encontrado y respeto de límites de consulta.
+- Ficha con nombre, marca, imagen opcional, ingredientes, alérgenos, trazas, fuente y fechas. Distingue declaración sin gluten, gluten declarado, datos insuficientes y contradicciones.
+- Favoritos e historial persistentes; búsqueda, listas acotadas y borrado. SQLite en móvil e IndexedDB en navegador.
+- Consulta de fichas guardadas sin conexión. La exportación web incluye un service worker que conserva el código de la app, separado de los datos privados.
+- Precios privados por código, tienda y localidad, con céntimos enteros, fechas, ofertas, cantidades y comparación contextualizada.
+- Exportación y borrado de datos locales; ayuda, atribución y explicación de privacidad dentro de la app.
+- Nube opcional: cuentas por correo, recuperación de contraseña, sincronización manual de favoritos, envío de precios a revisión, moderación autorizada y eliminación de cuenta.
+- Reglas de acceso, índices, funciones de servidor, emuladores, CI y actualizaciones de dependencias mediante Dependabot.
 
-### Funcionalidades Implementadas
+La nube está **desactivada por defecto**. El historial no se sube al sincronizar favoritos. No hay integraciones que proporcionen precios oficiales o disponibilidad de supermercados: las cifras son observaciones con procedencia y fecha.
 
-1. **Escáner de Códigos de Barras**:
-   - Utiliza la cámara del dispositivo para escanear productos.
-   - Detecta códigos de barras de diferentes formatos como `QR`, `EAN-13` y `UPC-A`.
+**Decisión vigente: funcionamiento local sin costes de backend.** No es necesario activar Firebase ni Blaze para usar escaneo, consultas, favoritos, historial, precios privados y exportación. Todos los perfiles EAS mantienen la nube desactivada. El código opcional de cuentas/sincronización queda como una ampliación futura, fuera de los requisitos de la versión local; no justifica contratar servicios. Las consultas nuevas a Open Food Facts necesitan conexión y respetan sus límites; las fichas guardadas se pueden consultar sin red.
 
-2. **Visualización de Información**:
-   - Muestra:
-     - Nombre del producto.
-     - Marca.
-     - Imagen (si está disponible).
-     - Indicador de si el producto es libre de gluten.
+## Ejecutar
 
-3. **Control de Estado**:
-   - Indicadores de carga mientras se busca el producto.
-   - Muestra mensajes de error si no se encuentra información.
+Entorno fijado: **Node 24.16.0**, npm 11.13.0. Usar la versión de `.nvmrc`.
 
-4. **Cámara Dinámica**:
-   - Alterna entre cámaras frontal y trasera para mayor flexibilidad.
-
-⚠️ **Limitación actual**: Los productos escaneados no se guardan en una base de datos. Esta funcionalidad será implementada próximamente.
-
----
-
-## Cómo Empezar 🚀
-
-Sigue estos pasos para configurar y ejecutar el proyecto localmente:
-
-1. **Clonar el Repositorio**
-
-   ```bash
-   git clone https://github.com/tu-repo/sin-gluten-scanner.git
-   cd sin-gluten-scanner
-   ```
-
-2. **Instalar las Dependencias**
-
-   Asegúrate de tener instalado [Node.js](https://nodejs.org/) y luego ejecuta:
-
-   ```bash
-   npm install
-   ```
-
-3. **Iniciar la Aplicación**
-
-   ```bash
-   npx expo start
-   ```
-
-   Podrás interactuar con la aplicación mediante:
-   - Un dispositivo físico con la aplicación [Expo Go](https://expo.dev/go).
-   - Un emulador Android o simulador iOS.
-   - Un navegador web (con algunas limitaciones).
-
----
-
-## Estructura del Proyecto 📁
-
-El proyecto está organizado en carpetas para facilitar la escalabilidad:
-
-```plaintext
-src/
-├── components/        # Componentes reutilizables (e.g., ParallaxScrollView)
-├── hooks/             # Hooks personalizados (e.g., useFetchProduct)
-├── screens/           # Pantallas principales (HomeScreen, TabTwoScreen)
-├── assets/            # Recursos estáticos como imágenes
-├── styles/            # Archivos de estilos compartidos
+```bash
+npm ci
+npm start
 ```
 
-- **Pantallas Clave**:
-  - `HomeScreen`: Página inicial con diseño dinámico.
-  - `TabTwoScreen`: Pantalla principal del escáner de productos.
-- **Hooks Clave**:
-  - `useFetchProduct`: Consulta la información de productos mediante un código de barras.
-- **Estilos**:
-  - Diseños creados con `StyleSheet` para React Native.
+La app local funciona sin Firebase configurado. Para personalizar el entorno, copiar `.env.example` a `.env.local` y rellenar solo la configuración necesaria. `EXPO_PUBLIC_*` es configuración visible en el cliente; nunca debe contener credenciales administrativas.
 
----
+En PowerShell usar `npm.cmd`/`npx.cmd` si la política del equipo bloquea los archivos `.ps1`, sin cambiar esa política.
 
-## Próximos Pasos 🚧
+| Comando | Función |
+| --- | --- |
+| `npm run web` | Desarrollo en navegador. |
+| `npm run android` | Genera/compila Android y lo ejecuta en un dispositivo o emulador configurado. |
+| `npm run build:android:windows` | Compila APK de depuración ARM64 con herramientas portátiles y rutas cortas; requiere Python y Android SDK. |
+| `npm run build:android:windows -- --variant preview --architecture universal` | Genera APK local ARM64/x86_64 con JavaScript incorporado y nube desactivada; firma de desarrollo, no válida para tiendas. |
+| `npm run ios` | Genera/compila iOS; requiere macOS y Xcode. |
+| `npm run check` | Generación de rutas tipadas, TypeScript, ESLint, pruebas y compatibilidad Expo. |
+| `npm run test:e2e` | Exporta la app y comprueba el recorrido en Chromium con tamaño móvil. |
+| `npm run export:web` | Genera `dist/` con rutas SPA y soporte sin conexión. |
+| `npm run format` | Formatea el código del proyecto. |
+| `npm run firebase:verify -- --project gluten-free-supermarket` | Comprueba región, protección de borrado, índices y lecturas anónimas del proyecto real, sin modificarlo. Requiere sesión de Firebase CLI. |
+| `npm run secrets:check` | Revisa archivos publicables e historial con Gitleaks verificado; solo admite el hallazgo histórico exacto cuya clave ya fue revocada. |
 
-El proyecto crecerá en las próximas iteraciones. Aquí están los objetivos inmediatos:
+Para Playwright, instalar una vez el navegador con `npx playwright install chromium`. En Linux de CI se usa `npx playwright install --with-deps chromium`.
 
-1. **Guardado en Base de Datos**:
-   - Permitir a los usuarios guardar productos escaneados en una base de datos local o en la nube.
+## Servidor y pruebas de nube
 
-2. **Filtros Avanzados**:
-   - Mejorar la interfaz para buscar productos por marcas, categorías, etc.
+```bash
+npm --prefix functions ci
+npm --prefix functions run build
+npm run lint:server
+npm run test:rules
+npm run test:cloud
+```
 
-3. **Compatibilidad Extendida**:
-   - Ampliar el soporte para más formatos de códigos de barras y etiquetas nutricionales.
+Los emuladores requieren **Java 21** en `JAVA_HOME`/`PATH`. En Windows, `python scripts/prepare-java.py` prepara un JDK portátil en la carpeta temporal y comprueba la suma del archivo; no modifica el Java del sistema. La [guía operativa](docs/DESPLIEGUE_Y_PRUEBAS.md) explica su uso.
 
-4. **Historial de Escaneos**:
-   - Implementar una vista de historial para consultar productos previamente escaneados.
+Las pruebas usan exclusivamente el proyecto ficticio `demo-sin-gluten`. No necesitan acceso a la base de datos real. Activar la nube requiere desplegar las reglas, índices y funciones en un entorno de pruebas y habilitar autenticación; véase la guía antes de usar configuración de producción.
 
----
+## Documentación
 
-## Uso de la Aplicación
+| Documento | Uso |
+| --- | --- |
+| [Implementación y verificación](docs/IMPLEMENTACION.md) | Qué está aplicado, pruebas y límites actuales. |
+| [Dependencias y seguridad](docs/DEPENDENCIAS.md) | Versiones, decisiones de compatibilidad y avisos pendientes. |
+| [Despliegue y pruebas](docs/DESPLIEGUE_Y_PRUEBAS.md) | Configuración local, emuladores, nube, builds y operación. |
+| [Firebase real](docs/FIREBASE_REAL.md) | Recursos configurados, verificaciones remotas y requisitos que faltan para activar la nube. |
+| [Seguridad de credenciales](docs/SEGURIDAD_CREDENCIALES.md) | Clave histórica revocada, alcance del escaneo y prevención de nuevas exposiciones. |
+| [Producto](docs/PRODUCTO.md) | Finalidad, reglas de evidencia y criterios de experiencia. |
+| [Arquitectura](docs/ARQUITECTURA.md) | Diseño de referencia y responsabilidades. |
+| [Plan de mejoras](docs/PLAN_MEJORAS.md) | Trazabilidad del plan inicial y avance de su ejecución. |
+| [Auditoría inicial](docs/ESTADO_ACTUAL.md) | Estado histórico del prototipo del commit `3044a18`. |
+| [Calidad y operación](docs/CALIDAD_Y_OPERACION.md) | Requisitos de calidad y publicación que deben mantenerse. |
 
-### Escaneo de Productos
+## Organización
 
-1. **Permitir Acceso a la Cámara**:
-   Al iniciar, la aplicación solicitará acceso a la cámara. Acepta la solicitud para continuar.
+```text
+app/                    Rutas: inicio, consulta, biblioteca, precios, ajustes y moderación
+src/domain/             Producto, interpretación, códigos, precios y errores
+src/data/open-food-facts/ Cliente externo y normalización
+src/data/local/         Repositorio transaccional y adaptadores SQLite/IndexedDB
+src/data/firebase/      Inicialización opcional y sincronización
+src/features/           Funcionalidades y componentes de pantalla
+src/shared/             Diseño, configuración, exportación y telemetría opcional
+functions/              Validación, cuotas, moderación y borrado remoto
+tests/                  Fixtures, pruebas de reglas, integración y navegador
+plugins/                Ajustes reproducibles de la generación nativa
+scripts/                Herramientas de desarrollo y exportación
+```
 
-2. **Escanear un Código de Barras**:
-   - Coloca el código dentro del área marcada en la cámara.
-   - La aplicación detectará automáticamente el producto.
+## Interpretación y licencias
 
-3. **Visualizar Resultados**:
-   - Si el producto es encontrado, se mostrará su información.
-   - Si no, recibirás un mensaje de error.
+Un dato ausente no se convierte en «contiene gluten», ni una etiqueta recibida equivale a una certificación propia. La app muestra la evidencia de la fuente y sus limitaciones. Antes de una publicación dirigida a población celíaca se necesita validar el lenguaje y las reglas con revisión experta y pruebas de uso.
 
-4. **Cerrar Producto**:
-   - Puedes cerrar el producto actual para escanear otro.
-
----
-
-## Recursos Utilizados 🛠️
-
-### Tecnologías y Librerías
-
-- **Expo**: Framework para desarrollar aplicaciones con React Native.
-- **React Native**: Desarrollo nativo multiplataforma.
-- **CameraView (expo-camera)**: Control avanzado de la cámara.
-- **API de Productos**: Integración para obtener datos de productos (por ejemplo, Open Food Facts).
-
----
-
-## Recursos para Desarrolladores 📚
-
-Para aprender más sobre las tecnologías usadas, consulta estos enlaces:
-
-- [Expo Documentation](https://docs.expo.dev/): Aprende sobre Expo y sus herramientas.
-- [React Native Documentation](https://reactnative.dev/): Guía completa sobre React Native.
-- [Open Food Facts API](https://world.openfoodfacts.org/data): Documentación de la API utilizada para obtener datos de productos.
-
----
-
-## Cómo Contribuir 🤝
-
-¡Nos encantaría tu ayuda para mejorar este proyecto!
-
-- Abre un issue en nuestro [repositorio de GitHub](https://github.com/tu-repo/sin-gluten-scanner/issues).
-- Envía un pull request con mejoras o correcciones.
-
----
-
-## Comunidad y Soporte 💬
-
-Conéctate con la comunidad para resolver dudas o compartir ideas:
-
-- [Foros de Expo](https://forums.expo.dev/)
-- [Discord de Expo](https://chat.expo.dev/)
-- [React Native en Stack Overflow](https://stackoverflow.com/questions/tagged/react-native)
-
----
-
-## Licencia 📜
-
-Este proyecto está licenciado bajo la [MIT License](https://opensource.org/licenses/MIT).
+Código bajo [MIT](LICENSE). Los datos e imágenes de Open Food Facts tienen [licencias y condiciones independientes](https://openfoodfacts.github.io/openfoodfacts-server/api/tutorials/license-be-on-the-legal-side/).
