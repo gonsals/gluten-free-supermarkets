@@ -149,6 +149,7 @@ export default function SettingsScreen() {
         </Copy>
       </Card>
       <Confirm
+        title="Borrar biblioteca local"
         visible={confirm}
         message="Se borrarán historial, favoritos, fichas y precios privados de este dispositivo. Exporta primero los datos que quieras conservar. Los favoritos remotos no se eliminan."
         onCancel={() => setConfirm(false)}

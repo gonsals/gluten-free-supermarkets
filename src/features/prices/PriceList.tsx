@@ -84,6 +84,7 @@ export function PriceList({
         <Action title="Mostrar 20 más" onPress={() => setLimit((value) => value + 20)} secondary />
       ) : null}
       <Confirm
+        title="Eliminar precio privado"
         visible={deleting !== null}
         message="Se eliminará esta anotación privada del dispositivo. No elimina una contribución que ya hayas compartido."
         onCancel={() => setDeleting(null)}

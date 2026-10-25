@@ -205,6 +205,9 @@ test('exporta la biblioteca y permite cancelar o confirmar su borrado sin dejar 
   await page.getByRole('textbox', { name: 'Código de barras', exact: true }).fill(code);
   await page.getByRole('button', { name: 'Buscar producto', exact: true }).click();
   await page.getByRole('button', { name: 'Guardar en favoritos', exact: true }).click();
+  await expect(
+    page.getByRole('button', { name: 'Quitar de favoritos', exact: true }),
+  ).toBeVisible();
   await page.goto('/prices');
   await page
     .getByRole('textbox', { name: 'Código de barras del producto', exact: true })

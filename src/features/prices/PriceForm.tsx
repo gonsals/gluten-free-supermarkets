@@ -111,6 +111,10 @@ export function PriceForm({ barcode }: { barcode?: string }) {
           <View key={value} style={{ flex: 1 }}>
             <Action
               title={value === 'unit' ? 'unidad' : value}
+              accessibilityLabel={
+                value === 'unit' ? 'Unidad' : value === 'kg' ? 'Kilogramos' : 'Litros'
+              }
+              selected={unit === value}
               secondary={unit !== value}
               onPress={() => setUnit(value)}
             />

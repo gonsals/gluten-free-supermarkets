@@ -40,6 +40,7 @@ export default function LibraryScreen() {
         <View style={{ flex: 1 }}>
           <Action
             title={`Favoritos (${favorites.length})`}
+            selected={tab === 'favorites'}
             secondary={tab !== 'favorites'}
             onPress={() => {
               setTab('favorites');
@@ -50,6 +51,7 @@ export default function LibraryScreen() {
         <View style={{ flex: 1 }}>
           <Action
             title={`Historial (${data.history.length})`}
+            selected={tab === 'history'}
             secondary={tab !== 'history'}
             onPress={() => {
               setTab('history');
@@ -107,6 +109,7 @@ export default function LibraryScreen() {
         <Action title="Borrar historial" secondary danger onPress={() => setConfirm(true)} />
       ) : null}
       <Confirm
+        title="Borrar historial"
         visible={confirm}
         message="Se borrará el historial de este dispositivo. Tus favoritos y precios se conservarán."
         onCancel={() => setConfirm(false)}

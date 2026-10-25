@@ -2,6 +2,7 @@ import Ionicons from '@expo/vector-icons/Ionicons';
 import type { ComponentProps, PropsWithChildren } from 'react';
 import {
   ActivityIndicator,
+  Platform,
   Pressable,
   ScrollView,
   StyleSheet,
@@ -79,6 +80,7 @@ export function Action({
   disabled = false,
   busy = false,
   danger = false,
+  selected,
   accessibilityLabel,
 }: {
   title: string;
@@ -88,6 +90,7 @@ export function Action({
   disabled?: boolean;
   busy?: boolean;
   danger?: boolean;
+  selected?: boolean;
   accessibilityLabel?: string;
 }) {
   const c = usePalette();
@@ -96,7 +99,12 @@ export function Action({
     <Pressable
       accessibilityRole="button"
       accessibilityLabel={accessibilityLabel ?? title}
-      accessibilityState={{ disabled: disabled || busy, busy }}
+      accessibilityState={{
+        disabled: disabled || busy,
+        busy,
+        ...(Platform.OS === 'web' ? {} : { selected }),
+      }}
+      {...(Platform.OS === 'web' ? { 'aria-pressed': selected } : {})}
       disabled={disabled || busy}
       onPress={onPress}
       style={({ pressed }) => [
@@ -111,7 +119,13 @@ export function Action({
       {busy ? (
         <ActivityIndicator color={foreground} />
       ) : icon ? (
-        <Ionicons name={icon} size={21} color={foreground} />
+        <Ionicons
+          name={icon}
+          size={21}
+          color={foreground}
+          accessible={false}
+          importantForAccessibility="no"
+        />
       ) : null}
       <Text
         style={{
