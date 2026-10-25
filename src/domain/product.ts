@@ -26,6 +26,7 @@ export interface Product {
     fetchedAt: string;
     updatedAt: string | null;
     environment: 'staging' | 'production';
+    restoredAt?: string;
   };
   assessment: GlutenAssessment;
   schemaVersion: number;
@@ -216,6 +217,9 @@ export function isProduct(value: unknown): value is Product {
     strings(value.dataIssues) &&
     typeof value.source.fetchedAt === 'string' &&
     Number.isFinite(Date.parse(value.source.fetchedAt)) &&
+    (value.source.restoredAt === undefined ||
+      (typeof value.source.restoredAt === 'string' &&
+        Number.isFinite(Date.parse(value.source.restoredAt)))) &&
     typeof value.source.url === 'string' &&
     /^https:\/\/world\.openfoodfacts\.(org|net)\/product\/\d+$/.test(value.source.url) &&
     ['production', 'staging'].includes(String(value.source.environment)) &&

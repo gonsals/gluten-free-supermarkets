@@ -9,6 +9,7 @@ export function Confirm({
   onCancel,
   onConfirm,
   busy = false,
+  confirmLabel = 'Confirmar eliminación',
 }: {
   visible: boolean;
   title: string;
@@ -16,6 +17,7 @@ export function Confirm({
   onCancel: () => void;
   onConfirm: () => void;
   busy?: boolean;
+  confirmLabel?: string;
 }) {
   return (
     <Modal
@@ -44,7 +46,7 @@ export function Confirm({
             <Heading>{title}</Heading>
             <Copy>{message}</Copy>
             <Action title="Cancelar" secondary onPress={onCancel} disabled={busy} />
-            <Action title="Confirmar eliminación" onPress={onConfirm} busy={busy} />
+            <Action title={confirmLabel} onPress={onConfirm} busy={busy} />
           </Card>
         </ScrollView>
       </SafeAreaView>

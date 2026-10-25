@@ -1,6 +1,6 @@
 # Próximos pasos y mejoras futuras
 
-Actualización: **25 de octubre de 2026**, Mesa aplicada, preparación técnica del paso 3, revisión de seguridad y escáner/permisos en la iteración 6.
+Actualización: **25 de octubre de 2026**, Mesa aplicada, preparación técnica del paso 3, revisión de seguridad, escáner/permisos y recuperación local en la iteración 7.
 
 Fecha de referencia: **24 de octubre de 2026**. Guía del trabajo pendiente desde el MVP implementado hasta una app profesional y mantenible. El [plan inicial](PLAN_MEJORAS.md) conserva la trazabilidad histórica; esta hoja indica qué hacer ahora.
 
@@ -16,11 +16,11 @@ Fecha de referencia: **24 de octubre de 2026**. Guía del trabajo pendiente desd
 
 | Área | Qué tenemos | Qué falta |
 | --- | --- | --- |
-| Producto local | Escaneo y entrada manual, ficha con evidencia, favoritos, historial, precios privados, exportación y borrado. | Validar utilidad y comprensión durante compras reales. |
+| Producto local | Escaneo y entrada manual, ficha con evidencia, favoritos, historial, precios privados, exportación, restauración y borrado. | Validar utilidad y comprensión durante compras reales. |
 | Persistencia | SQLite móvil, IndexedDB web, esquema versionado y límites de datos. | Migraciones con datos anteriores y recuperación en dispositivos físicos. |
 | Plataforma | Expo 58, React 19, React Native 0.88; APK Android interna sin necesidad de Metro. | Firma de publicación, dispositivos físicos e iOS nativo si se incluye en el lanzamiento. |
-| Calidad | Iteración 6: 88 pruebas de app, 34 de seguridad y quince recorridos web correctos. Reglas/nube conservan además el resultado del job Firebase de la base. [Matriz y alcance](ESCANER_Y_PERMISOS.md). | Revisión experta y comprensión, cámara física, accesibilidad asistiva nativa, beta y métricas con muestra declarada. |
-| CI | Los cinco jobs del [run de la iteración 5, `1458428`](https://github.com/gonsals/gluten-free-supermarkets/actions/runs/40149791699) pasaron: secretos, dependencias, Firebase, Android y app. | Revisar protección de rama y mantener controles por cambio. Ese resultado acredita esa revisión, no commits futuros. |
+| Calidad | Iteración 7: 125 pruebas de app, 34 de seguridad y diecinueve recorridos web correctos. Reglas/nube conservan además el resultado del job Firebase de la base. [Matriz y alcance](COPIAS_LOCALES.md). | Revisión experta y comprensión, cámara física, accesibilidad asistiva nativa, beta y métricas con muestra declarada. |
+| CI | Los cinco jobs del [run de la iteración 6, `3bd1793`](https://github.com/gonsals/gluten-free-supermarkets/actions/runs/40215578049) pasaron: secretos, dependencias, Firebase, Android y app. | Revisar protección de rama y mantener controles por cambio. Ese resultado acredita esa revisión, no commits futuros. |
 | Seguridad | Clave expuesta revocada, archivos privados excluidos y escaneo de archivos e historial. | Resolver avisos transitivos antes de publicar y mantener controles. |
 | Identidad | B · Mesa elegida: tema cálido claro/oscuro, titulares editoriales y recursos propios. | Validación física, comprensión con público objetivo y confirmación del nombre antes de publicar. |
 | Nube | Código opcional probado en emuladores; infraestructura Firebase parcialmente configurada. | Fuera del lanzamiento local; no activar cuentas o sincronización como requisito. |
@@ -89,6 +89,8 @@ Probar al menos un Android de recursos modestos y otro representativo del públi
 
 Completar red lenta/sin red, producto inexistente, favoritos y precios tras reiniciar, actualización de fichas, exportación, borrado y migración. Revisar TalkBack, fuente ampliada, contraste y controles táctiles. Mantener fuente y fecha visibles en datos guardados.
 
+**Avance técnico de la iteración 7:** recuperación de copias JSON mediante resumen y sustitución transaccional, con validación de formato, tamaño, códigos, referencias y evidencia. Mantiene las fechas originales y marca las fichas restauradas. [Contrato, pruebas y límites](COPIAS_LOCALES.md). La fusión selectiva no está implementada; la política de conflictos es sustituir toda la biblioteca tras confirmación explícita.
+
 Cierre: matriz con evidencia, sin bloqueos del recorrido y resto de incidencias priorizadas. Si se ofrece iOS, añadir compilación nativa, dispositivo físico y VoiceOver antes de declararlo compatible. La exportación JavaScript no sustituye esas pruebas.
 
 ### Paso 6 · Preparar distribución y beta local
@@ -119,7 +121,7 @@ Cierre: criterios de [Calidad y operación](CALIDAD_Y_OPERACION.md) aplicables a
 | --- | --- | --- | --- |
 | F-01 / P2 | Lista de compra local desde favoritos. | Necesidad repetida durante la beta. | Crear, marcar, ordenar y recuperar sin conexión ni cuenta. |
 | F-02 / P2 | Filtros y organización de biblioteca. | La búsqueda actual resulta insuficiente con datos reales. | Filtros comprensibles y rendimiento medido cerca de los límites actuales. |
-| F-03 / P2 | Importación de copias locales. | Recuperación o cambio de teléfono sin nube. | Formato versionado, validación, límites, conflictos e importación transaccional. La exportación existe; importar no se considera implementado. |
+| F-03 / P2 | Importación de copias locales. | Recuperación o cambio de teléfono sin nube. | Implementada técnicamente en la iteración 7: formato versionado, validación y límites, resumen, sustitución completa y transacción. [Evidencia](COPIAS_LOCALES.md); validación física y con personas usuarias pendiente. |
 | F-04 / P2 | Comparación de precios privados más útil. | Observaciones suficientes y beneficio frente al esfuerzo de anotarlas. | Unidades y formatos compatibles, antigüedad y ofertas claras; sin prometer stock. |
 | F-05 / P2 | Avisos locales de antigüedad de fichas. | Confusión observada entre dato guardado y actualizado. | Umbral explicado y refresco voluntario respetando red y límites del proveedor. |
 | F-06 / P2 | Optimizar arranque, listas y tamaño de Android. | Un perfilado detecta cuellos de botella. | Medición antes/después con mismo equipo y datos, sin degradar accesibilidad u offline. |

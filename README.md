@@ -14,7 +14,7 @@ App de compra en **Expo 58, React 19 y React Native 0.88**, con consulta de alim
 - Favoritos e historial persistentes; búsqueda, listas acotadas y borrado. SQLite en móvil e IndexedDB en navegador.
 - Consulta de fichas guardadas sin conexión. La exportación web incluye un service worker que conserva el código de la app, separado de los datos privados.
 - Precios privados por código, tienda y localidad, con céntimos enteros, fechas, ofertas, cantidades y comparación contextualizada.
-- Exportación y borrado de datos locales; ayuda, atribución y explicación de privacidad dentro de la app.
+- Exportación, restauración transaccional y borrado de datos locales. Las copias se validan y muestran un resumen antes de sustituir la biblioteca; ayuda, atribución y privacidad dentro de la app.
 - Nube opcional: cuentas por correo, recuperación de contraseña, sincronización manual de favoritos, envío de precios a revisión, moderación autorizada y eliminación de cuenta.
 - Reglas de acceso, índices, funciones de servidor, emuladores, CI y actualizaciones de dependencias mediante Dependabot.
 
@@ -80,6 +80,7 @@ La [hoja de ruta vigente](docs/HOJA_DE_RUTA.md) organiza los siguientes pasos y 
 | [Pruebas de la iteración 4](docs/PRUEBAS_ITERACION_4.md) | Seguridad reforzada, matriz ejecutada, exportación/borrado y comprobación Android sin conexión. |
 | [Accesibilidad y datos](docs/ACCESIBILIDAD_Y_DATOS.md) | Iteración 5: confirmaciones desplazables, texto ampliado, teclado, estados accesibles y conservación de datos al actualizar. |
 | [Escáner y permisos](docs/ESCANER_Y_PERMISOS.md) | Iteración 6: errores y respuestas tardías de permisos, alternativa manual y ciclo de cámara/linterna. |
+| [Copias locales y recuperación](docs/COPIAS_LOCALES.md) | Iteración 7: formato versionado, validación de archivos, resumen y restauración sin nube ni cuenta. |
 | [Dependencias y seguridad](docs/DEPENDENCIAS.md) | Versiones, decisiones de compatibilidad y avisos pendientes. |
 | [Despliegue y pruebas](docs/DESPLIEGUE_Y_PRUEBAS.md) | Configuración local, emuladores, nube, builds y operación. |
 | [Firebase real](docs/FIREBASE_REAL.md) | Recursos configurados, verificaciones remotas y requisitos que faltan para activar la nube. |

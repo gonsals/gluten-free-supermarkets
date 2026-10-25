@@ -52,6 +52,8 @@ Se mantiene el dispositivo sin red activa y sin redirecciones ADB a Metro. La in
 
 La base `1458428` de la iteración 5 tiene sus **cinco jobs correctos**, incluida la compilación Android: [run 40149791699](https://github.com/gonsals/gluten-free-supermarkets/actions/runs/40149791699). Ese resultado corresponde a la base, no a modificaciones posteriores.
 
+Actualización al continuar con la iteración 7: el commit final de esta iteración 6, `3bd1793`, también tiene sus **cinco jobs correctos**, incluida la compilación Android: [run 40215578049](https://github.com/gonsals/gluten-free-supermarkets/actions/runs/40215578049).
+
 La [documentación de Camera de Expo](https://docs.expo.dev/versions/latest/sdk/camera/) identifica el uso de cámara nativa como propio de dispositivos. El emulador sirve para verificar permisos, controles y recuperación; la lectura de códigos en envases reales y la luz física de la linterna continúan pendientes. [AppState de React Native](https://reactnative.dev/docs/appstate) describe las interrupciones del sistema y el evento `blur` Android utilizados en este ciclo.
 
 Antes de cerrar el paso 5 siguen pendientes Android físicos, luz baja, reflejos, lectura repetida de envases, consumo/rendimiento, TalkBack y comprensión con personas usuarias. iOS requiere compilación, dispositivo y VoiceOver. Se conservan además la revisión experta sobre gluten y los avisos de dependencias como bloqueos independientes.

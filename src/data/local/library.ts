@@ -9,6 +9,7 @@ import {
 } from '@/src/domain/product';
 import { isPriceObservation, validatePrice, type PriceObservation } from '@/src/domain/price';
 import type { KeyValueStorage } from './storage.types';
+import { BACKUP_FORMAT, parseLibraryBackup } from './backup';
 
 export interface ProductSummary {
   barcode: string;
@@ -286,17 +287,66 @@ export class LibraryRepository {
       });
     }, newerProducts);
   }
-  async exportData(): Promise<string> {
-    await this.queue.catch(() => undefined);
-    await this.load();
-    if (!this.snapshot.ready) throw new AppError('storage_error');
-    const products = (
-      await Promise.all(Object.keys(this.snapshot.data.cache).map((code) => this.getProduct(code)))
-    ).filter(isProduct);
-    return JSON.stringify(
-      { exportedAt: new Date().toISOString(), ...this.snapshot.data, products },
-      null,
-      2,
+  exportData(): Promise<string> {
+    // Reads share the write queue: products and metadata must belong to one snapshot.
+    const next = this.queue
+      .catch(() => undefined)
+      .then(async () => {
+        await this.load();
+        if (!this.snapshot.ready) throw new AppError('storage_error');
+        const data = this.snapshot.data;
+        const products = await Promise.all(
+          Object.keys(data.cache).map((code) => this.getProduct(code)),
+        );
+        if (products.some((product) => !product))
+          throw new Error('Faltan fichas guardadas. No se ha creado una copia incompleta.');
+        const contents = JSON.stringify(
+          {
+            format: BACKUP_FORMAT,
+            backupVersion: 1,
+            exportedAt: new Date().toISOString(),
+            ...data,
+            favorites: Object.fromEntries(
+              Object.entries(data.favorites).filter(([, item]) => !item.deleted),
+            ),
+            cloudOwner: null,
+            products,
+          },
+          null,
+          2,
+        );
+        // Never offer a backup that this version cannot restore.
+        parseLibraryBackup(contents);
+        return contents;
+      });
+    this.queue = next;
+    return next;
+  }
+  restoreBackup(contents: string, expectedData: LibraryData): Promise<void> {
+    const backup = parseLibraryBackup(contents);
+    const restoredAt = new Date().toISOString();
+    const products = backup.products.map((product) => ({
+      ...product,
+      source: { ...product.source, restoredAt },
+    }));
+    const removals: string[] = [];
+    return this.mutate(
+      (data) => {
+        if (this.snapshot.data !== expectedData)
+          throw new Error(
+            'La biblioteca ha cambiado. Selecciona de nuevo la copia para revisar la restauración.',
+          );
+        if (data.cloudOwner)
+          throw new Error(
+            'Esta biblioteca está vinculada a una cuenta. Exporta y borra primero los datos locales antes de restaurar una copia.',
+          );
+        removals.push(
+          ...Object.keys(data.cache).filter((code) => !Object.hasOwn(backup.data.cache, code)),
+        );
+        Object.assign(data, backup.data);
+      },
+      products,
+      removals,
     );
   }
   async clearAll(): Promise<void> {

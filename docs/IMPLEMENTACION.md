@@ -22,9 +22,9 @@ Fecha: **2026-10-25**. Este documento refleja el trabajo posterior a la auditor�
 | Moderación | Pantalla para cuentas con custom claim `admin`; publicación mediante función autorizada. | La claim se verifica también en servidor. No se asigna desde la app. |
 | Privacidad remota | Separación entre observaciones privadas y `publishedPrices` sin identificadores de autor/moderador; borrado de contribuciones y favoritos al borrar cuenta. | Pruebas de autoría y borrado; política TTL para la marca de seguridad de cuenta. |
 | Configuración | `.env.example`, validación de entornos, protección de emuladores con proyecto `demo-`; `.env` deja de seguirse por Git. `.env.local` contiene la configuración pública verificada del proyecto existente. | Nube desactivada por defecto. Firestore y Auth reales preparados; [estado remoto](FIREBASE_REAL.md). |
-| Calidad | ESLint, Prettier, TypeScript, Jest, Playwright, emuladores, CI y Dependabot. | Los cinco jobs de GitHub pasaron para [`068c58f`](https://github.com/gonsals/gluten-free-supermarkets/actions/runs/40147533263); protección de ramas por revisar. |
+| Calidad | ESLint, Prettier, TypeScript, Jest, Playwright, emuladores, CI y Dependabot. | Los cinco jobs de GitHub pasaron para [`3bd1793`](https://github.com/gonsals/gluten-free-supermarkets/actions/runs/40215578049); protección de ramas por revisar. |
 | Identidad | B · Mesa elegida por el propietario el 25-10-2026: papel cálido, terracota, tipografía editorial y recursos regenerables. | Aplicación y comprobaciones en [Branding Mesa](BRANDING_MESA.md); nombre e identificadores de tienda aún por confirmar. |
-| Operación | Exportación/borrado local, atribución, privacidad, perfiles EAS y telemetría técnica opcional sin historial ni códigos. | Endpoint de telemetría no configurado; no se ha medido estabilidad de una beta real. |
+| Operación | Exportación/restauración/borrado local, atribución, privacidad, perfiles EAS y telemetría técnica opcional sin historial ni códigos. | Copias con validación y sustitución transaccional; sin fusión ni cuentas heredadas. [Recuperación](COPIAS_LOCALES.md). Endpoint de telemetría no configurado; no se ha medido estabilidad de una beta real. |
 
 ## Verificaciones realizadas
 
@@ -32,10 +32,10 @@ Fecha: **2026-10-25**. Este documento refleja el trabajo posterior a la auditor�
 | --- | --- |
 | Instalación reproducible | `npm ci` en app y servidor correctos desde sus lockfiles, sin opciones para ignorar conflictos. |
 | Tipos, ESLint y compatibilidad Expo | Correctos; Expo Doctor pasa sus **20 comprobaciones**. |
-| Pruebas de dominio, API, repositorio y consulta | **73 pruebas correctas**, cinco suites, tras la iteración 3; incluye doce casos sintéticos de revisión. |
+| Pruebas de app | **125 pruebas correctas**, diez suites, tras la iteración 7; dominio, API, repositorio, consulta, permisos, confirmaciones y copias locales. Incluye doce casos sintéticos de revisión. |
 | Reglas Firestore | **Siete pruebas correctas**, incluido aislamiento, moderación y separación de la vista pública. |
 | Integración de nube | **Cinco pruebas correctas**: autenticación/validación, idempotencia/autoría/moderación, cuota, borrado y sincronización entre bibliotecas. |
-| Navegador de producción | **Siete recorridos correctos**: consulta/favorito/recarga/offline, datos insuficientes/trazas, recuperación, procedencia/guía sin conexión, jerarquía malformada, precios privados y actualización sin mezclar versiones. |
+| Navegador de producción | **19 recorridos correctos**: consulta y biblioteca offline, claridad de evidencia, precios, actualización, exportación/restauración/borrado, accesibilidad y permisos/cancelación. |
 | Funciones de servidor | Compilan y ejecutan correctamente en el emulador. |
 | Exportación web | Correcta; SPA con rutas dinámicas y código dividido. |
 | Exportación JavaScript Android e iOS | Correcta en ambas plataformas, con adaptadores nativos y bytecode Hermes. No equivale a compilar el binario iOS. |
@@ -51,6 +51,7 @@ Fecha: **2026-10-25**. Este documento refleja el trabajo posterior a la auditor�
 | Seguridad y pruebas de iteración 4 | 73 pruebas de app, 34 de seguridad, ocho recorridos web, siete de reglas y cinco de nube correctos. Incluye exportación/cancelación/borrado y auditoría con validación de fecha, ámbito e informes. [Matriz y evidencia](PRUEBAS_ITERACION_4.md). El control de release sigue bloqueado por los avisos de terceros. |
 | Accesibilidad y datos de iteración 5 | Confirmaciones desplazables con título, protección durante el borrado, selección accesible y etiquetas de navegación ampliables. 75 pruebas de app, 34 de seguridad y doce recorridos web. [Matriz y límites](ACCESIBILIDAD_Y_DATOS.md). No equivale a validación física ni con TalkBack/VoiceOver. |
 | Escáner de iteración 6 | Ciclo y permisos desacoplados; errores tratados, solicitudes obsoletas descartadas y vuelta segura desde segundo plano. 88 pruebas de app, 34 de seguridad y quince recorridos web correctos. [Matriz y límites](ESCANER_Y_PERMISOS.md). |
+| Copias locales de iteración 7 | Formato versionado compatible con exportaciones v1 anteriores, validación y límites, resumen, sustitución transaccional y aviso de fichas recuperadas. 125 pruebas de app, 34 de seguridad y diecinueve recorridos web. Restauración web → Android, reinicio completo y rechazo de archivos comprobados sin red en emulador. [Matriz y límites](COPIAS_LOCALES.md). |
 | APK de iteración 3 | Preview universal incremental compilada correctamente: 71.358.559 bytes, guía incorporada, sin Metro y con nube desactivada. `artifacts/singluten-iteration-3-preview-universal.apk`, firma de desarrollo y manifiesto/checksum adjuntos. No sustituye pruebas físicas. |
 
 Los tests web utilizan respuestas de producto controladas, con datos de prueba. Acreditan la integración del recorrido y su recuperación; no certifican la calidad de todo el catálogo de Open Food Facts. Los tests completos de nube usan un proyecto ficticio sin acceso a producción. La comprobación remota adicional acredita configuración e inaccesibilidad anónima de rutas privadas; no equivale al recorrido completo de cuentas en el proyecto real.

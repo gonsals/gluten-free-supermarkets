@@ -131,6 +131,12 @@ export function ProductCard({
           </Notice>
         ) : null}
         <View style={{ gap: 6 }}>
+          {product.source.restoredAt ? (
+            <Notice>
+              Ficha recuperada de una copia el {date(product.source.restoredAt)}. El archivo puede
+              haber sido modificado; comprueba el envase y actualiza desde la fuente cuando puedas.
+            </Notice>
+          ) : null}
           <Text style={{ color: c.muted, fontSize: 14, lineHeight: 21 }}>
             Información de Open Food Facts · {cached ? 'Ficha guardada' : 'Ficha consultada'}
           </Text>

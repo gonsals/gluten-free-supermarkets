@@ -2,44 +2,13 @@ import { useState } from 'react';
 import { useRouter } from 'expo-router';
 import { Linking } from 'react-native';
 import { AccountPanel } from '@/src/features/account/AccountPanel';
-import { useLibrary } from '@/src/features/library/useLibrary';
+import { LibraryDataPanel } from '@/src/features/library/LibraryDataPanel';
 import { Action, Card, Copy, Heading, Notice, Screen } from '@/src/shared/ui';
-import { Confirm } from '@/src/shared/Confirm';
 import { config } from '@/src/shared/config';
-import { exportData } from '@/src/shared/exportData';
 
 export default function SettingsScreen() {
   const router = useRouter();
-  const { repository, ready, error } = useLibrary();
-  const [confirm, setConfirm] = useState(false);
   const [message, setMessage] = useState('');
-  const [busy, setBusy] = useState(false);
-  async function run(action: 'export' | 'delete') {
-    setBusy(true);
-    setMessage('');
-    try {
-      if (action === 'export') {
-        await exportData(await repository.exportData());
-        setMessage(
-          'Exportación preparada. El archivo contiene tu biblioteca privada; compártelo solo si lo deseas.',
-        );
-      } else {
-        await repository.clearAll();
-        setConfirm(false);
-        setMessage(
-          'Datos locales eliminados. Esto no elimina una cuenta ni los favoritos ya sincronizados.',
-        );
-      }
-    } catch (error) {
-      setMessage(
-        error instanceof Error && error.message !== 'storage_error'
-          ? error.message
-          : 'No se ha podido completar la operación.',
-      );
-    } finally {
-      setBusy(false);
-    }
-  }
   async function open(url: string) {
     try {
       await Linking.openURL(url);
@@ -51,36 +20,8 @@ export default function SettingsScreen() {
     <Screen>
       <Heading eyebrow="Tu app, tus datos">Ajustes e información</Heading>
       <AccountPanel />
-      <Card>
-        <Copy>Biblioteca y privacidad</Copy>
-        <Copy muted>
-          Las consultas y anotaciones privadas se guardan en este dispositivo. La nube está{' '}
-          {config.cloudEnabled ? 'activada para funciones opcionales' : 'desactivada'}. El historial
-          no se sube al sincronizar favoritos.
-        </Copy>
-        <Copy muted>
-          Conservamos hasta 1.000 consultas, 250 favoritos activos y 1.000 precios privados. Puedes
-          exportarlos o borrarlos. Desinstalar la app o borrar los datos del navegador puede
-          eliminarlos.
-        </Copy>
-        <Action
-          title="Exportar mis datos"
-          secondary
-          onPress={() => void run('export')}
-          disabled={!ready}
-          busy={busy}
-          icon="download-outline"
-        />
-        <Action
-          title="Borrar todos los datos locales"
-          secondary
-          danger
-          onPress={() => setConfirm(true)}
-          disabled={!ready || busy}
-        />
-        {error ? <Notice error>{error}</Notice> : null}
-        {message ? <Notice>{message}</Notice> : null}
-      </Card>
+      <LibraryDataPanel />
+      {message ? <Notice error>{message}</Notice> : null}
       <Card>
         <Copy>Cómo interpretar los resultados</Copy>
         <Copy muted>
@@ -148,14 +89,6 @@ export default function SettingsScreen() {
           entrada manual sin concederlos.
         </Copy>
       </Card>
-      <Confirm
-        title="Borrar biblioteca local"
-        visible={confirm}
-        message="Se borrarán historial, favoritos, fichas y precios privados de este dispositivo. Exporta primero los datos que quieras conservar. Los favoritos remotos no se eliminan."
-        onCancel={() => setConfirm(false)}
-        onConfirm={() => void run('delete')}
-        busy={busy}
-      />
     </Screen>
   );
 }
