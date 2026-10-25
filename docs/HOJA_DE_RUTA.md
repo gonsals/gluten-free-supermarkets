@@ -1,6 +1,6 @@
 # Próximos pasos y mejoras futuras
 
-Actualización: **25 de octubre de 2026**, Mesa aplicada, preparación técnica del paso 3, revisión de seguridad y accesibilidad/datos en la iteración 5.
+Actualización: **25 de octubre de 2026**, Mesa aplicada, preparación técnica del paso 3, revisión de seguridad y escáner/permisos en la iteración 6.
 
 Fecha de referencia: **24 de octubre de 2026**. Guía del trabajo pendiente desde el MVP implementado hasta una app profesional y mantenible. El [plan inicial](PLAN_MEJORAS.md) conserva la trazabilidad histórica; esta hoja indica qué hacer ahora.
 
@@ -19,8 +19,8 @@ Fecha de referencia: **24 de octubre de 2026**. Guía del trabajo pendiente desd
 | Producto local | Escaneo y entrada manual, ficha con evidencia, favoritos, historial, precios privados, exportación y borrado. | Validar utilidad y comprensión durante compras reales. |
 | Persistencia | SQLite móvil, IndexedDB web, esquema versionado y límites de datos. | Migraciones con datos anteriores y recuperación en dispositivos físicos. |
 | Plataforma | Expo 58, React 19, React Native 0.88; APK Android interna sin necesidad de Metro. | Firma de publicación, dispositivos físicos e iOS nativo si se incluye en el lanzamiento. |
-| Calidad | Iteración 5: 75 pruebas de app, 34 de seguridad y doce recorridos web correctos; siete de reglas y cinco de nube ejecutados en la iteración 4. [Matriz y alcance](ACCESIBILIDAD_Y_DATOS.md). | Revisión experta y comprensión, cámara física, accesibilidad asistiva nativa, beta y métricas con muestra declarada. |
-| CI | Los cinco jobs del [run de la iteración 3, `068c58f`](https://github.com/gonsals/gluten-free-supermarkets/actions/runs/40147533263) pasaron: secretos, dependencias, Firebase, Android y app. | Revisar protección de rama y mantener controles por cambio. Ese resultado acredita esa revisión, no commits futuros. |
+| Calidad | Iteración 6: 88 pruebas de app, 34 de seguridad y quince recorridos web correctos. Reglas/nube conservan además el resultado del job Firebase de la base. [Matriz y alcance](ESCANER_Y_PERMISOS.md). | Revisión experta y comprensión, cámara física, accesibilidad asistiva nativa, beta y métricas con muestra declarada. |
+| CI | Los cinco jobs del [run de la iteración 5, `1458428`](https://github.com/gonsals/gluten-free-supermarkets/actions/runs/40149791699) pasaron: secretos, dependencias, Firebase, Android y app. | Revisar protección de rama y mantener controles por cambio. Ese resultado acredita esa revisión, no commits futuros. |
 | Seguridad | Clave expuesta revocada, archivos privados excluidos y escaneo de archivos e historial. | Resolver avisos transitivos antes de publicar y mantener controles. |
 | Identidad | B · Mesa elegida: tema cálido claro/oscuro, titulares editoriales y recursos propios. | Validación física, comprensión con público objetivo y confirmación del nombre antes de publicar. |
 | Nube | Código opcional probado en emuladores; infraestructura Firebase parcialmente configurada. | Fuera del lanzamiento local; no activar cuentas o sincronización como requisito. |
@@ -84,6 +84,8 @@ Cierre: `npm run secrets:check` y `npm run audit:release` pasan, además de las 
 Probar al menos un Android de recursos modestos y otro representativo del público, registrando modelo, sistema, versión y resultado. Incluir cámara con envases reales, luz baja, linterna, permisos denegados/bloqueados, segundo plano, lectura repetida y entrada manual.
 
 **Avance técnico de la iteración 5:** corregidos diálogos que dejaban sus botones fuera de la ventana con texto ampliado, títulos y estados accesibles, bloqueo de cierre durante el borrado y etiquetas de navegación truncadas. Doce recorridos web, 75 pruebas de app y 34 de seguridad. [Matriz de accesibilidad y datos](ACCESIBILIDAD_Y_DATOS.md). Las pruebas físicas, con lectores de pantalla y con personas usuarias siguen pendientes; el paso no se considera cerrado.
+
+**Avance técnico de la iteración 6:** ciclo de cámara separado de las consultas, errores de permisos tratados, respuestas tardías descartadas al salir y linterna/cámara desactivadas al interrumpir una sesión. Trece casos nuevos de ciclo y tres recorridos web nuevos; [escáner, pruebas y límites](ESCANER_Y_PERMISOS.md). No se da por validada la lectura física por probar permisos en un emulador.
 
 Completar red lenta/sin red, producto inexistente, favoritos y precios tras reiniciar, actualización de fichas, exportación, borrado y migración. Revisar TalkBack, fuente ampliada, contraste y controles táctiles. Mantener fuente y fecha visibles en datos guardados.
 

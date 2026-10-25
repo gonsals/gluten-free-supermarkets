@@ -79,6 +79,7 @@ La [hoja de ruta vigente](docs/HOJA_DE_RUTA.md) organiza los siguientes pasos y 
 | [Implementación y verificación](docs/IMPLEMENTACION.md) | Qué está aplicado, pruebas y límites actuales. |
 | [Pruebas de la iteración 4](docs/PRUEBAS_ITERACION_4.md) | Seguridad reforzada, matriz ejecutada, exportación/borrado y comprobación Android sin conexión. |
 | [Accesibilidad y datos](docs/ACCESIBILIDAD_Y_DATOS.md) | Iteración 5: confirmaciones desplazables, texto ampliado, teclado, estados accesibles y conservación de datos al actualizar. |
+| [Escáner y permisos](docs/ESCANER_Y_PERMISOS.md) | Iteración 6: errores y respuestas tardías de permisos, alternativa manual y ciclo de cámara/linterna. |
 | [Dependencias y seguridad](docs/DEPENDENCIAS.md) | Versiones, decisiones de compatibilidad y avisos pendientes. |
 | [Despliegue y pruebas](docs/DESPLIEGUE_Y_PRUEBAS.md) | Configuración local, emuladores, nube, builds y operación. |
 | [Firebase real](docs/FIREBASE_REAL.md) | Recursos configurados, verificaciones remotas y requisitos que faltan para activar la nube. |
