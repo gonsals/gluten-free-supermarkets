@@ -1,6 +1,6 @@
 # Dependencias y seguridad
 
-Verificación: **2026-10-24**. Se ha reemplazado el conjunto de dependencias de 2024 por versiones compatibles con Expo SDK 58 y se han regenerado los lockfiles de app y servidor sin `--force` ni `--legacy-peer-deps`.
+Verificación: **2026-10-25**. Se ha reemplazado el conjunto de dependencias de 2024 por versiones compatibles con Expo SDK 58 y se han regenerado los lockfiles de app y servidor sin `--force` ni `--legacy-peer-deps`.
 
 ## Versiones principales
 
@@ -58,5 +58,15 @@ La clasificación describe las cadenas inspeccionadas; no sustituye una revisió
 `npm run audit:security` audita los dos lockfiles. Falla ante avisos nuevos o distintos de las excepciones concretas registradas, errores de consulta o vencimiento de su revisión. No se silencian categorías completas. El informe íntegro queda en `audit.json`; CI registra el resultado y los recuentos en sus logs, sin subir artefactos persistentes.
 
 Las tres excepciones de desarrollo están descritas en `.security/audit-exceptions.json` y caducan el **2026-11-22**. No son una aprobación de publicación: `npm run audit:release` es estricto y falla mientras existan avisos. Un responsable debe revisar exposición y resolución antes de distribuir una versión general.
+
+### Revisión de la iteración 4 · 25 de octubre
+
+Se han vuelto a consultar npm y los tres avisos enlazados. No hay una actualización compatible de sus consumidores: Expo CLI sigue en 58.1.15, Zod 3 en 3.25.76, node-forge en 1.4.0 y Firebase CLI en 15.34.1. Las copias de Zod 4 ya instaladas están en 4.6.7; no sustituyen la copia 3 requerida por Expo. El informe mantiene **ocho entradas afectadas en app y cero en functions**. No se modifican dependencias ni se alarga el plazo de las excepciones.
+
+Se ha corregido un fallo del control: una fecha `reviewBy` mal escrita producía `NaN` y podía eludir la comprobación de caducidad. Ahora se valida la fecha real del calendario, la estructura de cada excepción y su ámbito. Una excepción de herramientas de app no autoriza el mismo aviso en el servidor.
+
+El control también rechaza procesos fallidos o interrumpidos, respuestas truncadas, recuentos incoherentes, formatos desconocidos y cadenas de dependencias sin aviso original. La consulta tiene un límite de dos minutos por ámbito. Si falla una respuesta, se conserva el diagnóstico en `audit.json` y se comprueba el otro ámbito. No se deduplican dos gravedades diferentes del mismo aviso de forma que una oculte la otra.
+
+`npm run test:security` ejecuta **34 pruebas**, incluidas cinco de integración del CLI en carpetas temporales con informes simulados, sin consultar npm ni cambiar los archivos de la app. Forma parte de `npm run check` y, por tanto, del job de app en CI. La consulta real con `audit:security` pasa bajo las excepciones existentes; la consulta real con `audit:release` devuelve **1**, el bloqueo esperado. La [matriz de esta iteración](PRUEBAS_ITERACION_4.md) distingue comprobaciones correctas, bloqueos y pruebas físicas pendientes.
 
 Dependabot revisa semanalmente los paquetes de app/servidor y agrupa módulos que deben actualizarse juntos. Las acciones de GitHub se han actualizado a sus versiones actuales consultadas y fijado por SHA completo. Cada actualización necesita compatibilidad Expo, tipos, lint, tests, exportación y verificación nativa cuando cambie el runtime.

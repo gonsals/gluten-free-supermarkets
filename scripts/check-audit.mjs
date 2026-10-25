@@ -1,11 +1,14 @@
 import { spawnSync } from 'node:child_process';
 import { readFile, writeFile } from 'node:fs/promises';
+import { evaluateAuditResult, validatePolicy } from './audit-policy.mjs';
 const policy = JSON.parse(await readFile('.security/audit-exceptions.json', 'utf8'));
+validatePolicy(policy);
 const release = process.argv.includes('--release');
 if (!process.env.npm_execpath)
   throw new Error('Ejecuta este control mediante npm run audit:security.');
 let failed = false;
 const reports = {};
+const errors = {};
 for (const scope of ['app', 'functions']) {
   const args = [
     process.env.npm_execpath,
@@ -17,37 +20,22 @@ for (const scope of ['app', 'functions']) {
   const result = spawnSync(process.execPath, args, {
     encoding: 'utf8',
     maxBuffer: 10 * 1024 * 1024,
+    timeout: 120_000,
   });
-  let report;
-  try {
-    report = JSON.parse(result.stdout);
-  } catch {
-    throw new Error(`No se ha podido leer la auditoría de ${scope}.`);
-  }
+  const { report, errors: issues } = evaluateAuditResult(result, { policy, scope, release });
   reports[scope] = report;
-  if (report.error || !report.metadata) {
+  errors[scope] = issues;
+  if (issues.length) {
     failed = true;
-    continue;
+    for (const issue of issues) process.stderr.write(`${scope}: ${issue}\n`);
   }
-  const advisories = new Map();
-  for (const value of Object.values(report.vulnerabilities ?? {}))
-    for (const via of value.via) if (typeof via === 'object') advisories.set(via.url, via);
-  for (const advisory of advisories.values()) {
-    const exception = policy.exceptions.find(
-      (item) =>
-        item.name === advisory.name &&
-        item.url === advisory.url &&
-        item.severity === advisory.severity,
-    );
-    if (release || !exception || Date.now() >= Date.parse(policy.reviewBy + 'T23:59:59Z'))
-      failed = true;
-  }
-  process.stdout.write(`${scope}: ${JSON.stringify(report.metadata.vulnerabilities)}\n`);
+  if (report?.metadata?.vulnerabilities)
+    process.stdout.write(`${scope}: ${JSON.stringify(report.metadata.vulnerabilities)}\n`);
 }
 await writeFile(
   'audit.json',
   JSON.stringify(
-    { generatedAt: new Date().toISOString(), reviewBy: policy.reviewBy, reports },
+    { generatedAt: new Date().toISOString(), reviewBy: policy.reviewBy, release, errors, reports },
     null,
     2,
   ),

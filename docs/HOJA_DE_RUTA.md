@@ -1,6 +1,6 @@
 # Próximos pasos y mejoras futuras
 
-Actualización: **25 de octubre de 2026**, Mesa aplicada y preparación técnica del paso 3 en la iteración de resultados.
+Actualización: **25 de octubre de 2026**, Mesa aplicada, preparación técnica del paso 3 y revisión de seguridad/pruebas de la iteración 4.
 
 Fecha de referencia: **24 de octubre de 2026**. Guía del trabajo pendiente desde el MVP implementado hasta una app profesional y mantenible. El [plan inicial](PLAN_MEJORAS.md) conserva la trazabilidad histórica; esta hoja indica qué hacer ahora.
 
@@ -19,8 +19,8 @@ Fecha de referencia: **24 de octubre de 2026**. Guía del trabajo pendiente desd
 | Producto local | Escaneo y entrada manual, ficha con evidencia, favoritos, historial, precios privados, exportación y borrado. | Validar utilidad y comprensión durante compras reales. |
 | Persistencia | SQLite móvil, IndexedDB web, esquema versionado y límites de datos. | Migraciones con datos anteriores y recuperación en dispositivos físicos. |
 | Plataforma | Expo 58, React 19, React Native 0.88; APK Android interna sin necesidad de Metro. | Firma de publicación, dispositivos físicos e iOS nativo si se incluye en el lanzamiento. |
-| Calidad | 73 pruebas de app y siete recorridos web en la iteración 3; las siete pruebas de reglas y cinco de nube permanecen como evidencia de la base anterior. | Revisión experta y comprensión, cámara física, accesibilidad nativa, beta y métricas con muestra declarada. |
-| CI | Los cinco jobs del [run de la base `f2f5c42`](https://github.com/gonsals/gluten-free-supermarkets/actions/runs/40048795691) pasaron: secretos, dependencias, Firebase, Android y app. | Revisar protección de rama y mantener controles por cambio. Ese resultado acredita esa revisión, no commits futuros. |
+| Calidad | Iteración 4: 73 pruebas de app, 34 de seguridad, ocho recorridos web, siete pruebas de reglas y cinco de nube correctos. [Matriz y alcance](PRUEBAS_ITERACION_4.md). | Revisión experta y comprensión, cámara física, accesibilidad nativa, beta y métricas con muestra declarada. |
+| CI | Los cinco jobs del [run de la iteración 3, `068c58f`](https://github.com/gonsals/gluten-free-supermarkets/actions/runs/40147533263) pasaron: secretos, dependencias, Firebase, Android y app. | Revisar protección de rama y mantener controles por cambio. Ese resultado acredita esa revisión, no commits futuros. |
 | Seguridad | Clave expuesta revocada, archivos privados excluidos y escaneo de archivos e historial. | Resolver avisos transitivos antes de publicar y mantener controles. |
 | Identidad | B · Mesa elegida: tema cálido claro/oscuro, titulares editoriales y recursos propios. | Validación física, comprensión con público objetivo y confirmación del nombre antes de publicar. |
 | Nube | Código opcional probado en emuladores; infraestructura Firebase parcialmente configurada. | Fuera del lanzamiento local; no activar cuentas o sincronización como requisito. |
@@ -72,6 +72,8 @@ Cierre: revisión registrada, correcciones aplicadas y personas usuarias capaces
 **P0 para publicación general. Próxima revisión de excepciones: 22 de noviembre de 2026.**
 
 Revisar las cadenas transitivas de Zod, node-forge y OpenTelemetry descritas en [Dependencias](DEPENDENCIAS.md). Actualizar consumidores cuando exista un conjunto compatible. La base del 24 de octubre conserva ocho entradas afectadas en herramientas de app y ninguna en `functions/`; es un resultado fechado.
+
+**Revisión del 25-10-2026 realizada en la iteración 4:** los consumidores siguen sin aportar una solución compatible y el informe mantiene ocho entradas de app y cero de servidor. Se ha reforzado la validación del control de auditoría y añadido 34 pruebas de seguridad a `npm run check`. `audit:release` continúa fallando como debe. No se amplían excepciones ni se da por cerrado este paso; [pruebas y límites](PRUEBAS_ITERACION_4.md).
 
 Cierre: `npm run secrets:check` y `npm run audit:release` pasan, además de las comprobaciones funcionales apropiadas. `audit:security` admite excepciones exactas y temporales: que pase no desbloquea la publicación. Si no hay solución compatible, mantener el bloqueo documentado; no ocultar hallazgos ni ampliar excepciones para simular un resultado limpio.
 

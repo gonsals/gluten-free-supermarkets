@@ -17,11 +17,12 @@
     "lint:server": "eslint functions/src",
     "format": "prettier --write app src tests functions/src scripts plugins *.js *.cjs *.ts *.json .github",
     "test:cloud": "node scripts/run-cloud-tests.mjs",
+    "test:security": "node --test tests/security/*.test.mjs",
     "firebase:verify": "node scripts/verify-firebase.mjs",
     "secrets:check": "python scripts/scan-secrets.py",
     "audit:security": "node scripts/check-audit.mjs",
     "audit:release": "node scripts/check-audit.mjs --release",
-    "check": "npm run typecheck && npm run lint && npm test && expo install --check",
+    "check": "npm run typecheck && npm run lint && npm test && npm run test:security && expo install --check",
     "export:web": "expo export --platform web && node scripts/generate-service-worker.mjs",
     "brand:generate": "node scripts/generate-brand.mjs"
   },

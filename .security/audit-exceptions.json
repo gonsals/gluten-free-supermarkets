@@ -3,18 +3,21 @@
   "exceptions": [
     {
       "name": "zod",
+      "scope": "app",
       "url": "https://github.com/advisories/GHSA-mrhx-c7xc-m3w5",
       "severity": "high",
       "reason": "Revisado 2026-10-24: Expo CLI 58.1.15 exige Zod ^3.25.76, última versión de la rama 3. El aviso incluye esa rama y el parche publicado es 4.6.6. El código de la app no importa Zod; esta copia valida configuración local de las herramientas. No procesar proyectos/configuración no confiables ni forzar la API mayor 4 en el consumidor. Revisar antes de distribuir."
     },
     {
       "name": "node-forge",
+      "scope": "app",
       "url": "https://github.com/advisories/GHSA-86w9-cpqp-85rv",
       "severity": "high",
       "reason": "Herramientas de firma de Expo CLI; no se ha activado expo-updates ni firma de actualizaciones. La última versión publicada sigue afectada; revisar antes de publicar."
     },
     {
       "name": "@opentelemetry/core",
+      "scope": "app",
       "url": "https://github.com/advisories/GHSA-8988-4f7v-96qf",
       "severity": "moderate",
       "reason": "Firebase CLI / PubSub depende de la rama 1. No forzar el salto a la rama 2 sin soporte del consumidor."

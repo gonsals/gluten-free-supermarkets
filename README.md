@@ -77,6 +77,7 @@ La [hoja de ruta vigente](docs/HOJA_DE_RUTA.md) organiza los siguientes pasos y 
 | [Branding Mesa](docs/BRANDING_MESA.md) | Dirección elegida, sistema visual aplicado, recursos regenerables y comprobaciones de la app real. |
 | [Validación de resultados sobre gluten](docs/VALIDACION_GLUTEN.md) | Iteración 3: guía offline, evidencia visible, doce casos reproducibles y protocolo de revisión experta todavía pendiente. |
 | [Implementación y verificación](docs/IMPLEMENTACION.md) | Qué está aplicado, pruebas y límites actuales. |
+| [Pruebas de la iteración 4](docs/PRUEBAS_ITERACION_4.md) | Seguridad reforzada, matriz ejecutada, exportación/borrado y comprobación Android sin conexión. |
 | [Dependencias y seguridad](docs/DEPENDENCIAS.md) | Versiones, decisiones de compatibilidad y avisos pendientes. |
 | [Despliegue y pruebas](docs/DESPLIEGUE_Y_PRUEBAS.md) | Configuración local, emuladores, nube, builds y operación. |
 | [Firebase real](docs/FIREBASE_REAL.md) | Recursos configurados, verificaciones remotas y requisitos que faltan para activar la nube. |

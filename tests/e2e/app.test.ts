@@ -198,6 +198,57 @@ test('anota un precio privado y lo conserva tras recargar', async ({ page }) => 
   ).toBeVisible();
 });
 
+test('exporta la biblioteca y permite cancelar o confirmar su borrado sin dejar datos tras recargar', async ({
+  page,
+}) => {
+  await page.goto('/scan');
+  await page.getByRole('textbox', { name: 'Código de barras', exact: true }).fill(code);
+  await page.getByRole('button', { name: 'Buscar producto', exact: true }).click();
+  await page.getByRole('button', { name: 'Guardar en favoritos', exact: true }).click();
+  await page.goto('/prices');
+  await page
+    .getByRole('textbox', { name: 'Código de barras del producto', exact: true })
+    .fill(code);
+  await page.getByRole('textbox', { name: 'Precio en euros', exact: true }).fill('2,49');
+  await page
+    .getByRole('textbox', { name: 'Supermercado o tienda', exact: true })
+    .fill('Exportación prueba');
+  await page.getByRole('textbox', { name: 'Sucursal o localidad', exact: true }).fill('Madrid');
+  await page.getByRole('button', { name: 'Guardar precio privado', exact: true }).click();
+  await expect(
+    page.getByText('Precio guardado en este dispositivo.', { exact: true }),
+  ).toBeVisible();
+  await page.goto('/settings');
+  const downloadReady = page.waitForEvent('download');
+  await page.getByRole('button', { name: 'Exportar mis datos', exact: true }).click();
+  const download = await downloadReady;
+  expect(download.suggestedFilename()).toBe('sin-gluten-datos.json');
+  const exported = JSON.parse(await readFile((await download.path())!, 'utf8'));
+  expect(exported.products).toHaveLength(1);
+  expect(exported.products[0].barcode).toBe(code);
+  expect(exported.favorites[code].deleted).toBe(false);
+  expect(exported.history).toHaveLength(1);
+  expect(exported.prices[0].amountMinor).toBe(249);
+  await page.getByRole('button', { name: 'Borrar todos los datos locales', exact: true }).click();
+  await page.getByRole('button', { name: 'Cancelar', exact: true }).click();
+  await page.goto('/library');
+  await expect(page.getByRole('button', { name: 'Favoritos (1)', exact: true })).toBeVisible();
+  await page.goto('/settings');
+  await page.getByRole('button', { name: 'Borrar todos los datos locales', exact: true }).click();
+  await page.getByRole('button', { name: 'Confirmar eliminación', exact: true }).click();
+  await expect(page.getByText(/Datos locales eliminados/)).toBeVisible();
+  await page.reload();
+  const emptyDownloadReady = page.waitForEvent('download');
+  await page.getByRole('button', { name: 'Exportar mis datos', exact: true }).click();
+  const emptyDownload = await emptyDownloadReady;
+  const empty = JSON.parse(await readFile((await emptyDownload.path())!, 'utf8'));
+  expect(empty.products).toEqual([]);
+  expect(empty.favorites).toEqual({});
+  expect(empty.history).toEqual([]);
+  expect(empty.prices).toEqual([]);
+  expect(empty.cache).toEqual({});
+});
+
 test('una actualización conserva la versión de las pestañas abiertas y activa la nueva al cerrarlas', async ({
   page,
   context,
