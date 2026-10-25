@@ -1,10 +1,12 @@
 # Próximos pasos y mejoras futuras
 
+Actualización: **25 de octubre de 2026**, elección de B · Mesa y ejecución del paso 2.
+
 Fecha de referencia: **24 de octubre de 2026**. Guía del trabajo pendiente desde el MVP implementado hasta una app profesional y mantenible. El [plan inicial](PLAN_MEJORAS.md) conserva la trazabilidad histórica; esta hoja indica qué hacer ahora.
 
 ## Decisiones vigentes
 
-- **El branding generado no convence al propietario y no está aprobado.** Nombre, logo, paleta, tipografía y composición actuales son provisionales. Sustituir la plantilla técnica no equivale a validar una marca.
+- **B · Mesa es la dirección elegida por el propietario el 25-10-2026.** Sustituye al branding inicial que no le convencía. La elección autoriza aplicarla a la app; no equivale a validar disponibilidad del nombre, accesibilidad nativa ni publicación en tiendas.
 - Mantener la versión local **sin costes de backend**: sin cuenta obligatoria, nube desactivada en todos los perfiles y sin activar Blaze ni contratar servicios para completar este alcance.
 - Priorizar consulta de productos, claridad de la evidencia, biblioteca sin conexión y precios privados. No existen integraciones de precios oficiales ni existencias de supermercados.
 - Mostrar procedencia, incertidumbre y antigüedad de la información sobre gluten. La marca y el diseño tampoco deben sugerir certificación o garantía de aptitud.
@@ -20,7 +22,7 @@ Fecha de referencia: **24 de octubre de 2026**. Guía del trabajo pendiente desd
 | Calidad | 56 pruebas de app, 7 de reglas, 5 de nube y 5 recorridos web registrados en [Implementación](IMPLEMENTACION.md). | Cámara física, accesibilidad nativa, beta y métricas con muestra declarada. |
 | CI | Los cinco jobs del [run de la base `f2f5c42`](https://github.com/gonsals/gluten-free-supermarkets/actions/runs/40048795691) pasaron: secretos, dependencias, Firebase, Android y app. | Revisar protección de rama y mantener controles por cambio. Ese resultado acredita esa revisión, no commits futuros. |
 | Seguridad | Clave expuesta revocada, archivos privados excluidos y escaneo de archivos e historial. | Resolver avisos transitivos antes de publicar y mantener controles. |
-| Identidad | Nombre SinGluten, SVG, iconos, splash y temas implementados. | **Replantear el branding: no aprobado por el propietario.** |
+| Identidad | B · Mesa elegida: tema cálido claro/oscuro, titulares editoriales y recursos propios. | Validación física, comprensión con público objetivo y confirmación del nombre antes de publicar. |
 | Nube | Código opcional probado en emuladores; infraestructura Firebase parcialmente configurada. | Fuera del lanzamiento local; no activar cuentas o sincronización como requisito. |
 
 La base está en `gonsals/mejoras`. Una APK interna no equivale a una publicación terminada. Detalle en [Implementación](IMPLEMENTACION.md), [Dependencias](DEPENDENCIAS.md) y [Seguridad de credenciales](SEGURIDAD_CREDENCIALES.md).
@@ -31,7 +33,7 @@ Prioridades relativas al trabajo pendiente: **P0**, bloqueo de lanzamiento; **P1
 
 ### Paso 1 · Preparar alternativas de branding
 
-**P1. Propuestas preparadas y verificadas el 24-10-2026. La identidad definitiva sigue pendiente de elección.**
+**P1. Completado: propuestas verificadas el 24-10-2026; B · Mesa elegida el 25-10-2026.**
 
 Objetivo: transformar el desacuerdo con el branding actual en opciones evaluables sobre el producto. No se conocen preferencias concretas de color, estilo o nombre: no deben inventarse.
 
@@ -47,7 +49,7 @@ Entregados: [brief y decisiones de branding](BRANDING.md) y [comparativa navegab
 
 ### Paso 2 · Aplicar la dirección visual elegida
 
-**P1. Dependencia: elección de dirección del paso 1.**
+**P1. Implementación técnica de B · Mesa entregada el 25-10-2026, con verificación web y compilación Android correctas.** Detalle y evidencia en [Branding Mesa](BRANDING_MESA.md). Las pruebas físicas y con fuentes ampliadas nativas permanecen dentro del paso 5; la confirmación del nombre y registro de tienda, dentro del paso 6.
 
 Crear el sistema de diseño: colores semánticos separados de los de marca, tipografía escalable, espaciados, iconos, botones, campos, avisos y estados. Aplicarlo a inicio, escáner, ficha, biblioteca, precios y ajustes en ambos temas.
 
@@ -145,3 +147,5 @@ Cada tarea necesita ID, responsable, estado, dependencia, criterio y evidencia. 
 | 24-10-2026 | Clave antigua revocada y CI de la base `f2f5c42` correcta. | Verificado, ver documentos enlazados. |
 | 24-10-2026 | Al propietario no le encanta el branding generado. | **Identidad provisional y no aprobada; rediseño prioritario.** |
 | 24-10-2026 | Tres direcciones entregadas: Tinta, Mesa y Pulso, con comparativa local verificada. | Paso 1 ejecutado; paso 2 pendiente de elección de dirección. Ninguna identidad aprobada todavía. |
+| 25-10-2026 | El propietario elige B · Mesa e indica continuar el desarrollo. | Elección registrada; paso 2 autorizado. La decisión posterior sustituye la falta de aprobación del día 24. |
+| 25-10-2026 | Mesa aplicada a la app, recursos regenerados, pruebas web y APK universal correctas. | Implementación técnica del paso 2 entregada; validaciones externas y publicación pendientes según los pasos siguientes. |

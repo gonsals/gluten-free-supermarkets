@@ -5,6 +5,7 @@ import { useLibrary } from '@/src/features/library/useLibrary';
 import { ProductRow } from '@/src/features/library/ProductRow';
 import { Action, Card, Copy, Heading, Notice, Screen } from '@/src/shared/ui';
 import { usePalette } from '@/src/shared/theme';
+import { Brand } from '@/src/shared/Brand';
 
 export default function HomeScreen() {
   const router = useRouter();
@@ -12,50 +13,56 @@ export default function HomeScreen() {
   const { data, error } = useLibrary();
   return (
     <Screen>
-      <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
-        <Ionicons name="leaf" size={30} color={c.accent} />
-        <Text style={{ color: c.accent, fontWeight: '800', fontSize: 20 }}>SinGluten</Text>
-      </View>
-      <Heading eyebrow="Compra con información">Conoce lo que llevas a tu cesta.</Heading>
+      <Brand />
+      <Heading eyebrow="Tu compra, a tu ritmo" hero>
+        Conoce lo que{'\n'}te llevas.
+      </Heading>
       <Copy muted>
-        Escanea un alimento o introduce su código para consultar sus etiquetas, ingredientes y
-        posibles trazas.
+        Consulta la información sobre gluten. Guarda lo que quieras volver a encontrar.
       </Copy>
-      <Action
-        title="Consultar un producto"
-        icon="scan-outline"
-        onPress={() => router.navigate('/scan')}
-      />
-      <Action
-        title="Introducir código manualmente"
-        secondary
-        icon="keypad-outline"
-        onPress={() => router.navigate({ pathname: '/scan', params: { manual: '1' } })}
-      />
+      <View style={{ gap: 12 }}>
+        <View
+          accessible={false}
+          importantForAccessibility="no-hide-descendants"
+          style={{
+            backgroundColor: c.soft,
+            borderTopLeftRadius: 72,
+            borderTopRightRadius: 72,
+            borderBottomLeftRadius: 8,
+            borderBottomRightRadius: 8,
+            height: 120,
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}
+        >
+          <Ionicons name="barcode-outline" size={82} color={c.accent} />
+        </View>
+        <Action
+          title="Escanear producto"
+          icon="scan-outline"
+          onPress={() => router.navigate('/scan')}
+        />
+        <Action
+          title="Introducir código manualmente"
+          secondary
+          icon="keypad-outline"
+          onPress={() => router.navigate({ pathname: '/scan', params: { manual: '1' } })}
+        />
+      </View>
       {error ? <Notice error>{error}</Notice> : null}
       <Card>
-        <Copy>Información clara, también cuando faltan datos.</Copy>
-        <Copy muted>
-          Mostramos lo que recoge Open Food Facts y te indicamos si hay información insuficiente o
-          contradictoria. Comprueba siempre el etiquetado del envase.
-        </Copy>
-      </Card>
-      <View style={{ flexDirection: 'row', gap: 12 }}>
-        <Card style={{ flex: 1 }}>
-          <Text style={{ color: c.accent, fontWeight: '800', fontSize: 28 }}>
-            {Object.values(data.favorites).filter((x) => !x.deleted).length}
+        <View style={{ gap: 6 }}>
+          <Text
+            accessibilityRole="header"
+            style={{ color: c.ink, fontSize: 18, fontWeight: '600' }}
+          >
+            Tu biblioteca
           </Text>
-          <Copy muted>Favoritos</Copy>
-        </Card>
-        <Card style={{ flex: 1 }}>
-          <Text style={{ color: c.accent, fontWeight: '800', fontSize: 28 }}>
-            {data.history.length}
+          <Text style={{ color: c.muted, fontSize: 14, lineHeight: 22 }}>
+            {Object.values(data.favorites).filter((x) => !x.deleted).length} favoritos ·{' '}
+            {data.history.length} consultas · en este dispositivo
           </Text>
-          <Copy muted>Consultas</Copy>
-        </Card>
-      </View>
-      <Card>
-        <Copy>Consultas recientes</Copy>
+        </View>
         {data.history.length ? (
           data.history
             .slice(0, 3)
@@ -68,6 +75,13 @@ export default function HomeScreen() {
         )}
         <Action title="Abrir mi biblioteca" secondary onPress={() => router.navigate('/library')} />
       </Card>
+      <View style={{ borderTopWidth: 1, borderColor: c.border, paddingTop: 20, gap: 8 }}>
+        <Copy>Información clara, también cuando faltan datos.</Copy>
+        <Copy muted>
+          Mostramos lo que recoge Open Food Facts, incluidas trazas y contradicciones. Comprueba
+          siempre el etiquetado del envase.
+        </Copy>
+      </View>
     </Screen>
   );
 }

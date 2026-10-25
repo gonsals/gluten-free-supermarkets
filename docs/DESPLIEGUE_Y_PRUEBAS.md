@@ -74,6 +74,8 @@ App Check **no está activado**: falta elegir e integrar un proveedor compatible
 
 ## Android e iOS
 
+La dirección visual elegida es [Mesa](BRANDING_MESA.md). Para regenerar los iconos y el splash desde sus SVG, ejecutar `npm run brand:generate` **antes** de generar el proyecto nativo. El helper de Windows utiliza un worker de Gradle para serializar tareas nativas; Metro conserva su límite de dos procesos. El workflow de Linux mantiene su configuración propia.
+
 La generación nativa usa configuración y plugins versionados; `android/` e `ios/` son carpetas generadas e ignoradas. No guardar cambios manuales importantes únicamente allí.
 
 `withAndroidBuildInputs` limita Metro a dos procesos durante el empaquetado nativo y excluye de las entradas de Gradle los artefactos generados y la copia `node_modules-sdk52`. React Native excluye `node_modules`, pero no una copia con otro nombre: sin este ajuste Gradle recorre y calcula hashes de las dependencias antiguas antes de arrancar Metro. La copia conservada no se borra y el código fuente de la app continúa siendo una entrada de compilación.

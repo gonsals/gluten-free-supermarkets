@@ -126,7 +126,7 @@ Antes de ampliar alcance: validar con pruebas de uso si las personas entienden �
 ## 7. Decisiones pendientes
 
 - Público prioritario y validación experta del lenguaje sobre gluten.
-- Mercado inicial, marca, dispositivos soportados y papel de la versión web.
+- Mercado inicial, nombre definitivo, dispositivos soportados y papel de la versión web. La dirección visual B · Mesa fue elegida por el propietario el 25-10-2026; ver [sistema aplicado](BRANDING_MESA.md).
 - Reglas definitivas, taxonomías admitidas y revisión de contradicciones.
 - Tiempo de refresco y retención del historial; valores iniciales propuestos en arquitectura.
 - Presupuesto operativo, responsables de soporte y cadencia de publicación.

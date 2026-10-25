@@ -1,10 +1,10 @@
 # Plan de mejoras y criterios de entrega
 
-**Plan inicial del 2026-10-23, seguimiento actualizado el 2026-10-24.** Los criterios originales se conservan; el seguimiento siguiente distingue implementación local de validación de publicación. Las pruebas y decisiones vigentes están en [Implementación](IMPLEMENTACION.md). El punto de partida histórico es [Estado actual](ESTADO_ACTUAL.md).
+**Plan inicial del 2026-10-23, seguimiento actualizado el 2026-10-25.** Los criterios originales se conservan; el seguimiento siguiente distingue implementación local de validación de publicación. Las pruebas y decisiones vigentes están en [Implementación](IMPLEMENTACION.md). El punto de partida histórico es [Estado actual](ESTADO_ACTUAL.md).
 
 ## Seguimiento de ejecución
 
-Para decidir el trabajo siguiente, consultar la [hoja de ruta vigente](HOJA_DE_RUTA.md). El branding implementado es provisional y **no está aprobado por el propietario**; la nueva hoja prioriza su replanteamiento y conserva aquí el plan original como trazabilidad.
+Para decidir el trabajo siguiente, consultar la [hoja de ruta vigente](HOJA_DE_RUTA.md). Tras rechazar la primera identidad, el propietario eligió **B · Mesa el 25-10-2026**; su aplicación se documenta en [Branding Mesa](BRANDING_MESA.md). Aquí se conserva el plan original como trazabilidad.
 
 | IDs | Estado del código y evidencia | Pendiente para cerrar el criterio completo |
 | --- | --- | --- |

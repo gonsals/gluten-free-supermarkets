@@ -6,7 +6,7 @@ import { displayTag, traceDescription } from '@/src/domain/display';
 import { AppError, errorCopy } from '@/src/domain/errors';
 import { useLibrary } from '@/src/features/library/useLibrary';
 import { Action, Card, Copy, Notice } from '@/src/shared/ui';
-import { assessmentColor, usePalette } from '@/src/shared/theme';
+import { assessmentAppearance, typography, usePalette } from '@/src/shared/theme';
 
 export function ProductCard({
   product,
@@ -29,6 +29,7 @@ export function ProductCard({
   const [message, setMessage] = useState('');
   const [saving, setSaving] = useState(false);
   const copy = glutenCopy[product.assessment.state];
+  const assessment = assessmentAppearance(product.assessment.state, c);
   const traces = traceDescription(product.assessment.traceWarnings, product.tracesText);
   const date = (value: string) => new Date(value).toLocaleString('es-ES');
   async function toggle() {
@@ -72,7 +73,13 @@ export function ProductCard({
           <View style={{ flex: 1, gap: 5 }}>
             <Text
               accessibilityRole="header"
-              style={{ fontSize: 23, lineHeight: 29, fontWeight: '800', color: c.ink }}
+              style={{
+                fontFamily: typography.editorial,
+                fontSize: 27,
+                lineHeight: 34,
+                fontWeight: '400',
+                color: c.ink,
+              }}
             >
               {product.name ?? 'Nombre no disponible'}
             </Text>
@@ -82,16 +89,21 @@ export function ProductCard({
             </Text>
           </View>
         </View>
-        <View style={{ padding: 16, backgroundColor: c.soft, borderRadius: 14, gap: 8 }}>
-          <Ionicons
-            name={copy.icon}
-            size={28}
-            color={assessmentColor(product.assessment.state, c)}
-          />
+        <View
+          style={{
+            padding: 18,
+            backgroundColor: assessment.background,
+            borderColor: assessment.border,
+            borderWidth: 1,
+            borderRadius: 8,
+            gap: 10,
+          }}
+        >
+          <Ionicons name={copy.icon} size={28} color={assessment.foreground} accessible={false} />
           <Text
             accessibilityRole="header"
             style={{
-              color: assessmentColor(product.assessment.state, c),
+              color: assessment.foreground,
               fontSize: 20,
               fontWeight: '700',
             }}

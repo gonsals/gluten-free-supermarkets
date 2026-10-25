@@ -22,7 +22,7 @@
       ],
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
-        "backgroundColor": "#F6F8F3"
+        "backgroundColor": "#FCF8F0"
       }
     },
     "web": {
@@ -36,7 +36,12 @@
       "expo-router",
       [
         "expo-splash-screen",
-        { "image": "./assets/images/splash.png", "imageWidth": 200, "backgroundColor": "#F6F8F3" }
+        {
+          "image": "./assets/images/splash.png",
+          "imageWidth": 96,
+          "backgroundColor": "#FCF8F0",
+          "dark": { "image": "./assets/images/splash.png", "backgroundColor": "#251E1A" }
+        }
       ],
       [
         "expo-camera",

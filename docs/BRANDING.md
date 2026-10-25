@@ -1,5 +1,7 @@
 # Revisión de branding · Paso 1
 
+**Actualización 25-10-2026: el propietario ha elegido B · Mesa y autorizado su aplicación.** Ver [sistema aplicado](BRANDING_MESA.md). El brief y las comprobaciones siguientes documentan la exploración del día 24.
+
 Fecha: **24 de octubre de 2026**. Entregable de la [hoja de ruta](HOJA_DE_RUTA.md), paso 1. El propietario ha indicado que **no le encanta el branding generado**. La identidad actual queda provisional y no aprobada; no se interpreta su implementación técnica como aceptación estética.
 
 ## Brief
@@ -34,17 +36,17 @@ Los nombres Tinta, Mesa y Pulso identifican direcciones de diseño, no nombres n
 - Acceso local sin cuenta y biblioteca sin conexión.
 - Mismos contenidos y controles para poder comparar decisiones visuales.
 
-## Recomendación provisional
+## Recomendación inicial del 24-10-2026
 
 **A · Tinta como punto de partida**, por la prioridad de lectura durante una compra y su jerarquía directa. Es una recomendación del implementador, no una preferencia inferida del propietario ni un resultado de pruebas de uso. Mesa es la alternativa si se busca más calidez; Pulso si se quiere una presencia gráfica más marcada.
 
-La siguiente decisión es elegir una dirección, combinar elementos concretos o descartar las tres y explicar qué sensación falta. La aprobación deberá registrarse antes de ejecutar el paso 2. No se ha sustituido el tema ni los recursos de la app por ninguna de estas exploraciones.
+El 25-10-2026 el propietario eligió **B · Mesa**, por encima de la recomendación inicial del implementador. Se ejecuta el paso 2 con esa dirección; la elección es la referencia vigente.
 
 ## Criterios de revisión y aceptación
 
 | Criterio | Comprobación del paso 1 | Pendiente para aplicar a la app |
 | --- | --- | --- |
-| Alternativas concretas | Tres propuestas sobre inicio, ficha y estados. | Dirección elegida por el propietario. |
+| Alternativas concretas | Tres propuestas sobre inicio, ficha y estados. | B · Mesa elegida por el propietario el 25-10-2026. |
 | Lectura | Contraste calculado para textos de paleta y avisos en ambos temas; revisión visual a móvil y escritorio. | TalkBack, VoiceOver y fuente ampliada en dispositivos soportados. |
 | Honestidad del resultado | Misma evidencia, fuente y fechas; muestras ficticias identificadas. | Validación experta y comprensión con público objetivo. |
 | Interacción | Cambio de pantalla, resultado y tema; simulación de favorito. | Implementación y comprobación del recorrido real en React Native. |
@@ -56,4 +58,4 @@ Revisión del 24-10-2026 en Chromium: las tres propuestas, las tres pantallas y 
 
 El contraste de los textos renderizados se calculó contra su fondo en las tres pantallas y ambos temas a 1440 píxeles. El mínimo observado fue **5,38:1 en claro** y **7,97:1 en oscuro**, por encima del umbral de revisión inicial de 4,5:1. Se revisaron visualmente capturas de inicio y ficha en escritorio, estados en oscuro e inicio en móvil oscuro. Las capturas e informes locales permanecen en `artifacts/branding-review/`, excluidos de Git; el prototipo reproducible sí se versiona.
 
-**Paso 1 ejecutado.** Paso 2 pendiente de elegir dirección visual. Esta comprobación inicial no es una certificación completa de accesibilidad ni valida preferencias estéticas; las pruebas nativas y con personas usuarias siguen pendientes.
+**Paso 1 ejecutado; elección B · Mesa registrada el 25-10-2026.** La comprobación del prototipo no es una certificación completa de accesibilidad; las pruebas nativas y con personas usuarias siguen pendientes.

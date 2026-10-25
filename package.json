@@ -22,7 +22,8 @@
     "audit:security": "node scripts/check-audit.mjs",
     "audit:release": "node scripts/check-audit.mjs --release",
     "check": "npm run typecheck && npm run lint && npm test && expo install --check",
-    "export:web": "expo export --platform web && node scripts/generate-service-worker.mjs"
+    "export:web": "expo export --platform web && node scripts/generate-service-worker.mjs",
+    "brand:generate": "node scripts/generate-brand.mjs"
   },
   "dependencies": {
     "@expo/metro-runtime": "~58.0.15",

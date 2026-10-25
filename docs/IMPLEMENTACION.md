@@ -1,6 +1,6 @@
 # Implementación y verificación
 
-Fecha: **2026-10-24**. Este documento refleja el trabajo posterior a la auditoría del commit `3044a18`. El prototipo se ha sustituido por un MVP con arquitectura por responsabilidades, dependencias actualizadas y pruebas. No equivale todavía a una publicación validada en tiendas.
+Fecha: **2026-10-25**. Este documento refleja el trabajo posterior a la auditoría del commit `3044a18`. El prototipo se ha sustituido por un MVP con arquitectura por responsabilidades, dependencias actualizadas y pruebas. No equivale todavía a una publicación validada en tiendas.
 
 ## Cambios aplicados
 
@@ -23,7 +23,7 @@ Fecha: **2026-10-24**. Este documento refleja el trabajo posterior a la auditor�
 | Privacidad remota | Separación entre observaciones privadas y `publishedPrices` sin identificadores de autor/moderador; borrado de contribuciones y favoritos al borrar cuenta. | Pruebas de autoría y borrado; política TTL para la marca de seguridad de cuenta. |
 | Configuración | `.env.example`, validación de entornos, protección de emuladores con proyecto `demo-`; `.env` deja de seguirse por Git. `.env.local` contiene la configuración pública verificada del proyecto existente. | Nube desactivada por defecto. Firestore y Auth reales preparados; [estado remoto](FIREBASE_REAL.md). |
 | Calidad | ESLint, Prettier, TypeScript, Jest, Playwright, emuladores, CI y Dependabot. | Los cinco jobs de GitHub pasaron para `f2f5c42`; protección de ramas por revisar. |
-| Identidad | Nombre SinGluten, iconos propios reproducibles desde SVG, textos españoles, tema claro/oscuro, permisos de cámara sin micrófono. | Branding provisional: no convence al propietario y no está aprobado. Replanteamiento priorizado en la [hoja de ruta](HOJA_DE_RUTA.md). |
+| Identidad | B · Mesa elegida por el propietario el 25-10-2026: papel cálido, terracota, tipografía editorial y recursos regenerables. | Aplicación y comprobaciones en [Branding Mesa](BRANDING_MESA.md); nombre e identificadores de tienda aún por confirmar. |
 | Operación | Exportación/borrado local, atribución, privacidad, perfiles EAS y telemetría técnica opcional sin historial ni códigos. | Endpoint de telemetría no configurado; no se ha medido estabilidad de una beta real. |
 
 ## Verificaciones realizadas
@@ -41,11 +41,12 @@ Fecha: **2026-10-24**. Este documento refleja el trabajo posterior a la auditor�
 | Exportación JavaScript Android e iOS | Correcta en ambas plataformas, con adaptadores nativos y bytecode Hermes. No equivale a compilar el binario iOS. |
 | Preparación del proyecto Android | Correcta; manifiesto sin permiso de micrófono y copia de seguridad deshabilitada. |
 | APK Android de depuración | Verificadas el 23 de octubre, ARM64 y x86_64, con Gradle, JDK 21 y Ninja 1.13.2. Repetidas desde `npm ci`; necesitan Metro. Rutas de CMake acortadas mediante una unidad temporal, sin cambios globales de Windows. |
-| APK Android interna | **Preview universal ARM64/x86_64 compilada el 24 de octubre con el SDK actualizado**, JavaScript/Hermes incorporado, R8 y firma de desarrollo. `artifacts/singluten-preview-universal.apk`, 71.240.907 bytes; JSON adjunto con SHA-256. No necesita Metro, mantiene nube desactivada y no es una firma de tienda. Gradle: 615 tareas, compilación correcta en 9 min 48 s. |
+| APK Android interna | **Preview universal ARM64/x86_64 de Mesa compilada el 25 de octubre**, JavaScript/Hermes incorporado, R8 y firma de desarrollo. `artifacts/singluten-preview-universal.apk`, 71.353.391 bytes; manifiesto adjunto con SHA-256. Sin Metro y con nube desactivada. Gradle correcto: 615 tareas. [Verificaci?n y l?mites](BRANDING_MESA.md). |
 | Ejecución nativa Android | Pixel 8, Android 15 / API 35. En depuración: consulta real, favorito, ficha sin red y archivos SQLite/WAL/SHM comprobados. En la preview instalada: **arranque en frío sin red ni redirección ADB a Metro**, navegación y precio de 2,49 € guardado desde la interfaz. Tras cerrar la tarea desde recientes, el proceso terminó; otro arranque en frío cambió PID de 3756 a 4301 y recuperó `TiendaPreview · Madrid` con su importe. La prueba usa un AVD efímero sin guardar cambios. No sustituye móviles físicos. |
 | iOS nativo | No compilado: el entorno de trabajo es Windows. |
 | Firebase real | Firestore Standard en `europe-west1`, protegido contra borrado, reglas y cuatro índices desplegados; proveedor correo/contraseña habilitado. Comprobación remota de solo lectura correcta. Functions, TTL y activación de nube pendientes. |
 | Tiendas | No publicadas. |
+| Rediseño Mesa | Dirección elegida por el propietario el 25 de octubre; aplicada a pantallas y recursos. 56 pruebas de app y cinco recorridos web correctos; revisión visual y contraste en ambos temas. [Evidencia y límites](BRANDING_MESA.md). |
 
 Los tests web utilizan respuestas de producto controladas, con datos de prueba. Acreditan la integración del recorrido y su recuperación; no certifican la calidad de todo el catálogo de Open Food Facts. Los tests completos de nube usan un proyecto ficticio sin acceso a producción. La comprobación remota adicional acredita configuración e inaccesibilidad anónima de rutas privadas; no equivale al recorrido completo de cuentas en el proyecto real.
 

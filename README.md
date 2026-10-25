@@ -46,6 +46,7 @@ En PowerShell usar `npm.cmd`/`npx.cmd` si la política del equipo bloquea los ar
 | `npm run test:e2e` | Exporta la app y comprueba el recorrido en Chromium con tamaño móvil. |
 | `npm run export:web` | Genera `dist/` con rutas SPA y soporte sin conexión. |
 | `npm run format` | Formatea el código del proyecto. |
+| `npm run brand:generate` | Regenera iconos, marca y splash de Mesa desde los SVG versionados, sin servicios externos. |
 | `npm run firebase:verify -- --project gluten-free-supermarket` | Comprueba región, protección de borrado, índices y lecturas anónimas del proyecto real, sin modificarlo. Requiere sesión de Firebase CLI. |
 | `npm run secrets:check` | Revisa archivos publicables e historial con Gitleaks verificado; solo admite el hallazgo histórico exacto cuya clave ya fue revocada. |
 
@@ -67,12 +68,13 @@ Las pruebas usan exclusivamente el proyecto ficticio `demo-sin-gluten`. No neces
 
 ## Documentación
 
-La [hoja de ruta vigente](docs/HOJA_DE_RUTA.md) organiza los siguientes pasos y las mejoras futuras. **El branding actual es provisional y no está aprobado por el propietario**; su revisión es el primer paso de diseño.
+La [hoja de ruta vigente](docs/HOJA_DE_RUTA.md) organiza los siguientes pasos y las mejoras futuras. **B · Mesa es la dirección visual elegida por el propietario el 25-10-2026**: papel cálido, terracota y titulares editoriales. Su aplicación y los límites de validación están en [Branding Mesa](docs/BRANDING_MESA.md).
 
 | Documento | Uso |
 | --- | --- |
 | [Próximos pasos y mejoras futuras](docs/HOJA_DE_RUTA.md) | Orden de trabajo, revisión prioritaria de branding, criterios de lanzamiento y evolución sin costes de backend. |
 | [Revisión de branding](docs/BRANDING.md) | Brief, tres direcciones de diseño y comparativa visual navegable en claro/oscuro. |
+| [Branding Mesa](docs/BRANDING_MESA.md) | Dirección elegida, sistema visual aplicado, recursos regenerables y comprobaciones de la app real. |
 | [Implementación y verificación](docs/IMPLEMENTACION.md) | Qué está aplicado, pruebas y límites actuales. |
 | [Dependencias y seguridad](docs/DEPENDENCIAS.md) | Versiones, decisiones de compatibilidad y avisos pendientes. |
 | [Despliegue y pruebas](docs/DESPLIEGUE_Y_PRUEBAS.md) | Configuración local, emuladores, nube, builds y operación. |

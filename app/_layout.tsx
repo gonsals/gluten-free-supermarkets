@@ -10,7 +10,7 @@ import { useEffect } from 'react';
 import { useColorScheme } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { Action, Card, Copy, Heading, Screen } from '@/src/shared/ui';
-import { usePalette } from '@/src/shared/theme';
+import { typography, usePalette } from '@/src/shared/theme';
 import { reportTechnicalEvent } from '@/src/shared/telemetry';
 import { OfflineSupport } from '@/src/shared/OfflineSupport';
 
@@ -35,15 +35,30 @@ export function ErrorBoundary({ retry }: ErrorBoundaryProps) {
 export default function RootLayout() {
   const scheme = useColorScheme();
   const c = usePalette();
+  const navigationTheme = scheme === 'dark' ? DarkTheme : DefaultTheme;
   return (
     <SafeAreaProvider>
       <OfflineSupport />
-      <ThemeProvider value={scheme === 'dark' ? DarkTheme : DefaultTheme}>
+      <ThemeProvider
+        value={{
+          ...navigationTheme,
+          colors: {
+            ...navigationTheme.colors,
+            primary: c.accent,
+            background: c.bg,
+            card: c.surface,
+            text: c.ink,
+            border: c.border,
+            notification: c.danger,
+          },
+        }}
+      >
         <StatusBar style={scheme === 'dark' ? 'light' : 'dark'} />
         <Stack
           screenOptions={{
             headerStyle: { backgroundColor: c.bg },
             headerTintColor: c.ink,
+            headerTitleStyle: { fontFamily: typography.editorial, fontWeight: '400' },
             contentStyle: { backgroundColor: c.bg },
             headerBackTitle: 'Volver',
           }}

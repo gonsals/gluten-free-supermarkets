@@ -42,7 +42,9 @@ try:
     environment['SINGLUTEN_CXX_ROOT'] = drive + '\\'
     subprocess.run([node, str(root / 'node_modules' / 'expo' / 'bin' / 'cli'), 'prebuild', '--platform', 'android', '--no-install'], cwd=root, env=environment, check=True)
     build_type = 'release' if arguments.variant == 'preview' else 'debug'
-    subprocess.run([str(android / 'gradlew.bat'), 'assemble' + build_type.title(), '--no-daemon', '--max-workers=2', '-PreactNativeArchitectures=' + build_architectures], cwd=android, env=environment, check=True)
+    # AGP uses shared hardlinks for native libraries. Serialize Windows tasks so
+    # one CMake task cannot hold a library while another replaces its output.
+    subprocess.run([str(android / 'gradlew.bat'), 'assemble' + build_type.title(), '--no-daemon', '--max-workers=1', '-PreactNativeArchitectures=' + build_architectures], cwd=android, env=environment, check=True)
     source = android / 'app' / 'build' / 'outputs' / 'apk' / build_type / ('app-' + build_type + '.apk')
     artifacts = root / 'artifacts'
     artifacts.mkdir(exist_ok=True)

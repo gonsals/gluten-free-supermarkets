@@ -12,7 +12,7 @@ import {
   type ViewStyle,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { usePalette } from './theme';
+import { typography, usePalette } from './theme';
 
 export function Screen({ children, scroll = true }: PropsWithChildren<{ scroll?: boolean }>) {
   const colors = usePalette();
@@ -28,7 +28,11 @@ export function Screen({ children, scroll = true }: PropsWithChildren<{ scroll?:
     </SafeAreaView>
   );
 }
-export function Heading({ children, eyebrow }: PropsWithChildren<{ eyebrow?: string }>) {
+export function Heading({
+  children,
+  eyebrow,
+  hero = false,
+}: PropsWithChildren<{ eyebrow?: string; hero?: boolean }>) {
   const c = usePalette();
   return (
     <View style={{ gap: 8, marginBottom: 8 }}>
@@ -39,7 +43,14 @@ export function Heading({ children, eyebrow }: PropsWithChildren<{ eyebrow?: str
       ) : null}
       <Text
         accessibilityRole="header"
-        style={{ color: c.ink, fontWeight: '800', fontSize: 30, lineHeight: 37 }}
+        style={{
+          color: c.ink,
+          fontFamily: typography.editorial,
+          fontWeight: '400',
+          fontSize: hero ? 42 : 32,
+          lineHeight: hero ? 48 : 40,
+          letterSpacing: -0.6,
+        }}
       >
         {children}
       </Text>
@@ -80,7 +91,7 @@ export function Action({
   accessibilityLabel?: string;
 }) {
   const c = usePalette();
-  const foreground = secondary ? (danger ? c.danger : c.accent) : c.bg;
+  const foreground = secondary ? (danger ? c.danger : c.ink) : c.onAccent;
   return (
     <Pressable
       accessibilityRole="button"
@@ -91,7 +102,8 @@ export function Action({
       style={({ pressed }) => [
         styles.action,
         {
-          backgroundColor: secondary ? c.soft : c.accent,
+          backgroundColor: secondary ? (danger ? c.dangerBg : c.surface) : c.accent,
+          borderColor: secondary ? (danger ? c.dangerBorder : c.border) : c.accent,
           opacity: disabled || busy ? 0.5 : pressed ? 0.75 : 1,
         },
       ]}
@@ -142,7 +154,13 @@ export function Notice({ children, error = false }: PropsWithChildren<{ error?: 
   return (
     <View
       accessibilityLiveRegion="polite"
-      style={{ padding: 14, borderRadius: 12, backgroundColor: error ? c.warningBg : c.soft }}
+      style={{
+        padding: 16,
+        borderRadius: 8,
+        borderWidth: 1,
+        borderColor: error ? c.warningBorder : c.border,
+        backgroundColor: error ? c.warningBg : c.soft,
+      }}
     >
       <Text style={{ color: error ? c.warning : c.ink, fontSize: 14, lineHeight: 21 }}>
         {children}
@@ -151,12 +169,13 @@ export function Notice({ children, error = false }: PropsWithChildren<{ error?: 
   );
 }
 export const styles = StyleSheet.create({
-  page: { flexGrow: 1, padding: 20, paddingBottom: 36 },
-  content: { width: '100%', maxWidth: 720, alignSelf: 'center', gap: 18 },
-  card: { padding: 20, borderRadius: 20, borderWidth: 1, gap: 14 },
+  page: { flexGrow: 1, padding: 22, paddingTop: 28, paddingBottom: 40 },
+  content: { width: '100%', maxWidth: 640, alignSelf: 'center', gap: 20 },
+  card: { padding: 20, borderRadius: 10, borderWidth: 1, gap: 16 },
   action: {
     minHeight: 50,
-    borderRadius: 12,
+    borderRadius: 6,
+    borderWidth: 1,
     paddingVertical: 13,
     paddingHorizontal: 16,
     flexDirection: 'row',
@@ -164,6 +183,6 @@ export const styles = StyleSheet.create({
     justifyContent: 'center',
     gap: 9,
   },
-  input: { borderWidth: 1, borderRadius: 12, minHeight: 50, padding: 13, fontSize: 16 },
+  input: { borderWidth: 1, borderRadius: 6, minHeight: 50, padding: 13, fontSize: 16 },
   row: { flexDirection: 'row', gap: 10, alignItems: 'center', flexWrap: 'wrap' },
 });
