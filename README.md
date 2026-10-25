@@ -75,6 +75,7 @@ La [hoja de ruta vigente](docs/HOJA_DE_RUTA.md) organiza los siguientes pasos y 
 | [Próximos pasos y mejoras futuras](docs/HOJA_DE_RUTA.md) | Orden de trabajo, revisión prioritaria de branding, criterios de lanzamiento y evolución sin costes de backend. |
 | [Revisión de branding](docs/BRANDING.md) | Brief, tres direcciones de diseño y comparativa visual navegable en claro/oscuro. |
 | [Branding Mesa](docs/BRANDING_MESA.md) | Dirección elegida, sistema visual aplicado, recursos regenerables y comprobaciones de la app real. |
+| [Validación de resultados sobre gluten](docs/VALIDACION_GLUTEN.md) | Iteración 3: guía offline, evidencia visible, doce casos reproducibles y protocolo de revisión experta todavía pendiente. |
 | [Implementación y verificación](docs/IMPLEMENTACION.md) | Qué está aplicado, pruebas y límites actuales. |
 | [Dependencias y seguridad](docs/DEPENDENCIAS.md) | Versiones, decisiones de compatibilidad y avisos pendientes. |
 | [Despliegue y pruebas](docs/DESPLIEGUE_Y_PRUEBAS.md) | Configuración local, emuladores, nube, builds y operación. |

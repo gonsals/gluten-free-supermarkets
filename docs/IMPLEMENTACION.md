@@ -32,10 +32,10 @@ Fecha: **2026-10-25**. Este documento refleja el trabajo posterior a la auditor�
 | --- | --- |
 | Instalación reproducible | `npm ci` en app y servidor correctos desde sus lockfiles, sin opciones para ignorar conflictos. |
 | Tipos, ESLint y compatibilidad Expo | Correctos; Expo Doctor pasa sus **20 comprobaciones**. |
-| Pruebas de dominio, API, repositorio y consulta | **56 pruebas correctas**, cuatro suites. |
+| Pruebas de dominio, API, repositorio y consulta | **73 pruebas correctas**, cinco suites, tras la iteración 3; incluye doce casos sintéticos de revisión. |
 | Reglas Firestore | **Siete pruebas correctas**, incluido aislamiento, moderación y separación de la vista pública. |
 | Integración de nube | **Cinco pruebas correctas**: autenticación/validación, idempotencia/autoría/moderación, cuota, borrado y sincronización entre bibliotecas. |
-| Navegador de producción | **Cinco recorridos correctos**: consulta/favorito/recarga/offline, datos insuficientes/trazas, recuperación de errores, precios privados y actualización sin mezclar versiones. |
+| Navegador de producción | **Siete recorridos correctos**: consulta/favorito/recarga/offline, datos insuficientes/trazas, recuperación, procedencia/guía sin conexión, jerarquía malformada, precios privados y actualización sin mezclar versiones. |
 | Funciones de servidor | Compilan y ejecutan correctamente en el emulador. |
 | Exportación web | Correcta; SPA con rutas dinámicas y código dividido. |
 | Exportación JavaScript Android e iOS | Correcta en ambas plataformas, con adaptadores nativos y bytecode Hermes. No equivale a compilar el binario iOS. |
@@ -47,6 +47,8 @@ Fecha: **2026-10-25**. Este documento refleja el trabajo posterior a la auditor�
 | Firebase real | Firestore Standard en `europe-west1`, protegido contra borrado, reglas y cuatro índices desplegados; proveedor correo/contraseña habilitado. Comprobación remota de solo lectura correcta. Functions, TTL y activación de nube pendientes. |
 | Tiendas | No publicadas. |
 | Rediseño Mesa | Dirección elegida por el propietario el 25 de octubre; aplicada a pantallas y recursos. 56 pruebas de app y cinco recorridos web correctos; revisión visual y contraste en ambos temas. [Evidencia y límites](BRANDING_MESA.md). |
+| Claridad de resultados | Iteración 3: evidencias ausentes, trazas, fuente y fecha junto al resumen; guía local y corrección de validación de jerarquía. [Protocolo de validación](VALIDACION_GLUTEN.md). No equivale a revisión experta realizada. |
+| APK de iteración 3 | Preview universal incremental compilada correctamente: 71.358.559 bytes, guía incorporada, sin Metro y con nube desactivada. `artifacts/singluten-iteration-3-preview-universal.apk`, firma de desarrollo y manifiesto/checksum adjuntos. No sustituye pruebas físicas. |
 
 Los tests web utilizan respuestas de producto controladas, con datos de prueba. Acreditan la integración del recorrido y su recuperación; no certifican la calidad de todo el catálogo de Open Food Facts. Los tests completos de nube usan un proyecto ficticio sin acceso a producción. La comprobación remota adicional acredita configuración e inaccesibilidad anónima de rutas privadas; no equivale al recorrido completo de cuentas en el proyecto real.
 

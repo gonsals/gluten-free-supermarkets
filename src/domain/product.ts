@@ -133,10 +133,16 @@ export function normalizeProduct(
   now = new Date(),
 ): Product {
   if (!record(raw)) throw new Error('invalid_response');
+  const ingredientsText = text(raw.ingredients_text_es) ?? text(raw.ingredients_text);
   const missingFields = ['labels_tags', 'allergens_tags', 'traces_tags', 'ingredients_text'].filter(
-    (k) => raw[k] === undefined || raw[k] === null,
+    (k) =>
+      k === 'ingredients_text'
+        ? ingredientsText === null
+        : k === 'labels_tags'
+          ? raw.labels_tags == null && raw.labels_hierarchy == null
+          : raw[k] == null,
   );
-  const malformed = ['labels_tags', 'allergens_tags', 'traces_tags'].some(
+  const malformed = ['labels_tags', 'labels_hierarchy', 'allergens_tags', 'traces_tags'].some(
     (k) =>
       raw[k] != null &&
       (!Array.isArray(raw[k]) || (raw[k] as unknown[]).some((x) => typeof x !== 'string')),
@@ -161,7 +167,7 @@ export function normalizeProduct(
       .map((x) => x.trim())
       .filter(Boolean),
     imageUrl: safeImage(raw.image_front_url ?? raw.image_url),
-    ingredientsText: text(raw.ingredients_text_es) ?? text(raw.ingredients_text),
+    ingredientsText,
     allergensText: text(raw.allergens, 2000),
     tracesText: text(raw.traces, 2000),
     labels,

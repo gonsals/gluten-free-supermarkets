@@ -1,8 +1,10 @@
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { useState } from 'react';
+import { useRouter } from 'expo-router';
 import { Image, Linking, Text, View } from 'react-native';
 import { glutenCopy, type Product } from '@/src/domain/product';
-import { displayTag, traceDescription } from '@/src/domain/display';
+import { traceDescription } from '@/src/domain/display';
+import { evidenceFields } from '@/src/domain/evidence';
 import { AppError, errorCopy } from '@/src/domain/errors';
 import { useLibrary } from '@/src/features/library/useLibrary';
 import { Action, Card, Copy, Notice } from '@/src/shared/ui';
@@ -24,12 +26,17 @@ export function ProductCard({
   onPrices?: () => void;
 }) {
   const c = usePalette();
+  const router = useRouter();
   const { data, repository, ready } = useLibrary();
   const favorite = data.favorites[product.barcode] && !data.favorites[product.barcode].deleted;
   const [message, setMessage] = useState('');
   const [saving, setSaving] = useState(false);
   const copy = glutenCopy[product.assessment.state];
   const assessment = assessmentAppearance(product.assessment.state, c);
+  const evidence = evidenceFields(product);
+  const missing = evidence
+    .filter((field) => !field.value)
+    .map((field) => field.title.toLocaleLowerCase('es'));
   const traces = traceDescription(product.assessment.traceWarnings, product.tracesText);
   const date = (value: string) => new Date(value).toLocaleString('es-ES');
   async function toggle() {
@@ -123,6 +130,25 @@ export function ProductCard({
             declaración sin gluten.
           </Notice>
         ) : null}
+        <View style={{ gap: 6 }}>
+          <Text style={{ color: c.muted, fontSize: 14, lineHeight: 21 }}>
+            Información de Open Food Facts · {cached ? 'Ficha guardada' : 'Ficha consultada'}
+          </Text>
+          <Text style={{ color: c.muted, fontSize: 14, lineHeight: 21 }}>
+            Última consulta: {date(product.source.fetchedAt)}. No es una certificación.
+          </Text>
+          {missing.length ? (
+            <Text style={{ color: c.muted, fontSize: 14, lineHeight: 21 }}>
+              Sin información disponible: {missing.join(', ')}. Un campo vacío no confirma ausencia.
+            </Text>
+          ) : null}
+        </View>
+        <Action
+          title="Cómo interpretar este resultado"
+          secondary
+          icon="information-circle-outline"
+          onPress={() => router.push('/results-guide')}
+        />
         <Action
           title={favorite ? 'Quitar de favoritos' : 'Guardar en favoritos'}
           icon={favorite ? 'heart' : 'heart-outline'}
@@ -145,19 +171,14 @@ export function ProductCard({
         <Text accessibilityRole="header" style={{ fontSize: 19, color: c.ink, fontWeight: '700' }}>
           Lo que dice la fuente
         </Text>
-        <Copy muted>Ingredientes</Copy>
-        <Copy>
-          {product.ingredientsText ??
-            'No disponibles. La ausencia de datos no confirma que el producto sea sin gluten.'}
-        </Copy>
-        <Copy muted>Alérgenos declarados</Copy>
-        <Copy>
-          {product.allergens.map(displayTag).join(', ') ||
-            product.allergensText ||
-            'Sin información concluyente'}
-        </Copy>
-        <Copy muted>Etiquetas</Copy>
-        <Copy>{product.labels.map(displayTag).join(', ') || 'No hay etiquetas disponibles'}</Copy>
+        {evidence.map((field) => (
+          <View key={field.id} style={{ gap: 8 }}>
+            <Copy muted>{field.title}</Copy>
+            <Copy>
+              {field.value ?? 'Sin información disponible en la fuente. No confirma ausencia.'}
+            </Copy>
+          </View>
+        ))}
       </Card>
       <Card>
         <Copy>Datos de Open Food Facts</Copy>

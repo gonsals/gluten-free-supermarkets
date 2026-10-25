@@ -96,6 +96,86 @@ test('recupera el escáner tras no encontrado y rechaza código inválido antes 
     '',
   );
 });
+
+test('la ficha muestra procedencia y trazas y abre la guía sin conexión', async ({
+  page,
+  context,
+}) => {
+  await page.route('https://world.openfoodfacts.org/api/v2/product/**', (route) =>
+    route.fulfill({
+      json: {
+        status: 1,
+        product: {
+          code,
+          product_name: 'Ficha incompleta',
+          labels_tags: ['en:no-gluten'],
+          traces_tags: ['en:gluten'],
+        },
+      },
+    }),
+  );
+  await page.goto('/scan');
+  await page.getByRole('textbox', { name: 'Código de barras', exact: true }).fill(code);
+  await page.getByRole('button', { name: 'Buscar producto', exact: true }).click();
+  await expect(
+    page.getByRole('heading', { name: 'Figura como sin gluten', exact: true }),
+  ).toBeVisible();
+  await expect(page.getByText(/Información de Open Food Facts/)).toBeVisible();
+  await expect(
+    page.getByText(/Sin información disponible: ingredientes, alérgenos declarados/),
+  ).toBeVisible();
+  await expect(page.getByText(/La fuente declara trazas: Gluten/)).toBeVisible();
+  await page.evaluate(() => navigator.serviceWorker.ready);
+  await page.waitForFunction(() => Boolean(navigator.serviceWorker.controller));
+  await context.setOffline(true);
+  await page.getByRole('button', { name: 'Cómo interpretar este resultado', exact: true }).click();
+  await expect(
+    page.getByRole('heading', { name: 'Cómo leer una ficha', exact: true }),
+  ).toBeVisible();
+  await expect(
+    page.getByRole('heading', { name: 'Datos contradictorios', exact: true }),
+  ).toBeVisible();
+  await page.reload();
+  await expect(
+    page.getByRole('heading', { name: 'Cómo leer una ficha', exact: true }),
+  ).toBeVisible();
+  await expect(
+    page.getByText('No significa que el producto contenga gluten.', { exact: true }),
+  ).toBeVisible();
+  await context.setOffline(false);
+});
+
+test('una jerarquía de etiquetas inválida muestra contradicción y conserva la evidencia', async ({
+  page,
+}) => {
+  await page.route('https://world.openfoodfacts.org/api/v2/product/**', (route) =>
+    route.fulfill({
+      json: {
+        status: 1,
+        product: {
+          code,
+          product_name: 'Formato incorrecto',
+          labels_tags: ['en:no-gluten'],
+          labels_hierarchy: 'en:no-gluten',
+          ingredients_text_es: 'Arroz y sal',
+        },
+      },
+    }),
+  );
+  await page.goto('/scan');
+  await page.getByRole('textbox', { name: 'Código de barras', exact: true }).fill(code);
+  await page.getByRole('button', { name: 'Buscar producto', exact: true }).click();
+  await expect(
+    page.getByRole('heading', { name: 'Datos contradictorios', exact: true }),
+  ).toBeVisible();
+  await expect(
+    page.getByRole('heading', { name: 'Figura como sin gluten', exact: true }),
+  ).toHaveCount(0);
+  await expect(
+    page.getByText(/Algunos campos recibidos no tienen el formato esperado/),
+  ).toBeVisible();
+  await expect(page.getByText('Arroz y sal', { exact: true })).toBeVisible();
+});
 test('anota un precio privado y lo conserva tras recargar', async ({ page }) => {
   await page.goto('/prices');
   await page

@@ -1,6 +1,6 @@
 # Próximos pasos y mejoras futuras
 
-Actualización: **25 de octubre de 2026**, elección de B · Mesa y ejecución del paso 2.
+Actualización: **25 de octubre de 2026**, Mesa aplicada y preparación técnica del paso 3 en la iteración de resultados.
 
 Fecha de referencia: **24 de octubre de 2026**. Guía del trabajo pendiente desde el MVP implementado hasta una app profesional y mantenible. El [plan inicial](PLAN_MEJORAS.md) conserva la trazabilidad histórica; esta hoja indica qué hacer ahora.
 
@@ -19,7 +19,7 @@ Fecha de referencia: **24 de octubre de 2026**. Guía del trabajo pendiente desd
 | Producto local | Escaneo y entrada manual, ficha con evidencia, favoritos, historial, precios privados, exportación y borrado. | Validar utilidad y comprensión durante compras reales. |
 | Persistencia | SQLite móvil, IndexedDB web, esquema versionado y límites de datos. | Migraciones con datos anteriores y recuperación en dispositivos físicos. |
 | Plataforma | Expo 58, React 19, React Native 0.88; APK Android interna sin necesidad de Metro. | Firma de publicación, dispositivos físicos e iOS nativo si se incluye en el lanzamiento. |
-| Calidad | 56 pruebas de app, 7 de reglas, 5 de nube y 5 recorridos web registrados en [Implementación](IMPLEMENTACION.md). | Cámara física, accesibilidad nativa, beta y métricas con muestra declarada. |
+| Calidad | 73 pruebas de app y siete recorridos web en la iteración 3; las siete pruebas de reglas y cinco de nube permanecen como evidencia de la base anterior. | Revisión experta y comprensión, cámara física, accesibilidad nativa, beta y métricas con muestra declarada. |
 | CI | Los cinco jobs del [run de la base `f2f5c42`](https://github.com/gonsals/gluten-free-supermarkets/actions/runs/40048795691) pasaron: secretos, dependencias, Firebase, Android y app. | Revisar protección de rama y mantener controles por cambio. Ese resultado acredita esa revisión, no commits futuros. |
 | Seguridad | Clave expuesta revocada, archivos privados excluidos y escaneo de archivos e historial. | Resolver avisos transitivos antes de publicar y mantener controles. |
 | Identidad | B · Mesa elegida: tema cálido claro/oscuro, titulares editoriales y recursos propios. | Validación física, comprensión con público objetivo y confirmación del nombre antes de publicar. |
@@ -60,6 +60,8 @@ Cierre: dirección elegida registrada, recursos regenerables y pantallas coheren
 ### Paso 3 · Validar lenguaje y reglas sobre gluten
 
 **P0 antes de una beta dirigida al público objetivo. Puede avanzar en paralelo al diseño.**
+
+Preparación técnica de la iteración 3 entregada: guía offline, procedencia y fecha junto al resultado, trazas destacadas, campos ausentes y doce casos reproducibles. [Protocolo y evidencia](VALIDACION_GLUTEN.md). **La revisión experta y las sesiones con personas usuarias siguen pendientes; el paso 3 no se considera cerrado.**
 
 Revisar [Producto](PRODUCTO.md) con una persona experta en el dominio y comprobar comprensión con personas usuarias. Preparar casos reproducibles: declaración sin gluten, gluten declarado, datos ausentes, trazas, contradicciones y ficha antigua.
 
@@ -149,3 +151,4 @@ Cada tarea necesita ID, responsable, estado, dependencia, criterio y evidencia. 
 | 24-10-2026 | Tres direcciones entregadas: Tinta, Mesa y Pulso, con comparativa local verificada. | Paso 1 ejecutado; paso 2 pendiente de elección de dirección. Ninguna identidad aprobada todavía. |
 | 25-10-2026 | El propietario elige B · Mesa e indica continuar el desarrollo. | Elección registrada; paso 2 autorizado. La decisión posterior sustituye la falta de aprobación del día 24. |
 | 25-10-2026 | Mesa aplicada a la app, recursos regenerados, pruebas web y APK universal correctas. | Implementación técnica del paso 2 entregada; validaciones externas y publicación pendientes según los pasos siguientes. |
+| 25-10-2026 | Iteración 3: claridad del resultado, guía offline, validación de jerarquía y catálogo de revisión. | Preparación técnica del paso 3 entregada; aprobación externa pendiente. |

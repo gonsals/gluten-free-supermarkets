@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useRouter } from 'expo-router';
 import { Linking } from 'react-native';
 import { AccountPanel } from '@/src/features/account/AccountPanel';
 import { useLibrary } from '@/src/features/library/useLibrary';
@@ -8,6 +9,7 @@ import { config } from '@/src/shared/config';
 import { exportData } from '@/src/shared/exportData';
 
 export default function SettingsScreen() {
+  const router = useRouter();
   const { repository, ready, error } = useLibrary();
   const [confirm, setConfirm] = useState(false);
   const [message, setMessage] = useState('');
@@ -90,6 +92,12 @@ export default function SettingsScreen() {
           Las fechas de consulta y modificación no son certificaciones. Los precios observados no
           garantizan disponibilidad ni un precio actual.
         </Copy>
+        <Action
+          title="Abrir guía de resultados"
+          secondary
+          icon="information-circle-outline"
+          onPress={() => router.push('/results-guide')}
+        />
       </Card>
       <Card>
         <Copy>Datos y atribución</Copy>
