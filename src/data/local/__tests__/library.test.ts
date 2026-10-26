@@ -1,19 +1,7 @@
 import { LibraryRepository } from '../library';
-import type { KeyValueStorage } from '../storage.types';
+import { MemoryStorage } from '@/tests/memoryStorage';
 import { BARCODE, OTHER_BARCODE, product } from '@/tests/fixtures';
 
-class MemoryStorage implements KeyValueStorage {
-  values = new Map<string, string>();
-  fail = false;
-  async get(key: string) {
-    return this.values.get(key) ?? null;
-  }
-  async commit(values: Record<string, string>, removals: string[] = []) {
-    if (this.fail) throw new Error('disk full');
-    Object.entries(values).forEach(([key, value]) => this.values.set(key, value));
-    removals.forEach((key) => this.values.delete(key));
-  }
-}
 test('historial, favoritos y fichas sobreviven a una nueva instancia', async () => {
   const storage = new MemoryStorage();
   const first = new LibraryRepository(storage, 'test');

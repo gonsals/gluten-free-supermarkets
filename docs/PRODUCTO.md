@@ -18,8 +18,8 @@ Funcionamiento local sin cuenta obligatoria ni costes de backend contratado. Ope
 | Proponer supermercado desde datos explícitos o asociaciones acotadas de marca | Implementado; editable y sin deducir sucursal o disponibilidad. |
 | Guardar precios privados y consultar Open Prices | Implementado; datos públicos separados y no incluidos en copias privadas. |
 | Consultar ficha, gluten, trazas y procedencia | Implementado técnicamente; revisión experta/comprensión pendientes. |
-| Biblioteca offline, favoritos, copias y restauración | Implementado; esquema/copia v1, sin cesta. |
-| Cesta persistente con cantidades, copias y borrado | Siguiente entrega CES-01/CES-02; pendiente. |
+| Biblioteca offline, favoritos, copias y restauración | Implementado; esquema/copia v2 con cesta, compatible con importación v1. |
+| Cesta persistente con cantidades, copias y borrado | Implementado técnicamente en iteración 9, CES-01/CES-02. [Contrato y límites](CESTA_LOCAL.md). |
 | Totales por establecimiento y cobertura completa | CES-03, pendiente tras cesta e identidad de tienda. |
 | Equivalencia por formato/unidad y alternativas | UNI-01/ALT-01, pendientes; no se equiparan productos por nombre. |
 | Cobertura suficiente por zona y uso durante compras reales | DAT-01/CAL-01/BET-01, pendientes de medir. |
@@ -36,11 +36,11 @@ Seleccionar primero la observación más reciente por referencia de sucursal y o
 
 El ranking actual se limita a referencias cargadas, sin unión automática de la sucursal privada con la pública. España es filtro local sobre datos públicos; el país de una anotación privada no se inventa. Un error, dato descartado o límite de paginación debe distinguirse de «no hay precios».
 
-## Cesta y totales — contrato objetivo pendiente
+## Cesta disponible y totales pendientes
 
-Una primera cesta activa contiene productos identificados y número entero de envases. Propuesta inicial: hasta 100 líneas distintas y 1–99 envases por línea; peso variable y fracciones se diseñarán después con su contrato. Cambiar cantidades o filtros invalida/recalcula las estimaciones. Las líneas sin precio permanecen visibles.
+Una primera cesta activa contiene productos identificados y número entero de envases. Límites implementados: hasta 100 líneas distintas y 1–99 envases por línea; peso variable y fracciones se diseñarán después con su contrato. Cambiar cantidades o filtros invalida/recalcula las estimaciones. Las líneas sin precio permanecen visibles.
 
-Comparar por **establecimiento o ámbito verificado**, sin sumar el precio de una sucursal y otro de otra para crear una cesta de cadena ficticia. Una observación sin localización suficiente puede conservarse, pero no cubre silenciosamente una línea de cualquier sucursal. Los vínculos entre referencias de distinto origen requieren confirmación y pueden deshacerse.
+**Contrato objetivo de CES-03, todavía pendiente:** comparar por **establecimiento o ámbito verificado**, sin sumar el precio de una sucursal y otro de otra para crear una cesta de cadena ficticia. Una observación sin localización suficiente puede conservarse, pero no cubre silenciosamente una línea de cualquier sucursal. Los vínculos entre referencias de distinto origen requieren confirmación y pueden deshacerse.
 
 Para cada establecimiento:
 
@@ -79,8 +79,8 @@ La declaración sin gluten puede filtrar alternativas cuando haya evidencia comp
 | Consultar | Escáner o entrada manual, validación EAN/UPC y recuperación de permisos/errores. Cámara/linterna se desactivan al salir o pasar a segundo plano. |
 | Ficha | Identidad, comparar/anotar, tiendas declaradas y evidencia de gluten completa; ingredientes, alérgenos, trazas, fuente/fechas. El acceso desde comparar debe preservar todo ese contexto. |
 | Anotar precio | Proponer supermercado cuando haya base; permitir corregir o vaciar sin sobrescribir la edición al llegar metadatos. Fecha, envase, oferta, notas y localidad explícitos. |
-| Biblioteca | Productos guardados y precios privados, historial y favoritos. Próxima entrega permite añadir a cesta; limpiar historial no elimina productos aún referenciados. |
-| Cesta, pendiente | Añadir/editar/quitar, cantidades y persistencia; después, comparación completa/parcial con faltantes y condiciones. No se presenta como pantalla ya construida. |
+| Biblioteca | Productos guardados y precios privados, historial y favoritos. La iteración 9 permite añadir a cesta; limpiar historial no elimina productos aún referenciados. |
+| Mi cesta | Añadir/editar/quitar, cantidades, persistencia, códigos sin ficha/precio y acceso desde Inicio/Comparar/Biblioteca. Los totales completos/parciales vendrán con CES-03. |
 | Ajustes | Privacidad, atribución, versión, ayuda, exportación, restauración y borrado. La incorporación de cesta amplía todos los controles de datos. |
 
 Mantener Mesa en claro/oscuro, textos comprensibles, etiquetas accesibles, fuente ampliada y acciones alcanzables. Ningún resultado depende solo del color. No añadir cuentas o detalles de implementación a una compra que no los necesita.

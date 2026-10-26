@@ -1,6 +1,7 @@
 import { normalizeBarcode } from '@/src/domain/barcode';
 import { isPriceObservation, type PriceObservation } from '@/src/domain/price';
 import { assessGluten, isProduct, record, type Product } from '@/src/domain/product';
+import { isBasket } from '@/src/domain/basket';
 import type { LibraryData, ProductSummary } from './library';
 
 export const BACKUP_FORMAT = 'sin-gluten-library';
@@ -92,7 +93,7 @@ function productSummary(product: Product): ProductSummary {
   };
 }
 
-/** Accept the original version-1 export and the explicitly marked version-1 backup. */
+/** Migrate original/v1 backups; require an explicitly marked v2 backup for baskets. */
 export function parseLibraryBackup(contents: string): LibraryBackup {
   // Check before parsing; the adapters also bound the actual bytes read from a file.
   checkBackupSize(contents.length);
@@ -108,12 +109,15 @@ export function parseLibraryBackup(contents: string): LibraryBackup {
   }
   if (
     !record(value) ||
-    value.version !== 1 ||
+    (value.version !== 1 && value.version !== 2) ||
     !date(value.exportedAt) ||
-    ((value.format !== undefined || value.backupVersion !== undefined) &&
-      (value.format !== BACKUP_FORMAT || value.backupVersion !== 1)) ||
+    (value.version === 1
+      ? value.basket !== undefined ||
+        ((value.format !== undefined || value.backupVersion !== undefined) &&
+          (value.format !== BACKUP_FORMAT || value.backupVersion !== 1))
+      : value.format !== BACKUP_FORMAT || value.backupVersion !== 2 || !isBasket(value.basket)) ||
     !Array.isArray(value.products) ||
-    value.products.length > 2000 ||
+    value.products.length > 2500 ||
     !Array.isArray(value.history) ||
     value.history.length > 1000 ||
     !Array.isArray(value.prices) ||
@@ -121,7 +125,7 @@ export function parseLibraryBackup(contents: string): LibraryBackup {
     !record(value.favorites) ||
     Object.keys(value.favorites).length > 10000 ||
     !record(value.cache) ||
-    Object.keys(value.cache).length > 2000
+    Object.keys(value.cache).length > 2500
   )
     throw invalid();
   const products = value.products.map(restoredProduct);
@@ -186,9 +190,18 @@ export function parseLibraryBackup(contents: string): LibraryBackup {
     ]);
   });
   if (!unique(prices.map((item) => item.id))) throw invalid();
+  const basket =
+    value.version === 2 && isBasket(value.basket)
+      ? value.basket.map((line) => ({
+          barcode: line.barcode,
+          name: byCode.get(line.barcode)?.name ?? line.name,
+          quantity: line.quantity,
+          addedAt: line.addedAt,
+        }))
+      : [];
   return {
     exportedAt: value.exportedAt,
     products,
-    data: { version: 1, history, favorites, cache, prices, cloudOwner: null },
+    data: { version: 2, revision: 0, basket, history, favorites, cache, prices, cloudOwner: null },
   };
 }

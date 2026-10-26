@@ -2,7 +2,7 @@ import { BARCODE, OTHER_BARCODE, product } from '@/tests/fixtures';
 import type { PriceObservation } from '@/src/domain/price';
 import { BACKUP_FORMAT, MAX_BACKUP_BYTES, parseLibraryBackup } from '../backup';
 import { LibraryRepository, summary, type LibraryData } from '../library';
-import type { KeyValueStorage } from '../storage.types';
+import { MemoryStorage as Storage } from '@/tests/memoryStorage';
 
 const price: PriceObservation = {
   id: 'historical-price',
@@ -18,7 +18,8 @@ const price: PriceObservation = {
   offerEndsAt: '2020-01-02T00:00:00.000Z',
   notes: 'Observación antigua',
 };
-function fixture(): LibraryData & {
+function fixture(): Omit<LibraryData, 'version' | 'revision' | 'basket'> & {
+  version: 1;
   format: string;
   backupVersion: number;
   exportedAt: string;
@@ -36,18 +37,6 @@ function fixture(): LibraryData & {
     favorites: { [BARCODE]: { ...summary(product()), updatedAt: 100, deleted: false } },
     prices: [price],
   };
-}
-class Storage implements KeyValueStorage {
-  values = new Map<string, string>();
-  fail = false;
-  async get(key: string) {
-    return this.values.get(key) ?? null;
-  }
-  async commit(values: Record<string, string>, removals: string[] = []) {
-    if (this.fail) throw new Error('disk full');
-    Object.entries(values).forEach(([key, value]) => this.values.set(key, value));
-    removals.forEach((key) => this.values.delete(key));
-  }
 }
 
 test('acepta la copia marcada y la exportación original v1, con BOM, sin heredar una cuenta', () => {
@@ -75,9 +64,9 @@ test('recalcula conclusiones y resúmenes aunque una copia falsifique la versió
 
 test.each([
   ['JSON truncado', '{'],
-  ['versión futura', JSON.stringify({ ...fixture(), version: 2 })],
+  ['versión futura', JSON.stringify({ ...fixture(), version: 99 })],
   ['formato ajeno', JSON.stringify({ ...fixture(), format: 'other-app' })],
-  ['versión de copia futura', JSON.stringify({ ...fixture(), backupVersion: 2 })],
+  ['versión de copia futura', JSON.stringify({ ...fixture(), backupVersion: 99 })],
   ['estructura parcial', JSON.stringify({ version: 1 })],
   [
     'clave de prototipo',
@@ -202,7 +191,10 @@ test('restaura en una sola transacción, elimina fichas anteriores y es repetibl
   expect(reloaded.getSnapshot().data.history).toHaveLength(1);
   expect(reloaded.getSnapshot().data.prices).toEqual([price]);
   expect(reloaded.getSnapshot().data.cloudOwner).toBeNull();
-  expect(parseLibraryBackup(await reloaded.exportData()).data).toEqual(reloaded.getSnapshot().data);
+  expect(parseLibraryBackup(await reloaded.exportData()).data).toEqual({
+    ...reloaded.getSnapshot().data,
+    revision: 0,
+  });
 });
 
 test('si falla la transacción se conserva el estado anterior y permite reintentar', async () => {

@@ -8,12 +8,13 @@ Base **`638980a`**, iteración 8. [CI con cinco controles correctos](https://git
 
 | Comprobación realizada | Alcance y límite |
 | --- | --- |
-| 144 pruebas de app / 13 suites | Dominio, clientes, repositorio, consulta, permisos, copias, tiendas y comparación. No hay pruebas de cesta porque todavía no existe. |
-| 34 pruebas de seguridad | Política de auditoría y controles; no equivalen a un pentest ni eliminan avisos pendientes. |
-| 23 recorridos web | Incluyen comparación, filtros, errores públicos, sugerencias, datos y ficha de gluten. Fixtures sintéticas, separadas de comprobaciones de proveedor real. |
+| 164 pruebas de app / 14 suites, iteración 9 | Dominio, clientes, repositorio, consulta, permisos, copias, tiendas y comparación. Incluye 20 pruebas nuevas de cesta, migración, límites y conflicto. |
+| 35 pruebas de seguridad, iteración 9 | Política de auditoría y controles; no equivalen a un pentest ni eliminan avisos pendientes. |
+| 30 recorridos web correctos, ejecución final de iteración 9 | Los 23 anteriores y siete de cesta. Incluyen comparación, filtros, errores públicos, sugerencias, datos y ficha de gluten. Fixtures sintéticas, separadas de comprobaciones de proveedor real. |
 | Tipos, lint y compatibilidad Expo | Correctos en la base registrada; cada cambio necesita sus controles pertinentes. |
 | Reglas y nube en emuladores | Siete pruebas de reglas y cinco de integración; no habilitan nube real ni constituyen requisito de cuenta para el MVP local. |
 | APK universal de iteración 8 | Compilada, instalada/actualizada en Pixel 8 emulado API 35; tienda sugerida, restauración y precio privado conservados. Sin Metro, nube desactivada y firma de desarrollo. |
+| APK universal de iteración 9 | Actualización desde biblioteca v1, cesta y cantidad tras arranque en frío, restauración v2 y vaciado que conserva favoritos/precios en Android emulado API 35. [Paquete y evidencia](CESTA_LOCAL.md). Sin Metro, nube desactivada y firma de desarrollo; físico pendiente. |
 | Lectura pública real acotada | GTIN 3274080005003: 17/17 registros aceptados en la comprobación registrada; no demuestra cobertura española ni frescura por cadena. |
 
 Cámara física, TalkBack, revisión experta, iOS nativo, beta, cobertura de cesta y métricas de uso siguen pendientes. Una exportación de JavaScript iOS no equivale a build/dispositivo nativo. El escaneo del ZIP y Gitleaks reducen riesgo de exposición, sin ser prueba universal de ausencia de cualquier secreto.
@@ -38,7 +39,7 @@ No escribir tests que solo repliquen detalles internos. Para importes, cobertura
 
 ## Datos y recuperación
 
-CES-01/CES-02 forman una sola entrega: no añadir cesta sin exportarla, restaurarla y borrarla. [Arquitectura](ARQUITECTURA.md) propone esquema/copia v2; actualmente siguen en v1.
+CES-01/CES-02 se han entregado juntas: cesta, exportación/restauración/borrado y esquema/copia v2 con migración desde v1. [Cesta local](CESTA_LOCAL.md) registra contrato, evidencia y límites; la matriz siguiente se mantiene como control de regresión.
 
 | Escenario | Resultado exigido antes de cerrar CES-02 |
 | --- | --- |
@@ -48,7 +49,7 @@ CES-01/CES-02 forman una sola entrega: no añadir cesta sin exportarla, restaura
 | Fallo al migrar/escribir/restaurar | Sin estado parcial; anterior recuperable y error visible. |
 | Limpiar historial | Conservar fichas aún referenciadas por cesta/favoritos/precios según contrato. |
 | Borrar todo | Eliminar también cesta y datos derivados privados. |
-| Dos pestañas o instancias / diálogo abierto | No sobrescribir silenciosamente cambios ajenos; política comprobada con cada adaptador. Hoy la cola solo serializa por instancia. |
+| Dos pestañas o instancias / diálogo abierto | No sobrescribir silenciosamente cambios ajenos; política comprobada con cada adaptador. La iteración 9 añade comparación/escritura transaccional entre clientes y comprobación del estado confirmado. |
 | Retroceso de app | Cliente antiguo no modifica esquema desconocido; no recomendar reinstalar/downgrade como recuperación sin prueba. Preferir corrección compatible hacia delante. |
 
 Conservar copias de prueba sintéticas y verificar restauración web/Android, reinicio y offline. Los datos públicos permanecen separados; una futura caché pública tendrá pruebas de retención/borrado y no viajará como anotación privada en una copia.

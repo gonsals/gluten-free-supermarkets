@@ -8,6 +8,7 @@ import { normalizeBarcode } from '@/src/domain/barcode';
 import { glutenCopy } from '@/src/domain/product';
 import { compareQuotes, privateQuotes, quoteMoney } from '@/src/domain/comparison';
 import type { ProductSummary } from '@/src/data/local/library';
+import { AddToBasket } from '@/src/features/basket/AddToBasket';
 
 export default function PricesScreen() {
   const router = useRouter();
@@ -52,6 +53,12 @@ export default function PricesScreen() {
   return (
     <Screen>
       <Heading eyebrow="Tu compra, mejor de precio">Comparar precios</Heading>
+      <Action
+        title={`Mi cesta (${data.basket.length})`}
+        secondary
+        icon="basket-outline"
+        onPress={() => router.push('/basket')}
+      />
       <Copy muted>
         Busca un producto para consultar aportaciones públicas y tus anotaciones por tienda. La
         comparación usa el mismo código y envase; no es un catálogo completo ni garantiza
@@ -118,6 +125,7 @@ export default function PricesScreen() {
                 router.push({ pathname: '/prices/[barcode]', params: { barcode: item.barcode } })
               }
             />
+            <AddToBasket barcode={item.barcode} label={item.name} />
           </Card>
         );
       })}

@@ -2,9 +2,9 @@
 
 App de compra en **Expo 58, React 19 y React Native 0.88**, enfocada en comparar precios por producto y tienda con aportaciones públicas de Open Prices y anotaciones privadas. Conserva información sobre gluten como función adicional, escaneo y biblioteca sin conexión.
 
-**Prioridad elegida el 26-10-2026: comprar de forma más económica.** La comparación actual es por código y envase; la cesta completa y la comparación de alternativas por cantidad son siguientes pasos. [Alcance y fuentes](docs/COMPARADOR_DE_PRECIOS.md).
+**Prioridad elegida el 26-10-2026: comprar de forma más económica.** La comparación actual es por código y envase; la cesta local ya guarda cantidades. Los totales por establecimiento y las alternativas por cantidad son los siguientes pasos. [Alcance y fuentes](docs/COMPARADOR_DE_PRECIOS.md).
 
-**Estado: comparador por producto implementado; cesta pendiente.** La próxima entrega es cesta local con cantidades, migración, copias y borrado; después, totales por establecimiento con cobertura explícita. [Orden y criterios vigentes](docs/HOJA_DE_RUTA.md). No se ha publicado en tiendas. Firebase permanece como ampliación opcional desactivada, fuera del núcleo; [estado remoto](docs/FIREBASE_REAL.md).
+**Estado: comparador por producto y cesta local implementados.** Mi cesta permite guardar productos y cantidades, incluso sin precio, con migración y copias v2. La siguiente entrega será identidad de establecimiento y totales con cobertura explícita. [Orden y criterios vigentes](docs/HOJA_DE_RUTA.md). No se ha publicado en tiendas. Firebase permanece como ampliación opcional desactivada, fuera del núcleo; [estado remoto](docs/FIREBASE_REAL.md).
 
 ## Funcionalidades
 
@@ -16,6 +16,7 @@ App de compra en **Expo 58, React 19 y React Native 0.88**, enfocada en comparar
 - Favoritos e historial persistentes; búsqueda, listas acotadas y borrado. SQLite en móvil e IndexedDB en navegador.
 - Consulta de fichas guardadas sin conexión. La exportación web incluye un service worker que conserva el código de la app, separado de los datos privados.
 - Comparación por código y envase, con tienda, sucursal, fuente y fecha; lectura pública de Open Prices sin cuenta ni clave, separada de los precios privados.
+- Cesta privada de hasta 100 productos distintos y 99 envases enteros por producto, con entrada desde ficha/biblioteca/código, edición, recuperación y borrado. Todavía sin totales por supermercado.
 - Sugerencia editable de supermercado a partir de tiendas declaradas o marcas reconocidas; fechas, ofertas, cantidades y notas privadas.
 - Exportación, restauración transaccional y borrado de datos locales. Las copias se validan y muestran un resumen antes de sustituir la biblioteca; ayuda, atribución y privacidad dentro de la app.
 - Nube opcional: cuentas por correo, recuperación de contraseña, sincronización manual de favoritos, envío de precios a revisión, moderación autorizada y eliminación de cuenta.
@@ -84,6 +85,7 @@ La [hoja de ruta vigente](docs/HOJA_DE_RUTA.md) organiza los siguientes pasos y 
 | [Accesibilidad y datos](docs/ACCESIBILIDAD_Y_DATOS.md) | Iteración 5: confirmaciones desplazables, texto ampliado, teclado, estados accesibles y conservación de datos al actualizar. |
 | [Escáner y permisos](docs/ESCANER_Y_PERMISOS.md) | Iteración 6: errores y respuestas tardías de permisos, alternativa manual y ciclo de cámara/linterna. |
 | [Copias locales y recuperación](docs/COPIAS_LOCALES.md) | Iteración 7: formato versionado, validación de archivos, resumen y restauración sin nube ni cuenta. |
+| [Cesta local](docs/CESTA_LOCAL.md) | Iteración 9: cantidades, esquema y copias v2, migración y protección entre clientes. |
 | [Comparador de precios](docs/COMPARADOR_DE_PRECIOS.md) | Iteración 8: nueva prioridad, supermercados sugeridos, fuente pública integrada, comparación y cesta futura. |
 | [Dependencias y seguridad](docs/DEPENDENCIAS.md) | Versiones, decisiones de compatibilidad y avisos pendientes. |
 | [Despliegue y pruebas](docs/DESPLIEGUE_Y_PRUEBAS.md) | Configuración local, emuladores, nube, builds y operación. |

@@ -19,12 +19,14 @@ Base de código: **`638980a`**, iteración 8, rama `gonsals/mejoras`. [CI: cinco
 
 | Disponible | Límite actual |
 | --- | --- |
-| Comparador por GTIN y envase, fuentes públicas y privadas separadas, filtros de edad/ofertas/ubicación. | No hay cesta ni totales de compra; no equipara códigos distintos. |
+| Comparador por GTIN y envase, fuentes públicas y privadas separadas, filtros de edad/ofertas/ubicación. | Cesta local disponible en iteración 9; todavía sin totales de compra ni alternativas entre códigos distintos. |
 | Supermercado sugerido y editable al anotar un precio. | No acredita sucursal, stock ni precio nacional. |
 | Open Prices en lectura, sin cuenta ni clave; carga acotada. | Cobertura colaborativa sin garantía por zona; caché pública solo en memoria. |
-| Biblioteca local, favoritos, historial, precios privados, exportación y restauración. | Esquema y copia v1; la cesta requerirá migración y extensión del contrato. |
+| Biblioteca local, favoritos, historial, precios privados, exportación y restauración. | Iteración 9: esquema/copia v2 con cesta y migración desde v1. Validación física pendiente. |
 | Mesa, escáner, entrada manual y evidencia de gluten. | Naming, cámara física, revisión experta y accesibilidad nativa pendientes. |
 | 144 pruebas de app, 34 de seguridad, 23 recorridos web y APK Android emulada. | No equivalen a beta, iOS nativo ni validación con compras reales. |
+
+**Actualización de iteración 9:** CES-01/CES-02 implementadas técnicamente: cesta local, cantidades, migración y copias v2, borrado y protección entre clientes. 164 pruebas de app y 35 de seguridad; recorridos y límites en [Cesta local](CESTA_LOCAL.md). La CI enlazada arriba sigue acreditando solo `638980a`.
 
 Detalle: [Implementación](IMPLEMENTACION.md), [contrato del comparador](COMPARADOR_DE_PRECIOS.md), [copias locales](COPIAS_LOCALES.md). La APK interna usa firma de desarrollo. La nube opcional queda fuera del alcance local.
 
@@ -32,15 +34,15 @@ Detalle: [Implementación](IMPLEMENTACION.md), [contrato del comparador](COMPARA
 
 **P0**: bloqueo de seguridad o fiabilidad que debe resolverse antes de la distribución afectada. **P1**: núcleo del comparador y condiciones de beta. **P2**: ampliación tras validar el núcleo. **P3**: exploración sin compromiso. No hay fechas de entrega inventadas; el cierre exige criterios y evidencia.
 
-### Fase 1 · Cesta local persistente — siguiente iteración
+### Fase 1 · Cesta local persistente — implementada técnicamente
 
-Tareas **CES-01 y CES-02**, P1. Partir de productos consultados o guardados, añadir/quitar líneas y cambiar el número de envases. Admitir productos sin precio; explicar qué falta sin impedir preparar la lista. Propuesta inicial: una cesta activa, hasta 100 productos distintos y cantidades enteras de 1 a 99 envases, pendiente de contrastar en uso.
+Tareas **CES-01 y CES-02**, P1, entregadas en la iteración 9. [Contrato y evidencia](CESTA_LOCAL.md). Las pruebas físicas siguen en CAL-02. Partir de productos consultados o guardados, añadir/quitar líneas y cambiar el número de envases. Admitir productos sin precio; explicar qué falta sin impedir preparar la lista. Límites implementados: una cesta activa, hasta 100 productos distintos y cantidades enteras de 1 a 99 envases. Su utilidad sigue pendiente de contrastar en uso.
 
 La cesta forma parte de los datos personales: persistencia tras reinicio, exportación, restauración, borrado y migración desde v1 deben entregarse juntos. Mantener las fichas referenciadas por la cesta aunque se limpie el historial. No cambiar ni perder favoritos o precios existentes.
 
 **Cierre:** recorrido añadir → editar → cerrar → abrir sin red → exportar/restaurar → borrar probado en web y Android, con datos v1 y fallos de escritura. Cesta todavía sin ranking de totales hasta la fase 2. Contrato y recuperación en [Arquitectura](ARQUITECTURA.md).
 
-### Fase 2 · Comparar el total por establecimiento
+### Fase 2 · Comparar el total por establecimiento — siguiente iteración
 
 Tareas **TIE-01 y CES-03**, P1; dependen de la cesta y sus datos seguros. Distinguir cadena, sucursal física y observación sin localización suficiente. Asociar referencias privadas y públicas solo mediante vínculo explícito verificable; no agrupar por un nombre parecido.
 
@@ -116,4 +118,4 @@ Cada tarea del [backlog](PLAN_MEJORAS.md) tiene ID estable, prioridad, estado, d
 | 26-10-2026 | Investigar también fuentes públicas; Open Prices integrado con límites y separación de datos privados. |
 | 26-10-2026 | Nuevo orden: cesta segura → total por establecimiento → formatos/alternativas → validación → beta. Cobertura y seguridad acompañan todas las fases. |
 
-Esta actualización reorganiza documentación. **La siguiente implementación es CES-01 + CES-02; no se da por construida la cesta.**
+**Siguiente implementación: TIE-01 + CES-03**, identidad de establecimiento y totales completos/parciales. CES-01/CES-02 ya cuentan con implementación y pruebas técnicas en la iteración 9; validación física y de uso todavía pendiente. DAT-01 puede medirse en paralelo.

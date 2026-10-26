@@ -13,6 +13,7 @@ import { Action, Card, Copy, Heading, Screen } from '@/src/shared/ui';
 import { typography, usePalette } from '@/src/shared/theme';
 import { reportTechnicalEvent } from '@/src/shared/telemetry';
 import { OfflineSupport } from '@/src/shared/OfflineSupport';
+import { LibraryLifecycle } from '@/src/features/library/LibraryLifecycle';
 
 export function ErrorBoundary({ retry }: ErrorBoundaryProps) {
   useEffect(() => {
@@ -39,6 +40,7 @@ export default function RootLayout() {
   return (
     <SafeAreaProvider>
       <OfflineSupport />
+      <LibraryLifecycle />
       <ThemeProvider
         value={{
           ...navigationTheme,
@@ -66,6 +68,7 @@ export default function RootLayout() {
           <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
           <Stack.Screen name="product/[barcode]" options={{ title: 'Detalle del producto' }} />
           <Stack.Screen name="prices/[barcode]" options={{ title: 'Comparar precios' }} />
+          <Stack.Screen name="basket" options={{ title: 'Mi cesta' }} />
           <Stack.Screen name="moderation" options={{ title: 'Revisión de contribuciones' }} />
           <Stack.Screen name="results-guide" options={{ title: 'Guía de resultados' }} />
           <Stack.Screen name="+not-found" options={{ title: 'Página no encontrada' }} />

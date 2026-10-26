@@ -7,6 +7,7 @@ import { SharedPrices } from '@/src/features/prices/SharedPrices';
 import { Action, Copy, Heading, Notice, Screen } from '@/src/shared/ui';
 import { PriceComparison } from '@/src/features/prices/PriceComparison';
 import { useCachedProduct } from '@/src/features/products/useCachedProduct';
+import { AddToBasket } from '@/src/features/basket/AddToBasket';
 
 export default function ProductPricesScreen() {
   const { barcode } = useLocalSearchParams<{ barcode: string }>();
@@ -32,6 +33,13 @@ function ProductPrices({ barcode }: { barcode: string }) {
       </Copy>
       {valid ? (
         <>
+          <AddToBasket barcode={barcode} product={product ?? undefined} />
+          <Action
+            title={`Mi cesta (${data.basket.length})`}
+            secondary
+            icon="basket-outline"
+            onPress={() => router.push('/basket')}
+          />
           <PriceComparison barcode={barcode} prices={prices} />
           <Action
             title="Ver ficha e información sobre gluten"

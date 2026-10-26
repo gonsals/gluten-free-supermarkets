@@ -20,7 +20,7 @@ interface PendingBackup {
 }
 export function LibraryDataPanel() {
   const { repository, ready, error, data } = useLibrary();
-  const [confirmDelete, setConfirmDelete] = useState(false);
+  const [confirmDelete, setConfirmDelete] = useState<LibraryData | null>(null);
   const [pending, setPending] = useState<PendingBackup | null>(null);
   const [message, setMessage] = useState('');
   const [failed, setFailed] = useState(false);
@@ -32,7 +32,7 @@ export function LibraryDataPanel() {
       () => () => {
         generation.current++;
         setPending(null);
-        setConfirmDelete(false);
+        setConfirmDelete(null);
       },
       [],
     ),
@@ -66,9 +66,9 @@ export function LibraryDataPanel() {
           );
         }
       } else if (action === 'delete') {
-        await repository.clearAll();
+        await repository.clearAll(confirmDelete ?? undefined);
         if (token === generation.current) {
-          setConfirmDelete(false);
+          setConfirmDelete(null);
           setMessage(
             'Datos locales eliminados. Esto no elimina una cuenta ni los favoritos ya sincronizados.',
           );
@@ -99,25 +99,28 @@ export function LibraryDataPanel() {
   }
   const count = (value: LibraryData) => {
     const favorites = Object.values(value.favorites).filter((item) => !item.deleted).length;
-    return `${value.history.length} ${value.history.length === 1 ? 'consulta' : 'consultas'}, ${favorites} ${favorites === 1 ? 'favorito' : 'favoritos'} y ${value.prices.length} ${value.prices.length === 1 ? 'precio privado' : 'precios privados'}`;
+    const packages = value.basket.reduce((total, line) => total + line.quantity, 0);
+    return `${value.history.length} ${value.history.length === 1 ? 'consulta' : 'consultas'}, ${favorites} ${favorites === 1 ? 'favorito' : 'favoritos'} y ${value.prices.length} ${value.prices.length === 1 ? 'precio privado' : 'precios privados'}; cesta: ${value.basket.length} ${value.basket.length === 1 ? 'producto' : 'productos'} y ${packages} ${packages === 1 ? 'envase' : 'envases'}`;
   };
   return (
     <>
       <Card>
         <Copy>Biblioteca y privacidad</Copy>
         <Copy muted>
-          Las consultas y anotaciones privadas se guardan en este dispositivo. La nube está{' '}
+          La cesta, consultas y anotaciones privadas se guardan en este dispositivo. La nube está{' '}
           {config.cloudEnabled ? 'activada para funciones opcionales' : 'desactivada'}. El historial
           no se sube al sincronizar favoritos.
         </Copy>
         <Copy muted>
-          Conservamos hasta 1.000 consultas, 250 favoritos activos y 1.000 precios privados.
-          Desinstalar la app o borrar los datos del navegador puede eliminarlos.
+          Conservamos hasta 1.000 consultas, 250 favoritos activos, 1.000 precios privados y una
+          cesta de hasta 100 productos con 99 envases por producto. Desinstalar la app o borrar los
+          datos del navegador puede eliminarlos.
         </Copy>
         <Copy muted>
           Exporta una copia para conservarlos o trasladarlos. Restaurar una copia sustituye toda la
           biblioteca local. Aceptamos archivos JSON de SinGluten de hasta 20 MB; revisa el resumen
-          antes de confirmar. Las copias no están cifradas.
+          antes de confirmar. Las copias v2 incluyen la cesta; las antiguas v1 se restauran con la
+          cesta vacía. Una app antigua no abre copias v2. Las copias no están cifradas.
         </Copy>
         <Action
           title="Exportar mis datos"
@@ -137,18 +140,25 @@ export function LibraryDataPanel() {
           title="Borrar todos los datos locales"
           secondary
           danger
-          onPress={() => setConfirmDelete(true)}
+          onPress={() => setConfirmDelete(data)}
           disabled={!ready || busy}
         />
         {busy ? <Notice>Operación en curso…</Notice> : null}
         {error ? <Notice error>{error}</Notice> : null}
+        {!ready && error ? (
+          <Action
+            title="Reintentar abrir biblioteca"
+            secondary
+            onPress={() => void repository.refresh()}
+          />
+        ) : null}
         {message ? <Notice error={failed}>{message}</Notice> : null}
       </Card>
       <Confirm
         title="Borrar biblioteca local"
-        visible={confirmDelete}
-        message="Se borrarán historial, favoritos, fichas y precios privados de este dispositivo. Exporta primero los datos que quieras conservar. Los favoritos remotos no se eliminan."
-        onCancel={() => setConfirmDelete(false)}
+        visible={confirmDelete !== null}
+        message="Se borrarán cesta, historial, favoritos, fichas y precios privados de este dispositivo. Exporta primero los datos que quieras conservar. Los favoritos remotos no se eliminan."
+        onCancel={() => setConfirmDelete(null)}
         onConfirm={() => void run('delete')}
         busy={busy}
       />

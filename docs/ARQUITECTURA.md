@@ -17,13 +17,13 @@ Actualizada el **26-10-2026**. Distingue la base implementada en `638980a` del d
 
 Expo 58 / React Native 0.88 / React 19, TypeScript y Node/npm fijados. [Versiones y deuda de seguridad](DEPENDENCIAS.md). Las pantallas no interpretan directamente los JSON externos ni hacen de autoridad monetaria o de gluten; esas reglas pertenecen al dominio y a adaptadores comprobables.
 
-## Persistencia y límites actuales
+## Persistencia y límites actuales — iteración 9
 
-Biblioteca `LibraryData` **versión 1**, separada por entorno de Open Food Facts (`library:${offEnv}:v1`). Historial máximo de 1.000, 250 favoritos activos y 1.000 anotaciones privadas de precio. La retención de fichas se basa en referencias de historial/favoritos y un margen acotado; **la futura cesta debe incorporarse a esa política**, no asumir que ya está contemplada.
+Biblioteca `LibraryData` **versión 2**, separada por entorno de Open Food Facts (`library:${offEnv}:v1`). Historial máximo de 1.000, 250 favoritos activos y 1.000 anotaciones privadas de precio. La retención de fichas se basa en referencias de historial/favoritos y un margen acotado; **la cesta y los precios privados ya se incorporan a esa política en la iteración 9**.
 
-Las operaciones se serializan por instancia del repositorio y la escritura del snapshot es transaccional. La restauración comprueba el snapshot esperado dentro de ese alcance. Esto no garantiza por sí solo exclusión global entre pestañas o instancias; la evolución de datos debe definir y probar su política de concurrencia.
+Las operaciones se serializan por instancia y leen la raíz actual antes de cada mutación. La comparación de raíz esperada y la escritura de metadatos/fichas son atómicas en SQLite/IndexedDB. Un conflicto se muestra sin sobrescribir; se comprueban además cantidades/cesta/snapshot de acciones destructivas. La iteración 9 prueba dos instancias y dos pestañas. El refresco al cambiar de ruta/foco no es sincronización instantánea entre ventanas.
 
-Copias actuales: `format: sin-gluten-library`, `backupVersion: 1`, datos `version: 1`; validación de hasta 20 MiB, códigos, fechas, referencias y límites. Restauración completa confirmada, sin fusión; conserva fechas, recalcula evaluación y elimina vinculación de cuenta. [Contrato completo](COPIAS_LOCALES.md). El nombre del formato es un identificador técnico que no se cambia por decidir un nombre comercial.
+Copias actuales: `format: sin-gluten-library`, `backupVersion: 2`, datos `version: 2`, cesta incluida e importación compatible con v1; validación de hasta 20 MiB, códigos, fechas, referencias y límites. Restauración completa confirmada, sin fusión; conserva fechas, recalcula evaluación y elimina vinculación de cuenta. [Contrato completo](COPIAS_LOCALES.md). El nombre del formato es un identificador técnico que no se cambia por decidir un nombre comercial.
 
 Los precios públicos no se guardan en la biblioteca ni se incluyen en sus copias. Su caché actual vive en memoria cinco minutos, hasta cien páginas. Mantener el dato externo separado del contenido privado es un límite de arquitectura y de procedencia.
 
@@ -43,20 +43,20 @@ Open Prices: solo GET, EUR, GTIN validado/equivalente, hasta 50 resultados por p
 
 El fallo público no bloquea la biblioteca privada. El modo offline conserva las fichas y anotaciones guardadas; no hay caché pública persistente ni nuevos precios sin conexión. Fuente, fecha, condiciones y cobertura no pueden perderse al pasar del adaptador a la pantalla.
 
-## Diseño objetivo: cesta y migración — CES-01/CES-02
+## Cesta y migración implementadas — CES-01/CES-02
 
-Diseño pendiente, no contratos ya implementados. Una cesta activa con ID estable, líneas referenciadas por GTIN y cantidad entera de envases; propuesta inicial de 100 líneas y 1–99 envases. No duplicar fichas completas dentro de cada línea ni persistir totales como autoridad: derivarlos de líneas, observaciones y filtros.
+Una cesta activa con líneas referenciadas por GTIN, nombre de resumen, fecha de alta y cantidad entera de envases; límites de 100 líneas y 1–99 envases. No duplicar fichas completas dentro de cada línea ni persistir totales como autoridad: derivarlos de líneas, observaciones y filtros.
 
-La entrega debe introducir **esquema de datos y copia v2**, con migración probada desde v1 y cesta inicialmente vacía. La ubicación física y clave de almacenamiento se fijarán al implementar, con detección de versión que impida a un cliente antiguo sobrescribir el contenido nuevo. No basta con añadir una propiedad opcional que un importador antiguo pueda ignorar.
+La entrega introduce **esquema de datos y copia v2**, con migración desde v1 y cesta inicialmente vacía. Se conserva la clave física histórica `library:${offEnv}:v1` y las fichas; el campo interno marca versión 2. SQLite incorpora triggers contra regresión de versión; IndexedDB se abre con versión física 2, bloqueando clientes v1 y mostrando salida útil si mantienen conexiones abiertas. [Contrato, política y evidencia](CESTA_LOCAL.md).
 
-Requisitos de migración/recuperación:
+Contrato de migración/recuperación implementado, con verificación técnica en [Cesta local](CESTA_LOCAL.md) y validación física pendiente:
 
 1. Validar la versión antes de escribir; no modificar datos desconocidos. No migrar repetidamente en cada arranque.
 2. Preparar transformación íntegra y confirmar en transacción. Un fallo conserva la versión anterior recuperable y muestra una salida útil.
 3. Importar copias v1 crea cesta vacía; importar/exportar v2 preserva líneas, cantidades y referencias. Rechazar versiones desconocidas sin sustituir la biblioteca.
 4. Una app antigua debe rechazar una copia v2; verificarlo con su lector real. Definir barrera entre clientes activos y plan de recuperación/actualización hacia delante; no recomendar downgrade que borre datos nuevos.
 5. Incluir cesta en exportación, resumen de restauración y borrado completo; limpiar historial conserva lo aún referenciado por cesta/favoritos/precios según contrato de retención.
-6. Probar dos instancias/pestañas, cambio durante un diálogo y fallo de almacenamiento. Elegir transacción con control de revisión o exclusión entre clientes según adaptador; no dar por suficiente la cola por instancia.
+6. Probar dos instancias/pestañas, cambio durante un diálogo y fallo de almacenamiento. Comparar la raíz serializada en la transacción de cada adaptador; la cola por instancia se mantiene, pero no es la única protección.
 
 No subir cesta a Firebase. Cancelación, límites y política de borrado pertenecen al mismo contrato que el resto de datos privados.
 

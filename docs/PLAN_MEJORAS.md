@@ -14,10 +14,12 @@ Actualizado el **26-10-2026**, conforme al enfoque acordado. La [hoja de ruta](H
 | ID | Prioridad / estado | Dependencias | Trabajo y aceptación |
 | --- | --- | --- | --- |
 | CMP-00 | P1 / verificada técnicamente | — | Iteración 8: comparación del mismo GTIN/envase, sugerencia de tienda, Open Prices separado de anotaciones, Mesa y biblioteca. 144 pruebas de app, 34 de seguridad y 23 recorridos web; [CI con cinco controles correctos](https://github.com/gonsals/gluten-free-supermarkets/actions/runs/40270570028). Sin cesta, cobertura nacional demostrada ni validación física. [Contrato](COMPARADOR_DE_PRECIOS.md). |
-| CES-01 | P1 / pendiente; siguiente | CMP-00 | Una cesta activa: añadir desde producto/biblioteca, editar número de envases, quitar y vaciar con confirmación. Propuesta: 100 líneas distintas y 1–99 envases enteros; agrupar mismo GTIN sin duplicados. Admitir falta de ficha o precio y explicar el dato ausente. Acciones accesibles y funcionamiento local. No mostrar todavía totales por tienda. |
-| CES-02 | P1 / pendiente; misma entrega | CMP-00 | Versionar esquema y copia para la cesta, migrar v1 con cesta vacía, exportar/restaurar/borrar y conservar fichas referenciadas. Probar reinicio offline, archivo v1/v2, fallo de escritura, actualización y clientes incompatibles sin pérdida silenciosa. Documentar límites y política de concurrencia. CES-01 y CES-02 se cierran juntas. |
+| CES-01 | P1 / verificada técnicamente, iteración 9 | CMP-00 | Una cesta activa: añadir desde producto/biblioteca, editar número de envases, quitar y vaciar con confirmación. Propuesta: 100 líneas distintas y 1–99 envases enteros; agrupar mismo GTIN sin duplicados. Admitir falta de ficha o precio y explicar el dato ausente. Acciones accesibles y funcionamiento local. No mostrar todavía totales por tienda. |
+| CES-02 | P1 / verificada técnicamente, iteración 9 | CMP-00 | Versionar esquema y copia para la cesta, migrar v1 con cesta vacía, exportar/restaurar/borrar y conservar fichas referenciadas. Probar reinicio offline, archivo v1/v2, fallo de escritura, actualización y clientes incompatibles sin pérdida silenciosa. Documentar límites y política de concurrencia. CES-01 y CES-02 se cierran juntas. |
 
-## Total por establecimiento y cobertura
+Evidencia CES-01/CES-02: [Cesta local](CESTA_LOCAL.md), con 164 pruebas de app, 35 de seguridad y siete recorridos web nuevos. Incluye migración, copia v2, versión anterior y conflictos entre clientes. CAL-02 mantiene la validación física pendiente.
+
+## Total por establecimiento y cobertura — siguiente entrega
 
 | ID | Prioridad / estado | Dependencias | Trabajo y aceptación |
 | --- | --- | --- | --- |
@@ -76,4 +78,4 @@ Los IDs de este backlog tienen prefijos nuevos para evitar reutilizar los del [p
 
 ## Regla de cierre
 
-Registrar por tarea: responsable real, commit, criterio cumplido, comprobaciones, límites y fecha. Cambiar el estado solo tras revisar esa evidencia. La próxima entrega técnica concreta es **CES-01 + CES-02**; DAT-01 puede investigarse en paralelo. Este documento no da por comenzada una implementación por haberla planificado.
+Registrar por tarea: responsable real, commit, criterio cumplido, comprobaciones, límites y fecha. Cambiar el estado solo tras revisar esa evidencia. La próxima entrega técnica concreta es **TIE-01 + CES-03**; DAT-01 puede investigarse en paralelo. CES-01/CES-02 se entregaron técnicamente en la iteración 9; las validaciones físicas/de uso permanecen en CAL-02/BET-01.

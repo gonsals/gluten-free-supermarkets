@@ -5,6 +5,7 @@ import { Image, Linking, Text, View } from 'react-native';
 import { glutenCopy, type Product } from '@/src/domain/product';
 import { traceDescription } from '@/src/domain/display';
 import { evidenceFields } from '@/src/domain/evidence';
+import { AddToBasket } from '@/src/features/basket/AddToBasket';
 import { AppError, errorCopy } from '@/src/domain/errors';
 import { useLibrary } from '@/src/features/library/useLibrary';
 import { Action, Card, Copy, Notice } from '@/src/shared/ui';
@@ -104,6 +105,7 @@ export function ProductCard({
         {onPrices ? (
           <Action title="Comparar precios y anotar" onPress={onPrices} icon="pricetags-outline" />
         ) : null}
+        <AddToBasket barcode={product.barcode} product={product} />
         <View
           style={{
             padding: 18,

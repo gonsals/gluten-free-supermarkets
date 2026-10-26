@@ -44,6 +44,12 @@ export default function HomeScreen() {
           onPress={() => router.navigate('/prices')}
         />
         <Action
+          title={`Mi cesta (${data.basket.length})`}
+          icon="basket-outline"
+          secondary
+          onPress={() => router.push('/basket')}
+        />
+        <Action
           title="Escanear un producto"
           secondary
           icon="scan-outline"

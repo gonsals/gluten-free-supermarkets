@@ -9,6 +9,14 @@ import {
 } from '@/src/domain/product';
 import { isPriceObservation, validatePrice, type PriceObservation } from '@/src/domain/price';
 import type { KeyValueStorage } from './storage.types';
+import { StorageConflict, StorageUpgradeBlocked } from './storage.types';
+import { normalizeBarcode, sameGtin } from '@/src/domain/barcode';
+import {
+  isBasket,
+  validBasketQuantity,
+  MAX_BASKET_LINES,
+  type BasketLine,
+} from '@/src/domain/basket';
 import { BACKUP_FORMAT, parseLibraryBackup } from './backup';
 
 export interface ProductSummary {
@@ -27,7 +35,9 @@ export interface Favorite extends ProductSummary {
   deleted: boolean;
 }
 export interface LibraryData {
-  version: 1;
+  version: 2;
+  revision: number;
+  basket: BasketLine[];
   history: HistoryEntry[];
   favorites: Record<string, Favorite>;
   cache: Record<string, string>;
@@ -40,7 +50,9 @@ export interface LibrarySnapshot {
   error: string | null;
 }
 const fresh = (): LibraryData => ({
-  version: 1,
+  version: 2,
+  revision: 0,
+  basket: [],
   history: [],
   favorites: {},
   cache: {},
@@ -59,7 +71,9 @@ export function summary(p: Product): ProductSummary {
 export function operationId(): string {
   return `${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 10)}-${Math.random().toString(36).slice(2, 10)}`;
 }
-function validData(value: unknown): value is LibraryData {
+function validData(
+  value: unknown,
+): value is LibraryData | (Omit<LibraryData, 'version' | 'revision' | 'basket'> & { version: 1 }) {
   const validSummary = (item: unknown) =>
     record(item) &&
     typeof item.barcode === 'string' &&
@@ -71,7 +85,11 @@ function validData(value: unknown): value is LibraryData {
     typeof item.fetchedAt === 'string';
   return (
     record(value) &&
-    value.version === 1 &&
+    (value.version === 1 ||
+      (value.version === 2 &&
+        Number.isSafeInteger(value.revision) &&
+        Number(value.revision) >= 0 &&
+        isBasket(value.basket))) &&
     Array.isArray(value.history) &&
     value.history.length <= 1000 &&
     value.history.every(
@@ -100,6 +118,7 @@ export class LibraryRepository {
   private queue: Promise<unknown> = Promise.resolve();
   private loadPromise: Promise<void> | undefined;
   private readonly key: string;
+  private raw: string | null | undefined;
   constructor(
     private store: KeyValueStorage,
     namespace: string,
@@ -119,21 +138,45 @@ export class LibraryRepository {
   }
   async load(): Promise<void> {
     if (this.snapshot.ready) return;
-    this.loadPromise ??= (async () => {
-      try {
-        const raw = await this.store.get(this.key);
-        const data: unknown = raw ? JSON.parse(raw) : fresh();
-        if (!validData(data)) throw new Error('Unsupported local schema');
-        this.publish({ ready: true, data, error: null });
-      } catch {
-        this.publish({
-          ...this.snapshot,
-          error: 'No se ha podido abrir tu biblioteca. Tus datos no se han sobrescrito.',
-        });
-        this.loadPromise = undefined;
-      }
-    })();
+    this.loadPromise ??= this.refresh().finally(() => {
+      this.loadPromise = undefined;
+    });
     return this.loadPromise;
+  }
+  private async readLatest(): Promise<void> {
+    let raw = await this.store.get(this.key);
+    if (this.snapshot.ready && raw === this.raw) return;
+    const value: unknown = raw ? JSON.parse(raw) : fresh();
+    if (!validData(value)) throw new AppError('storage_error');
+    let data: LibraryData;
+    if (value.version === 1) {
+      data = { ...value, version: 2, revision: 0, basket: [] };
+      const migrated = JSON.stringify(data);
+      await this.store.commit({ [this.key]: migrated }, [], { [this.key]: raw });
+      raw = migrated;
+    } else data = value;
+    this.raw = raw;
+    this.publish({ ready: true, data, error: null });
+  }
+  refresh(): Promise<void> {
+    const next = this.queue
+      .catch(() => undefined)
+      .then(async () => {
+        try {
+          await this.readLatest();
+        } catch (error) {
+          this.publish({
+            ...this.snapshot,
+            ready: false,
+            error:
+              error instanceof StorageUpgradeBlocked
+                ? error.message
+                : 'No se ha podido actualizar tu biblioteca. Tus datos no se han sobrescrito.',
+          });
+        }
+      });
+    this.queue = next;
+    return next;
   }
   private async mutate(
     update: (data: LibraryData) => void,
@@ -143,10 +186,17 @@ export class LibraryRepository {
     const next = this.queue
       .catch(() => undefined)
       .then(async () => {
-        await this.load();
+        try {
+          await this.readLatest();
+        } catch (error) {
+          if (error instanceof StorageConflict) throw error;
+          throw new AppError('storage_error');
+        }
         if (!this.snapshot.ready) throw new AppError('storage_error');
         const data: LibraryData = JSON.parse(JSON.stringify(this.snapshot.data));
         update(data);
+        data.revision = this.snapshot.data.revision + 1;
+        if (!Number.isSafeInteger(data.revision)) throw new AppError('storage_error');
         const values: Record<string, string> = { [this.key]: JSON.stringify(data) };
         products.forEach((product) => {
           values[this.productKey(product.barcode)] = JSON.stringify(product);
@@ -155,10 +205,16 @@ export class LibraryRepository {
           await this.store.commit(
             values,
             removals.map((code) => this.productKey(code)),
+            { [this.key]: this.raw ?? null },
           );
-        } catch {
+        } catch (error) {
+          if (error instanceof StorageConflict) {
+            await this.readLatest();
+            throw error;
+          }
           throw new AppError('storage_error');
         }
+        this.raw = values[this.key];
         this.publish({ ready: true, data, error: null });
       });
     this.queue = next;
@@ -191,8 +247,13 @@ export class LibraryRepository {
             ...data.favorites[product.barcode],
             ...summary(product),
           };
+        data.basket.forEach((line) => {
+          if (sameGtin(line.barcode, product.barcode)) line.name = product.name;
+        });
         const retained = new Set([
           ...data.history.map((x) => x.barcode),
+          ...data.basket.map((x) => x.barcode),
+          ...data.prices.map((x) => x.barcode),
           ...Object.values(data.favorites)
             .filter((x) => !x.deleted)
             .map((x) => x.barcode),
@@ -232,7 +293,11 @@ export class LibraryRepository {
       (data) => {
         data.history = [];
         for (const code of Object.keys(data.cache))
-          if (!data.favorites[code] || data.favorites[code].deleted) {
+          if (
+            (!data.favorites[code] || data.favorites[code].deleted) &&
+            !data.basket.some((line) => line.barcode === code) &&
+            !data.prices.some((price) => price.barcode === code)
+          ) {
             delete data.cache[code];
             removals.push(code);
           }
@@ -255,6 +320,56 @@ export class LibraryRepository {
   deletePrice(id: string): Promise<void> {
     return this.mutate((data) => {
       data.prices = data.prices.filter((x) => x.id !== id);
+    });
+  }
+  async addToBasket(input: string, product?: Product | null): Promise<void> {
+    const code = normalizeBarcode(input);
+    if (product && product.barcode !== code) throw new Error('La ficha no corresponde al código.');
+    const products: Product[] = [];
+    return this.mutate((data) => {
+      const existing = data.basket.find((line) => sameGtin(line.barcode, code));
+      if (existing) {
+        if (!validBasketQuantity(existing.quantity + 1))
+          throw new Error('Puedes añadir hasta 99 envases por producto.');
+        existing.quantity++;
+      } else {
+        if (data.basket.length >= MAX_BASKET_LINES)
+          throw new Error(
+            'La cesta admite hasta 100 productos distintos. Quita alguno para añadir otro.',
+          );
+        data.basket.push({
+          barcode: code,
+          quantity: 1,
+          name: product?.name ?? null,
+          addedAt: new Date().toISOString(),
+        });
+      }
+      if (product && (!data.cache[code] || data.cache[code] <= product.source.fetchedAt)) {
+        data.cache[code] = product.source.fetchedAt;
+        products.push(product);
+      }
+    }, products);
+  }
+  setBasketQuantity(code: string, quantity: number, expectedQuantity: number): Promise<void> {
+    if (!validBasketQuantity(quantity))
+      return Promise.reject(new Error('Introduce entre 1 y 99 envases enteros.'));
+    return this.mutate((data) => {
+      const line = data.basket.find((item) => item.barcode === code);
+      if (!line || line.quantity !== expectedQuantity) throw new StorageConflict();
+      line.quantity = quantity;
+    });
+  }
+  removeFromBasket(code: string, expectedQuantity: number): Promise<void> {
+    return this.mutate((data) => {
+      const line = data.basket.find((item) => item.barcode === code);
+      if (!line || line.quantity !== expectedQuantity) throw new StorageConflict();
+      data.basket = data.basket.filter((item) => item !== line);
+    });
+  }
+  clearBasket(expected: BasketLine[]): Promise<void> {
+    return this.mutate((data) => {
+      if (JSON.stringify(data.basket) !== JSON.stringify(expected)) throw new StorageConflict();
+      data.basket = [];
     });
   }
   async importFavorites(owner: string, favorites: Favorite[], products: Product[]): Promise<void> {
@@ -292,7 +407,7 @@ export class LibraryRepository {
     const next = this.queue
       .catch(() => undefined)
       .then(async () => {
-        await this.load();
+        await this.readLatest();
         if (!this.snapshot.ready) throw new AppError('storage_error');
         const data = this.snapshot.data;
         const products = await Promise.all(
@@ -303,9 +418,10 @@ export class LibraryRepository {
         const contents = JSON.stringify(
           {
             format: BACKUP_FORMAT,
-            backupVersion: 1,
+            backupVersion: 2,
             exportedAt: new Date().toISOString(),
             ...data,
+            revision: undefined,
             favorites: Object.fromEntries(
               Object.entries(data.favorites).filter(([, item]) => !item.deleted),
             ),
@@ -317,6 +433,8 @@ export class LibraryRepository {
         );
         // Never offer a backup that this version cannot restore.
         parseLibraryBackup(contents);
+        // Metadata and product reads must still belong to the same revision.
+        await this.store.commit({}, [], { [this.key]: this.raw ?? null });
         return contents;
       });
     this.queue = next;
@@ -349,10 +467,11 @@ export class LibraryRepository {
       removals,
     );
   }
-  async clearAll(): Promise<void> {
+  async clearAll(expectedData?: LibraryData): Promise<void> {
     const codes: string[] = [];
     return this.mutate(
       (data) => {
+        if (expectedData && this.snapshot.data !== expectedData) throw new StorageConflict();
         codes.push(...Object.keys(data.cache));
         Object.assign(data, fresh());
       },

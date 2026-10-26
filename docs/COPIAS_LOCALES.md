@@ -1,12 +1,12 @@
 # Copias locales y recuperación
 
-> **Planificación actualizada 26-10-2026.** Contrato v1 y evidencia de la iteración 7. La cesta todavía no existe; CES-02 ampliará esquema, copias, migración y borrado en una futura entrega. [Hoja de ruta vigente](HOJA_DE_RUTA.md) · [Backlog](PLAN_MEJORAS.md).
+> **Planificación actualizada 26-10-2026.** Contrato original y evidencia de la iteración 7, ampliados por [Cesta local](CESTA_LOCAL.md) en la iteración 9: esquema/copia v2 con cesta e importación v1. Los resultados históricos de pruebas se conservan con su fecha. [Hoja de ruta vigente](HOJA_DE_RUTA.md) · [Backlog](PLAN_MEJORAS.md).
 
 Iteración 7 · 25 de octubre de 2026. Implementación de F-03 de la hoja de ruta para recuperar o trasladar la biblioteca sin cuenta ni backend. La nube permanece desactivada.
 
 ## Uso
 
-1. En **Ajustes → Exportar mis datos**, guardar `sin-gluten-datos.json` en un lugar seguro. El archivo contiene consultas, favoritos, fichas y precios privados; no está cifrado.
+1. En **Ajustes → Exportar mis datos**, guardar `sin-gluten-datos.json` en un lugar seguro. El archivo contiene cesta, consultas, favoritos, fichas y precios privados; no está cifrado.
 2. En el dispositivo de destino, abrir **Ajustes → Restaurar una copia** y seleccionar el JSON. La selección no modifica la biblioteca.
 3. Revisar la fecha de exportación, las cantidades de datos de la copia y las cantidades actuales. Cancelar descarta la selección.
 4. **Sustituir y restaurar** reemplaza toda la biblioteca local. Exportar antes los datos actuales que se quieran conservar. La operación no combina bibliotecas ni elige datos más recientes entre ambas.
@@ -19,7 +19,7 @@ No se hacen consultas de productos durante la restauración. Funciona sin conexi
 
 ## Contrato y compatibilidad
 
-Las nuevas exportaciones añaden `format: "sin-gluten-library"` y `backupVersion: 1`. Conservan `version: 1` del almacenamiento y los campos `exportedAt`, `history`, `favorites`, `cache`, `prices` y `products`. Se aceptan también las exportaciones completas de versión 1 del MVP anterior, sin esos dos marcadores. Una versión o formato desconocidos se rechazan; no se intenta adivinar una migración.
+Desde la iteración 9 las exportaciones usan `format: "sin-gluten-library"`, `backupVersion: 2` y datos `version: 2`, con `basket` además de `exportedAt`, `history`, `favorites`, `cache`, `prices` y `products`. La revisión local no se exporta. Se aceptan copias v1 marcadas y exportaciones completas originales sin marcadores, migrándolas a v2 con cesta vacía; sustituir con v1 deja vacía la cesta actual, visible en el resumen. Las combinaciones incoherentes, v1 con cesta y versiones futuras se rechazan. Una app v1 rechaza copias v2; usar una versión compatible para recuperarlas.
 
 `cloudOwner` se exporta como `null`, aunque la biblioteca estuviera vinculada a una cuenta. El valor que contenga una copia antigua se ignora. Nunca se heredan cuentas, sesiones, credenciales ni configuración. La restauración se rechaza si la biblioteca de destino está vinculada a una cuenta: primero hay que exportar y borrar sus datos locales mediante la acción ya existente. No se eliminan favoritos remotos ni se sincroniza automáticamente.
 
@@ -30,7 +30,7 @@ La restauración recupera favoritos activos. Las nuevas exportaciones omiten las
 | Control | Comportamiento |
 | --- | --- |
 | Archivo | JSON UTF-8, con BOM opcional; máximo 20 × 1.024 × 1.024 bytes. La interfaz expresa este límite como 20 MB. No se admiten ZIP, scripts ni URLs de descarga. |
-| Cantidades | Hasta 1.000 consultas, 250 favoritos activos, 1.000 precios y 2.000 fichas/códigos de caché. Se acotan además a 10.000 las marcas de favoritos recibidas, incluidas las borradas. |
+| Cantidades | Hasta 1.000 consultas, 250 favoritos activos, 1.000 precios, 2.500 fichas/códigos de caché y cesta de 100 GTIN distintos con 1–99 envases enteros por línea. Se acotan además a 10.000 las marcas de favoritos recibidas, incluidas las borradas. |
 | Códigos | GTIN canónico de 8, 12, 13 o 14 dígitos, con dígito de control correcto y ceros iniciales conservados. |
 | Referencias | Una ficha por código; caché y fichas coinciden en código y fecha. Toda consulta y favorito activo debe tener ficha. IDs de consultas y precios sin duplicados. |
 | Productos | Esquema reconocido, límites de texto y listas, imágenes permitidas, proveedor Open Food Facts y URL exacta coherente con código y entorno. |
