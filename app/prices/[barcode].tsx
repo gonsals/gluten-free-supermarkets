@@ -1,52 +1,45 @@
-import { useLocalSearchParams } from 'expo-router';
-import { useState } from 'react';
-import { normalizeBarcode } from '@/src/domain/barcode';
-import { isPriceCurrent, money } from '@/src/domain/price';
+import { useLocalSearchParams, useRouter } from 'expo-router';
+import { normalizeBarcode, sameGtin } from '@/src/domain/barcode';
 import { useLibrary } from '@/src/features/library/useLibrary';
 import { PriceForm } from '@/src/features/prices/PriceForm';
 import { PriceList } from '@/src/features/prices/PriceList';
 import { SharedPrices } from '@/src/features/prices/SharedPrices';
-import { Card, Copy, Field, Heading, Notice, Screen } from '@/src/shared/ui';
+import { Action, Copy, Heading, Notice, Screen } from '@/src/shared/ui';
+import { PriceComparison } from '@/src/features/prices/PriceComparison';
+import { useCachedProduct } from '@/src/features/products/useCachedProduct';
 
 export default function ProductPricesScreen() {
   const { barcode } = useLocalSearchParams<{ barcode: string }>();
+  return <ProductPrices key={barcode} barcode={barcode} />;
+}
+function ProductPrices({ barcode }: { barcode: string }) {
+  const router = useRouter();
   const { data, repository } = useLibrary();
-  const [location, setLocation] = useState('');
+  const product = useCachedProduct(barcode);
   let valid = true;
   try {
     normalizeBarcode(barcode);
   } catch {
     valid = false;
   }
-  const prices = data.prices.filter(
-    (price) =>
-      price.barcode === barcode &&
-      `${price.location} ${price.store}`
-        .toLocaleLowerCase('es')
-        .includes(location.toLocaleLowerCase('es')),
-  );
-  const recent = prices.filter((price) => isPriceCurrent(price));
-  const min = recent.length ? Math.min(...recent.map((x) => x.amountMinor)) : null;
+  const prices = data.prices.filter((price) => valid && sameGtin(price.barcode, barcode));
   return (
     <Screen>
-      <Heading>Compara tus observaciones</Heading>
+      <Heading>{product?.name ?? 'Comparar este producto'}</Heading>
       <Copy muted>
         Código {barcode}. Mismo producto y envase; los precios pueden cambiar y no confirman
         disponibilidad.
       </Copy>
       {valid ? (
         <>
-          <PriceForm barcode={barcode} />
-          <Field label="Filtrar tienda o localidad" value={location} onChangeText={setLocation} />
-          {min !== null ? (
-            <Card>
-              <Copy>Menor precio observado recientemente: {money(min)}.</Copy>
-              <Copy muted>
-                Entre tus anotaciones de los últimos 7 días y ofertas no vencidas. Revisa fecha y
-                condiciones de cada observación.
-              </Copy>
-            </Card>
-          ) : null}
+          <PriceComparison barcode={barcode} prices={prices} />
+          <Action
+            title="Ver ficha e información sobre gluten"
+            secondary
+            onPress={() => router.push({ pathname: '/product/[barcode]', params: { barcode } })}
+          />
+          <PriceForm barcode={barcode} product={product} />
+          <Heading>Tus anotaciones de este producto</Heading>
           <PriceList prices={prices} onDelete={(id) => repository.deletePrice(id)} />
           <SharedPrices
             barcode={barcode}

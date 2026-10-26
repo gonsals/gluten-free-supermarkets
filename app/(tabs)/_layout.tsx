@@ -7,9 +7,9 @@ import { usePalette } from '@/src/shared/theme';
 
 const routes: { name: string; title: string; icon: ComponentProps<typeof Ionicons>['name'] }[] = [
   { name: 'index', title: 'Inicio', icon: 'home-outline' },
+  { name: 'prices', title: 'Comparar', icon: 'pricetags-outline' },
   { name: 'scan', title: 'Consultar', icon: 'scan-outline' },
   { name: 'library', title: 'Biblioteca', icon: 'heart-outline' },
-  { name: 'prices', title: 'Precios', icon: 'pricetags-outline' },
   { name: 'settings', title: 'Ajustes', icon: 'options-outline' },
 ];
 export default function TabLayout() {

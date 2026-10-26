@@ -1,3 +1,5 @@
+import { normalizeStores } from './stores';
+
 export const PRODUCT_SCHEMA = 1;
 export const RULES_VERSION = '1.0.0';
 export type GlutenState = 'declared_gluten_free' | 'declared_gluten' | 'unknown' | 'conflicting';
@@ -11,6 +13,7 @@ export interface Product {
   barcode: string;
   name: string | null;
   brands: string[];
+  stores?: string[];
   imageUrl: string | null;
   ingredientsText: string | null;
   allergensText: string | null;
@@ -167,6 +170,7 @@ export function normalizeProduct(
       .split(',')
       .map((x) => x.trim())
       .filter(Boolean),
+    stores: normalizeStores(raw.stores, raw.stores_tags),
     imageUrl: safeImage(raw.image_front_url ?? raw.image_url),
     ingredientsText,
     allergensText: text(raw.allergens, 2000),
@@ -213,6 +217,12 @@ export function isProduct(value: unknown): value is Product {
     strings(value.allergens) &&
     strings(value.traces) &&
     strings(value.brands) &&
+    (value.stores === undefined ||
+      (Array.isArray(value.stores) &&
+        value.stores.length <= 20 &&
+        value.stores.every(
+          (store) => typeof store === 'string' && store.trim().length > 0 && store.length <= 100,
+        ))) &&
     strings(value.missingFields) &&
     strings(value.dataIssues) &&
     typeof value.source.fetchedAt === 'string' &&

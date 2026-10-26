@@ -14,11 +14,12 @@ export default function HomeScreen() {
   return (
     <Screen>
       <Brand />
-      <Heading eyebrow="Tu compra, a tu ritmo" hero>
-        Conoce lo que{'\n'}te llevas.
+      <Heading eyebrow="Compara antes de comprar" hero>
+        Tu compra,{'\n'}mejor de precio.
       </Heading>
       <Copy muted>
-        Consulta la información sobre gluten. Guarda lo que quieras volver a encontrar.
+        Compara precios del mismo producto por tienda y fecha. La información sobre gluten te ayuda
+        a elegir también según tus necesidades.
       </Copy>
       <View style={{ gap: 12 }}>
         <View
@@ -35,18 +36,18 @@ export default function HomeScreen() {
             justifyContent: 'center',
           }}
         >
-          <Ionicons name="barcode-outline" size={82} color={c.accent} />
+          <Ionicons name="pricetags-outline" size={82} color={c.accent} />
         </View>
         <Action
-          title="Escanear producto"
-          icon="scan-outline"
-          onPress={() => router.navigate('/scan')}
+          title="Comparar precios"
+          icon="pricetags-outline"
+          onPress={() => router.navigate('/prices')}
         />
         <Action
-          title="Introducir código manualmente"
+          title="Escanear un producto"
           secondary
-          icon="keypad-outline"
-          onPress={() => router.navigate({ pathname: '/scan', params: { manual: '1' } })}
+          icon="scan-outline"
+          onPress={() => router.navigate('/scan')}
         />
       </View>
       {error ? <Notice error>{error}</Notice> : null}
@@ -76,10 +77,11 @@ export default function HomeScreen() {
         <Action title="Abrir mi biblioteca" secondary onPress={() => router.navigate('/library')} />
       </Card>
       <View style={{ borderTopWidth: 1, borderColor: c.border, paddingTop: 20, gap: 8 }}>
-        <Copy>Información clara, también cuando faltan datos.</Copy>
+        <Copy>Precios con contexto, sin falsas ofertas.</Copy>
         <Copy muted>
-          Mostramos lo que recoge Open Food Facts, incluidas trazas y contradicciones. Comprueba
-          siempre el etiquetado del envase.
+          Tus anotaciones son privadas. Las aportaciones públicas de Open Prices tienen cobertura
+          limitada y no garantizan stock ni precio actual. En la ficha puedes revisar también
+          gluten, trazas e ingredientes.
         </Copy>
       </View>
     </Screen>

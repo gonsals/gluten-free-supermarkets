@@ -47,6 +47,16 @@ export default function SettingsScreen() {
           Attribution ShareAlike, con posibles derechos adicionales de sus elementos gráficos. La
           licencia del código es independiente.
         </Copy>
+        <Copy muted>
+          Precios públicos: Open Prices, de Open Food Facts, bajo ODbL. Se consultan por código de
+          producto y tienen cobertura colaborativa. Tus anotaciones permanecen privadas; no se
+          publican al comparar.
+        </Copy>
+        <Action
+          title="Información sobre Open Prices"
+          secondary
+          onPress={() => void open('https://prices.openfoodfacts.org/about')}
+        />
         <Action
           title="Información sobre Open Food Facts"
           secondary
@@ -83,6 +93,11 @@ export default function SettingsScreen() {
           los datos técnicos de conexión. Abrir sus enlaces está sujeto a sus condiciones. Si
           activas una cuenta, Firebase gestiona la autenticación y los favoritos enviados
           expresamente.
+        </Copy>
+        <Copy muted>
+          Abrir una comparación consulta Open Prices y le envía el código de producto y datos
+          técnicos de conexión. No envía tus precios, notas ni historial. La nube opcional de
+          cuentas sigue siendo independiente de estas consultas públicas.
         </Copy>
         <Copy muted>
           Los permisos de cámara solo se utilizan al activar el escáner. Puedes seguir usando la

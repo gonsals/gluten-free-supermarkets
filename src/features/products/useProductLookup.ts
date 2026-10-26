@@ -59,7 +59,10 @@ export function useProductLookup() {
         if (id !== generation.current) return;
         if (cached)
           setState({ product: cached, loading: true, cached: true, error: null, storageWarning });
-        const fresh = cached && Date.now() - Date.parse(cached.source.fetchedAt) < 86400000;
+        const fresh =
+          cached &&
+          cached.stores !== undefined &&
+          Date.now() - Date.parse(cached.source.fetchedAt) < 86400000;
         let product = cached;
         if (!fresh || options.force) {
           if (Date.now() < cooldown.current) {

@@ -1,6 +1,8 @@
 # SinGluten
 
-App de compra en **Expo 58, React 19 y React Native 0.88**, con consulta de alimentos por código de barras, información sobre gluten basada en evidencia, biblioteca sin conexión y anotaciones de precios por tienda.
+App de compra en **Expo 58, React 19 y React Native 0.88**, enfocada en comparar precios por producto y tienda con aportaciones públicas de Open Prices y anotaciones privadas. Conserva información sobre gluten como función adicional, escaneo y biblioteca sin conexión.
+
+**Prioridad elegida el 26-10-2026: comprar de forma más económica.** La comparación actual es por código y envase; la cesta completa y la comparación de alternativas por cantidad son siguientes pasos. [Alcance y fuentes](docs/COMPARADOR_DE_PRECIOS.md).
 
 **Estado: MVP implementado y en validación.** La app y el servidor tienen pruebas automatizadas. El proyecto Firebase real ya tiene autenticación por correo y Firestore con reglas e índices desplegados; las funciones y la activación de nube en la app siguen pendientes. No se ha publicado en tiendas. El estado remoto y sus límites están en [Firebase real](docs/FIREBASE_REAL.md).
 
@@ -13,12 +15,13 @@ App de compra en **Expo 58, React 19 y React Native 0.88**, con consulta de alim
 - Ficha con nombre, marca, imagen opcional, ingredientes, alérgenos, trazas, fuente y fechas. Distingue declaración sin gluten, gluten declarado, datos insuficientes y contradicciones.
 - Favoritos e historial persistentes; búsqueda, listas acotadas y borrado. SQLite en móvil e IndexedDB en navegador.
 - Consulta de fichas guardadas sin conexión. La exportación web incluye un service worker que conserva el código de la app, separado de los datos privados.
-- Precios privados por código, tienda y localidad, con céntimos enteros, fechas, ofertas, cantidades y comparación contextualizada.
+- Comparación por código y envase, con tienda, sucursal, fuente y fecha; lectura pública de Open Prices sin cuenta ni clave, separada de los precios privados.
+- Sugerencia editable de supermercado a partir de tiendas declaradas o marcas reconocidas; fechas, ofertas, cantidades y notas privadas.
 - Exportación, restauración transaccional y borrado de datos locales. Las copias se validan y muestran un resumen antes de sustituir la biblioteca; ayuda, atribución y privacidad dentro de la app.
 - Nube opcional: cuentas por correo, recuperación de contraseña, sincronización manual de favoritos, envío de precios a revisión, moderación autorizada y eliminación de cuenta.
 - Reglas de acceso, índices, funciones de servidor, emuladores, CI y actualizaciones de dependencias mediante Dependabot.
 
-La nube está **desactivada por defecto**. El historial no se sube al sincronizar favoritos. No hay integraciones que proporcionen precios oficiales o disponibilidad de supermercados: las cifras son observaciones con procedencia y fecha.
+La nube de cuentas está **desactivada por defecto**. El historial no se sube al sincronizar favoritos. Open Prices aporta observaciones públicas con cobertura colaborativa; no son tarifas oficiales ni disponibilidad de supermercados. Comparar no envía los precios privados.
 
 **Decisión vigente: funcionamiento local sin costes de backend.** No es necesario activar Firebase ni Blaze para usar escaneo, consultas, favoritos, historial, precios privados y exportación. Todos los perfiles EAS mantienen la nube desactivada. El código opcional de cuentas/sincronización queda como una ampliación futura, fuera de los requisitos de la versión local; no justifica contratar servicios. Las consultas nuevas a Open Food Facts necesitan conexión y respetan sus límites; las fichas guardadas se pueden consultar sin red.
 
@@ -81,6 +84,7 @@ La [hoja de ruta vigente](docs/HOJA_DE_RUTA.md) organiza los siguientes pasos y 
 | [Accesibilidad y datos](docs/ACCESIBILIDAD_Y_DATOS.md) | Iteración 5: confirmaciones desplazables, texto ampliado, teclado, estados accesibles y conservación de datos al actualizar. |
 | [Escáner y permisos](docs/ESCANER_Y_PERMISOS.md) | Iteración 6: errores y respuestas tardías de permisos, alternativa manual y ciclo de cámara/linterna. |
 | [Copias locales y recuperación](docs/COPIAS_LOCALES.md) | Iteración 7: formato versionado, validación de archivos, resumen y restauración sin nube ni cuenta. |
+| [Comparador de precios](docs/COMPARADOR_DE_PRECIOS.md) | Iteración 8: nueva prioridad, supermercados sugeridos, fuente pública integrada, comparación y cesta futura. |
 | [Dependencias y seguridad](docs/DEPENDENCIAS.md) | Versiones, decisiones de compatibilidad y avisos pendientes. |
 | [Despliegue y pruebas](docs/DESPLIEGUE_Y_PRUEBAS.md) | Configuración local, emuladores, nube, builds y operación. |
 | [Firebase real](docs/FIREBASE_REAL.md) | Recursos configurados, verificaciones remotas y requisitos que faltan para activar la nube. |

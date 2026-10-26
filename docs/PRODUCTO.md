@@ -1,6 +1,8 @@
 # Producto y experiencia de uso
 
-**Especificación de producto**, 2026-10-23. Conserva los objetivos definidos antes de implementar. Las funciones ya entregadas y las validaciones pendientes están en [Implementación](IMPLEMENTACION.md); [Estado actual](ESTADO_ACTUAL.md) es la auditoría histórica del prototipo.
+**Actualización de prioridad, 2026-10-26:** el propietario centra la app en comparar precios para comprar de forma más económica y conserva gluten como función adicional. Se solicitan sugerencias de supermercado y fuentes públicas sin servicios de pago. El [comparador de precios](COMPARADOR_DE_PRECIOS.md) describe la entrega actual y el siguiente paso de cesta completa. Esta decisión sustituye la prioridad inicial indicada más abajo.
+
+**Especificación inicial de producto**, 2026-10-23. El texto siguiente conserva los objetivos definidos antes de implementar. Las funciones ya entregadas y las validaciones pendientes están en [Implementación](IMPLEMENTACION.md); [Estado actual](ESTADO_ACTUAL.md) es la auditoría histórica del prototipo.
 
 ## 1. Visión y alcance
 

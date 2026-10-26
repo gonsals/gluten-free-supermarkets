@@ -58,6 +58,7 @@ function restoredProduct(value: unknown): Product {
     'barcode',
     'name',
     'brands',
+    'stores',
     'imageUrl',
     'ingredientsText',
     'allergensText',

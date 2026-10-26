@@ -96,6 +96,14 @@ export function ProductCard({
             </Text>
           </View>
         </View>
+        {product.stores?.length ? (
+          <Copy muted>
+            Tiendas indicadas en la fuente: {product.stores.join(', ')}. No confirma disponibilidad.
+          </Copy>
+        ) : null}
+        {onPrices ? (
+          <Action title="Comparar precios y anotar" onPress={onPrices} icon="pricetags-outline" />
+        ) : null}
         <View
           style={{
             padding: 18,
@@ -163,14 +171,6 @@ export function ProductCard({
           disabled={!ready}
           busy={saving}
         />
-        {onPrices ? (
-          <Action
-            title="Ver y anotar precios"
-            onPress={onPrices}
-            secondary
-            icon="pricetags-outline"
-          />
-        ) : null}
         {message ? <Notice error>{message}</Notice> : null}
       </Card>
       <Card>

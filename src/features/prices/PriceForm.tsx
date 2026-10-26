@@ -6,12 +6,23 @@ import { calendarDate, calendarInstant } from '@/src/domain/calendar';
 import { parseAmount, type PriceObservation } from '@/src/domain/price';
 import { Action, Card, Copy, Field, Notice } from '@/src/shared/ui';
 import { useLibrary } from '@/src/features/library/useLibrary';
+import { useCachedProduct } from '@/src/features/products/useCachedProduct';
+import { storeSuggestions } from '@/src/domain/stores';
+import type { Product } from '@/src/domain/product';
 
-export function PriceForm({ barcode }: { barcode?: string }) {
+export function PriceForm({ barcode, product }: { barcode?: string; product?: Product | null }) {
   const { repository, ready } = useLibrary();
   const [code, setCode] = useState(barcode ?? '');
   const [amount, setAmount] = useState('');
   const [store, setStore] = useState('');
+  const [storeEdited, setStoreEdited] = useState(false);
+  const cached = useCachedProduct(product ? undefined : code);
+  const suggestion = storeSuggestions(product ?? cached);
+  const selectedStore = storeEdited
+    ? store
+    : suggestion.stores.length === 1
+      ? suggestion.stores[0]
+      : '';
   const [location, setLocation] = useState('');
   const [quantity, setQuantity] = useState('');
   const [unit, setUnit] = useState<'kg' | 'l' | 'unit'>('unit');
@@ -29,7 +40,7 @@ export function PriceForm({ barcode }: { barcode?: string }) {
         barcode: normalizeBarcode(code),
         amountMinor: parseAmount(amount),
         currency: 'EUR',
-        store: store.trim(),
+        store: selectedStore.trim(),
         location: location.trim(),
         observedAt: calendarInstant(date),
         createdAt: new Date().toISOString(),
@@ -80,11 +91,36 @@ export function PriceForm({ barcode }: { barcode?: string }) {
       />
       <Field
         label="Supermercado o tienda"
-        value={store}
-        onChangeText={setStore}
+        value={selectedStore}
+        onChangeText={(value) => {
+          setStoreEdited(true);
+          setStore(value);
+        }}
         maxLength={100}
         placeholder="Nombre de la tienda"
       />
+      {suggestion.stores.length ? (
+        <>
+          <Copy muted>
+            {suggestion.reason === 'source'
+              ? 'Tiendas indicadas en la ficha. Confirma dónde has visto el precio y la sucursal.'
+              : 'Tienda sugerida por la marca del producto. Puedes corregirla.'}
+          </Copy>
+          {suggestion.stores.length > 1
+            ? suggestion.stores.map((name) => (
+                <Action
+                  key={name}
+                  title={`Usar ${name}`}
+                  secondary
+                  onPress={() => {
+                    setStoreEdited(true);
+                    setStore(name);
+                  }}
+                />
+              ))
+            : null}
+        </>
+      ) : null}
       <Field
         label="Sucursal o localidad"
         value={location}

@@ -1,14 +1,16 @@
 # Próximos pasos y mejoras futuras
 
-Actualización: **25 de octubre de 2026**, Mesa aplicada, preparación técnica del paso 3, revisión de seguridad, escáner/permisos y recuperación local en la iteración 7.
+Actualización: **26 de octubre de 2026**, nueva prioridad de comparación de precios en la iteración 8, conservando Mesa, gluten, biblioteca y recuperación local.
 
 Fecha de referencia: **24 de octubre de 2026**. Guía del trabajo pendiente desde el MVP implementado hasta una app profesional y mantenible. El [plan inicial](PLAN_MEJORAS.md) conserva la trazabilidad histórica; esta hoja indica qué hacer ahora.
 
 ## Decisiones vigentes
 
+- **Cambio de prioridad del 26-10-2026:** comparación de precios como núcleo y gluten como función adicional. Entrega y nuevo orden de trabajo en [Comparador de precios](COMPARADOR_DE_PRECIOS.md). La cesta completa y las alternativas por unidad pasan a ser las siguientes iteraciones de producto; Open Prices ya aporta una primera fuente pública sin backend contratado.
+
 - **B · Mesa es la dirección elegida por el propietario el 25-10-2026.** Sustituye al branding inicial que no le convencía. La elección autoriza aplicarla a la app; no equivale a validar disponibilidad del nombre, accesibilidad nativa ni publicación en tiendas.
 - Mantener la versión local **sin costes de backend**: sin cuenta obligatoria, nube desactivada en todos los perfiles y sin activar Blaze ni contratar servicios para completar este alcance.
-- Priorizar consulta de productos, claridad de la evidencia, biblioteca sin conexión y precios privados. No existen integraciones de precios oficiales ni existencias de supermercados.
+- Priorizar comparación por producto/tienda y evolución a cesta económica, manteniendo evidencia de gluten y biblioteca sin conexión. No existen integraciones de precios oficiales ni existencias de supermercados; Open Prices proporciona aportaciones públicas separadas de las anotaciones privadas.
 - Mostrar procedencia, incertidumbre y antigüedad de la información sobre gluten. La marca y el diseño tampoco deben sugerir certificación o garantía de aptitud.
 - Avanzar con autonomía en documentación, código y comprobaciones. La decisión estética requiere propuestas concretas: la ausencia de comentarios no supone aprobación de una identidad.
 
@@ -16,11 +18,11 @@ Fecha de referencia: **24 de octubre de 2026**. Guía del trabajo pendiente desd
 
 | Área | Qué tenemos | Qué falta |
 | --- | --- | --- |
-| Producto local | Escaneo y entrada manual, ficha con evidencia, favoritos, historial, precios privados, exportación, restauración y borrado. | Validar utilidad y comprensión durante compras reales. |
+| Producto local | Comparación por código y envase, precios privados y públicos separados, supermercado sugerido, gluten adicional, biblioteca, copias y borrado. | Cesta completa, alternativas por unidad y validación durante compras reales. |
 | Persistencia | SQLite móvil, IndexedDB web, esquema versionado y límites de datos. | Migraciones con datos anteriores y recuperación en dispositivos físicos. |
 | Plataforma | Expo 58, React 19, React Native 0.88; APK Android interna sin necesidad de Metro. | Firma de publicación, dispositivos físicos e iOS nativo si se incluye en el lanzamiento. |
-| Calidad | Iteración 7: 125 pruebas de app, 34 de seguridad y diecinueve recorridos web correctos. Reglas/nube conservan además el resultado del job Firebase de la base. [Matriz y alcance](COPIAS_LOCALES.md). | Revisión experta y comprensión, cámara física, accesibilidad asistiva nativa, beta y métricas con muestra declarada. |
-| CI | Los cinco jobs del [run de la iteración 6, `3bd1793`](https://github.com/gonsals/gluten-free-supermarkets/actions/runs/40215578049) pasaron: secretos, dependencias, Firebase, Android y app. | Revisar protección de rama y mantener controles por cambio. Ese resultado acredita esa revisión, no commits futuros. |
+| Calidad | Iteración 8: 144 pruebas de app, 34 de seguridad y veintitrés recorridos web correctos. [Matriz y alcance](COMPARADOR_DE_PRECIOS.md). | Cesta completa, revisión experta, cámara física, accesibilidad asistiva nativa, beta y métricas con muestra declarada. |
+| CI | Los cinco jobs del [run de la iteración 7, `ac48ca0`](https://github.com/gonsals/gluten-free-supermarkets/actions/runs/40219646093) pasaron: secretos, dependencias, Firebase, Android y app. | Revisar protección de rama y mantener controles por cambio. Ese resultado acredita esa revisión, no commits futuros. |
 | Seguridad | Clave expuesta revocada, archivos privados excluidos y escaneo de archivos e historial. | Resolver avisos transitivos antes de publicar y mantener controles. |
 | Identidad | B · Mesa elegida: tema cálido claro/oscuro, titulares editoriales y recursos propios. | Validación física, comprensión con público objetivo y confirmación del nombre antes de publicar. |
 | Nube | Código opcional probado en emuladores; infraestructura Firebase parcialmente configurada. | Fuera del lanzamiento local; no activar cuentas o sincronización como requisito. |
@@ -119,10 +121,10 @@ Cierre: criterios de [Calidad y operación](CALIDAD_Y_OPERACION.md) aplicables a
 
 | ID / prioridad | Mejora | Qué justifica construirla | Criterio de entrega |
 | --- | --- | --- | --- |
-| F-01 / P2 | Lista de compra local desde favoritos. | Necesidad repetida durante la beta. | Crear, marcar, ordenar y recuperar sin conexión ni cuenta. |
+| F-01 / P1 tras cambio de foco | Cesta local desde productos y favoritos. | Nueva prioridad de compra económica del propietario. | Persistencia y copias, cantidades y comparación de totales por sucursal con faltantes explícitos. |
 | F-02 / P2 | Filtros y organización de biblioteca. | La búsqueda actual resulta insuficiente con datos reales. | Filtros comprensibles y rendimiento medido cerca de los límites actuales. |
 | F-03 / P2 | Importación de copias locales. | Recuperación o cambio de teléfono sin nube. | Implementada técnicamente en la iteración 7: formato versionado, validación y límites, resumen, sustitución completa y transacción. [Evidencia](COPIAS_LOCALES.md); validación física y con personas usuarias pendiente. |
-| F-04 / P2 | Comparación de precios privados más útil. | Observaciones suficientes y beneficio frente al esfuerzo de anotarlas. | Unidades y formatos compatibles, antigüedad y ofertas claras; sin prometer stock. |
+| F-04 / P1 tras cambio de foco | Comparación de precios y cesta económica. | Prioridad explícita del propietario el 26-10-2026. | Iteración 8: comparador por producto y fuente pública. Siguiente: total por cesta con cobertura y alternativas por unidad; sin prometer stock. |
 | F-05 / P2 | Avisos locales de antigüedad de fichas. | Confusión observada entre dato guardado y actualizado. | Umbral explicado y refresco voluntario respetando red y límites del proveedor. |
 | F-06 / P2 | Optimizar arranque, listas y tamaño de Android. | Un perfilado detecta cuellos de botella. | Medición antes/después con mismo equipo y datos, sin degradar accesibilidad u offline. |
 | F-07 / P3 | Búsqueda externa por nombre o categoría. | Demanda y contrato/cuotas del proveedor revisados. | Cancelación, paginación y límites; sin consultas masivas ni fuentes ficticias. |

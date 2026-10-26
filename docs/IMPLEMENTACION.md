@@ -1,6 +1,6 @@
 # Implementación y verificación
 
-Fecha: **2026-10-25**. Este documento refleja el trabajo posterior a la auditoría del commit `3044a18`. El prototipo se ha sustituido por un MVP con arquitectura por responsabilidades, dependencias actualizadas y pruebas. No equivale todavía a una publicación validada en tiendas.
+Fecha: **2026-10-26**. Este documento refleja el trabajo posterior a la auditoría del commit `3044a18`. El propietario centra ahora el producto en comparación de precios, manteniendo gluten como función adicional. El MVP conserva arquitectura por responsabilidades, dependencias actualizadas y pruebas. No equivale todavía a una publicación validada en tiendas.
 
 ## Cambios aplicados
 
@@ -15,14 +15,14 @@ Fecha: **2026-10-25**. Este documento refleja el trabajo posterior a la auditor�
 | Almacenamiento | SQLite móvil / IndexedDB web, escrituras serializadas y transaccionales, esquema versionado y validación de contenido. | Persistencia, fallo de disco, concurrencia y protección frente a esquemas desconocidos probados. |
 | Biblioteca | Historial de hasta 1.000 consultas y 250 favoritos activos, búsqueda, páginas de 20 y borrado. | Favoritos persisten tras recarga; limpiar historial conserva favoritos. |
 | Sin conexión | Fichas guardadas con fecha; service worker de producción web para código/recursos, sin cachear peticiones de producto ni datos de cuenta. | Reapertura y recarga web sin red verificadas. Primera visita y productos nunca guardados necesitan conexión. |
-| Precios | Anotaciones privadas de hasta 1.000 observaciones: importe, tienda, localidad, fecha, cantidad/unidad, ofertas y notas. | Validación de importes exactos y antigüedad; persistencia comprobada en navegador. |
+| Precios | Comparador por GTIN/envase, Open Prices público separado, hasta 1.000 anotaciones privadas y supermercado sugerido editable. | Edad, ofertas, ámbitos, límites y errores comprobados. [Contrato, fuente pública y cesta futura](COMPARADOR_DE_PRECIOS.md). |
 | Cuenta | Alta/inicio por correo, recuperación, verificación y reautenticación para borrar cuenta. | Proveedor real habilitado; nube de la app desactivada hasta desplegar las funciones, incluido borrado. |
 | Sincronización | Favoritos únicamente, manual y explícita, propietario vinculado, transacciones, marcas de borrado y resolución determinista de empates. | Dos bibliotecas simuladas intercambian favoritos y borrados en el emulador. |
 | Contribuciones | Funciones `submitPrice`, `moderatePrice`, `deleteMyAccount`; verificación de correo, máximo 20 envíos diarios e idempotencia. | Pruebas de integración con Auth, Firestore y Functions locales. |
 | Moderación | Pantalla para cuentas con custom claim `admin`; publicación mediante función autorizada. | La claim se verifica también en servidor. No se asigna desde la app. |
 | Privacidad remota | Separación entre observaciones privadas y `publishedPrices` sin identificadores de autor/moderador; borrado de contribuciones y favoritos al borrar cuenta. | Pruebas de autoría y borrado; política TTL para la marca de seguridad de cuenta. |
 | Configuración | `.env.example`, validación de entornos, protección de emuladores con proyecto `demo-`; `.env` deja de seguirse por Git. `.env.local` contiene la configuración pública verificada del proyecto existente. | Nube desactivada por defecto. Firestore y Auth reales preparados; [estado remoto](FIREBASE_REAL.md). |
-| Calidad | ESLint, Prettier, TypeScript, Jest, Playwright, emuladores, CI y Dependabot. | Los cinco jobs de GitHub pasaron para [`3bd1793`](https://github.com/gonsals/gluten-free-supermarkets/actions/runs/40215578049); protección de ramas por revisar. |
+| Calidad | ESLint, Prettier, TypeScript, Jest, Playwright, emuladores, CI y Dependabot. | Los cinco jobs de GitHub pasaron para [`ac48ca0`](https://github.com/gonsals/gluten-free-supermarkets/actions/runs/40219646093); protección de ramas por revisar. |
 | Identidad | B · Mesa elegida por el propietario el 25-10-2026: papel cálido, terracota, tipografía editorial y recursos regenerables. | Aplicación y comprobaciones en [Branding Mesa](BRANDING_MESA.md); nombre e identificadores de tienda aún por confirmar. |
 | Operación | Exportación/restauración/borrado local, atribución, privacidad, perfiles EAS y telemetría técnica opcional sin historial ni códigos. | Copias con validación y sustitución transaccional; sin fusión ni cuentas heredadas. [Recuperación](COPIAS_LOCALES.md). Endpoint de telemetría no configurado; no se ha medido estabilidad de una beta real. |
 
@@ -32,10 +32,10 @@ Fecha: **2026-10-25**. Este documento refleja el trabajo posterior a la auditor�
 | --- | --- |
 | Instalación reproducible | `npm ci` en app y servidor correctos desde sus lockfiles, sin opciones para ignorar conflictos. |
 | Tipos, ESLint y compatibilidad Expo | Correctos; Expo Doctor pasa sus **20 comprobaciones**. |
-| Pruebas de app | **125 pruebas correctas**, diez suites, tras la iteración 7; dominio, API, repositorio, consulta, permisos, confirmaciones y copias locales. Incluye doce casos sintéticos de revisión. |
+| Pruebas de app | **144 pruebas correctas**, trece suites, tras la iteración 8; dominio, API, repositorio, consulta, permisos, confirmaciones, copias, comparación y tiendas. Incluye doce casos sintéticos de revisión. |
 | Reglas Firestore | **Siete pruebas correctas**, incluido aislamiento, moderación y separación de la vista pública. |
 | Integración de nube | **Cinco pruebas correctas**: autenticación/validación, idempotencia/autoría/moderación, cuota, borrado y sincronización entre bibliotecas. |
-| Navegador de producción | **19 recorridos correctos**: consulta y biblioteca offline, claridad de evidencia, precios, actualización, exportación/restauración/borrado, accesibilidad y permisos/cancelación. |
+| Navegador de producción | **23 recorridos correctos**: consulta y biblioteca offline, evidencia, precios públicos/privados, sugerencias de tienda, actualización, copias/borrado, accesibilidad y permisos/cancelación. |
 | Funciones de servidor | Compilan y ejecutan correctamente en el emulador. |
 | Exportación web | Correcta; SPA con rutas dinámicas y código dividido. |
 | Exportación JavaScript Android e iOS | Correcta en ambas plataformas, con adaptadores nativos y bytecode Hermes. No equivale a compilar el binario iOS. |
