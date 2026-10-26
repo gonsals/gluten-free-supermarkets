@@ -1,144 +1,120 @@
-# Calidad, seguridad y operación
+# Calidad y operación · Comparador de compra
 
-**Requisitos de calidad y operación**, 2026-10-23. La sección de evidencia inicial describe el prototipo antes de los cambios. Los resultados vigentes están en [Implementación](IMPLEMENTACION.md), la seguridad actual en [Dependencias](DEPENDENCIAS.md) y los comandos operativos en [Despliegue y pruebas](DESPLIEGUE_Y_PRUEBAS.md). Se conservan los objetivos de publicación como controles pendientes hasta acreditarlos.
+Actualizado el **26-10-2026**. Criterios para el enfoque de [Producto](PRODUCTO.md) y las fases de la [hoja de ruta](HOJA_DE_RUTA.md). Los fallos del prototipo inicial se conservan en el [documento histórico](historico/CALIDAD_Y_OPERACION_ANTES_DEL_COMPARADOR.md); no describen el estado actual.
 
-## 1. Evidencia actual y sus límites
+## Evidencia disponible y límites
 
-Instalación limpia y TypeScript correctos. Exportación estática web correcta con ocho rutas y un bundle JavaScript de aproximadamente 1,61 MB sin medición de compresión. La exportación se hizo a una carpeta temporal, sin publicar nada.
+Base **`638980a`**, iteración 8. [CI con cinco controles correctos](https://github.com/gonsals/gluten-free-supermarkets/actions/runs/40270570028): secretos, dependencias, Firebase, Android y app. Evidencia detallada en [Implementación](IMPLEMENTACION.md) y [Comparador](COMPARADOR_DE_PRECIOS.md).
 
-Jest falla en su configuración, antes de ejecutar pruebas. Expo detecta 15 entradas desalineadas con su SDK. No se ejecutó lint porque falta configurarlo y el comando actual puede iniciar su instalación. No hay compilación ni prueba de cámara física de Android/iOS, auditoría de Firebase desplegado ni prueba de carga.
+| Comprobación realizada | Alcance y límite |
+| --- | --- |
+| 144 pruebas de app / 13 suites | Dominio, clientes, repositorio, consulta, permisos, copias, tiendas y comparación. No hay pruebas de cesta porque todavía no existe. |
+| 34 pruebas de seguridad | Política de auditoría y controles; no equivalen a un pentest ni eliminan avisos pendientes. |
+| 23 recorridos web | Incluyen comparación, filtros, errores públicos, sugerencias, datos y ficha de gluten. Fixtures sintéticas, separadas de comprobaciones de proveedor real. |
+| Tipos, lint y compatibilidad Expo | Correctos en la base registrada; cada cambio necesita sus controles pertinentes. |
+| Reglas y nube en emuladores | Siete pruebas de reglas y cinco de integración; no habilitan nube real ni constituyen requisito de cuenta para el MVP local. |
+| APK universal de iteración 8 | Compilada, instalada/actualizada en Pixel 8 emulado API 35; tienda sugerida, restauración y precio privado conservados. Sin Metro, nube desactivada y firma de desarrollo. |
+| Lectura pública real acotada | GTIN 3274080005003: 17/17 registros aceptados en la comprobación registrada; no demuestra cobertura española ni frescura por cadena. |
 
-Estos resultados no constituyen aprobación para producción. Las mejoras están documentadas y pendientes de implementación.
+Cámara física, TalkBack, revisión experta, iOS nativo, beta, cobertura de cesta y métricas de uso siguen pendientes. Una exportación de JavaScript iOS no equivale a build/dispositivo nativo. El escaneo del ZIP y Gitleaks reducen riesgo de exposición, sin ser prueba universal de ausencia de cualquier secreto.
 
-## 2. Estrategia de pruebas
+## Estrategia de verificación
 
-Priorizar comportamiento y riesgos. Los snapshots de texto son secundarios frente a reglas de dominio, datos externos, recuperación y permisos.
+Verificar el recorrido **UI → datos locales/públicos → elegibilidad → comparación → decisión comprensible**, y añadir cesta/totales cuando se implementen. Mantener pruebas deterministas con fixtures para lógica y errores; las consultas reales son comprobaciones separadas, pequeñas, con fecha y contrato declarados.
 
-| Nivel | Casos necesarios | Verifica |
-| --- | --- | --- |
-| Dominio | Todos los casos de gluten, ausencia de datos, contradicciones, trazas, versión de reglas y normalización de códigos. | No inventar conclusiones y mantener reglas coherentes. |
-| Adaptador API | Éxito, producto inexistente, `429`, `5xx`, timeout, JSON inválido, campos opcionales y respuesta malformada. | Traducir el contrato externo sin propagar fallos a la UI. |
-| Consulta/hook | Cerrar durante carga, cambiar de código, respuesta antigua, error y reintento, mismo código dos veces. | Estado correcto y ausencia de resultados obsoletos. |
-| Interfaz | Vacío, carga, error, ficha sin imagen/nombre y textos largos; acciones accesibles. | El usuario puede entender y completar el flujo. |
-| Almacenamiento local | Reinicio, migración, límites, borrado, favoritos e historial separados. | Persistencia y recuperación reales. |
-| Reglas remotas | Usuario A/B, sin sesión, rol normal/admin y payload inválido. | Aislamiento y protección del catálogo antes de nube. |
-| Extremo a extremo móvil | Permisos, escaneo, ficha, error, reescaneo, historial y favoritos. | Comportamiento real de plataforma. |
-| Carga | Consultas repetidas, caché fría/caliente, paginación y contribuciones si existen. | Latencia, cuotas y coste a volumen definido. |
+| Área | Aceptación de las siguientes entregas |
+| --- | --- |
+| Cesta CES-01 | Añadir/editar/quitar, límites, duplicado de GTIN, cantidades inválidas, producto sin precio, acciones accesibles y reinicio sin red. |
+| Datos CES-02 | Migración v1→v2 sin pérdida, importación v1 con cesta vacía, copia v2 completa, referencias válidas, borrado, fallos parciales, versiones desconocidas y dos clientes activos. |
+| Identidad TIE-01 | Dos sucursales de una cadena, tiendas homónimas, ubicación incompleta y unión pública/privada confirmada/deshecha; no mezclar ámbitos. |
+| Totales CES-03 | Cantidades, empates, diferencias, milésimas, filtros coherentes, última observación antes de filtrar, ofertas vencidas y discrepancia entre fuentes. |
+| Cobertura CES-03/DAT-01 | Faltante no vale cero; sin precio/antiguo/excluido/fallo diferenciados; completas ordenadas y parciales fuera del ranking; una sola completa sin afirmación de ahorro. |
+| Formatos UNI-01 | Masa/volumen/unidades compatibles, cantidad ausente, multipacks, necesidad de envases enteros, sobrante y redondeo. |
+| Alternativas ALT-01 | Equivalencia explícita, sustitución confirmada y restricciones; no asumir equivalencia por nombre ni ausencia de gluten por falta de datos. |
+| Proveedores DAT-02/DAT-03 | Contrato, timeout, cancelación, 429, respuesta inválida, paginación, tamaño y atribución; fallo externo conserva datos privados. |
+| Gluten GLU-01 | Cuatro estados, campos ausentes, contradicciones, trazas junto a declaración sin gluten, fuente/fecha y comprensión con revisión experta. |
 
-Usar fixtures versionadas y representativas, con datos mínimos o sintéticos. Las pruebas habituales no deben depender de que un producto concreto de Open Food Facts conserve sus etiquetas. Separar comprobaciones reales del proveedor, de frecuencia acotada, de los tests deterministas de cada cambio.
+No escribir tests que solo repliquen detalles internos. Para importes, cobertura y migraciones sí se necesitan casos límite y recorridos de recuperación por el efecto de un error en la decisión de compra o los datos privados.
 
-## 3. Casos móviles obligatorios antes de beta
+## Datos y recuperación
 
-- Primera apertura con permiso concedido, denegado y bloqueado; entrada manual siempre recuperable.
-- Salir de la pestaña del escáner, volver, bloquear/desbloquear el dispositivo y enviar la app a segundo plano.
-- Encender linterna en hardware compatible y comprobar el comportamiento en otros dispositivos.
-- Escanear rápidamente el mismo código: una consulta por captura aceptada. Cerrar y volver a escanearlo debe funcionar.
-- Consultar A, cerrar durante la carga y consultar B: una respuesta tardía de A no debe reemplazar B.
-- Error de red, timeout y no encontrado: volver al escáner limpia el error; reintentar no deja carga infinita.
-- Código EAN/UPC con ceros iniciales, dato inválido y QR no compatible.
-- Producto sin imagen/nombre/etiquetas, con trazas y con evidencia contradictoria.
-- Ficha con ingredientes largos, pantalla pequeña y texto ampliado; botones visibles y alcanzables.
-- Guardar favorito, cerrar la app y abrir sin red; consultar y borrar historial sin eliminar favoritos.
-- Si hay cuenta: cambiar de usuario, sincronizar sin red, resolver altas/bajas y borrar cuenta sin que reaparezcan datos.
+CES-01/CES-02 forman una sola entrega: no añadir cesta sin exportarla, restaurarla y borrarla. [Arquitectura](ARQUITECTURA.md) propone esquema/copia v2; actualmente siguen en v1.
 
-La matriz de dispositivos debe fijarse según el SDK objetivo e incluir al menos Android e iOS físicos de gamas distintas. Registrar sistema, modelo, versión de app y resultado; un navegador o simulador no valida por sí solo el escaneo real.
+| Escenario | Resultado exigido antes de cerrar CES-02 |
+| --- | --- |
+| Actualizar biblioteca v1 | Historial, favoritos, fichas y precios preservados; cesta vacía y versión nueva válida. |
+| Importar copia v1 o v2 | Resumen correcto, confirmación y sustitución completa; v1 sin cesta, v2 con cantidades y referencias preservadas. |
+| Archivo inválido/desconocido o cancelación | Rechazo útil sin modificar datos. |
+| Fallo al migrar/escribir/restaurar | Sin estado parcial; anterior recuperable y error visible. |
+| Limpiar historial | Conservar fichas aún referenciadas por cesta/favoritos/precios según contrato. |
+| Borrar todo | Eliminar también cesta y datos derivados privados. |
+| Dos pestañas o instancias / diálogo abierto | No sobrescribir silenciosamente cambios ajenos; política comprobada con cada adaptador. Hoy la cola solo serializa por instancia. |
+| Retroceso de app | Cliente antiguo no modifica esquema desconocido; no recomendar reinstalar/downgrade como recuperación sin prueba. Preferir corrección compatible hacia delante. |
 
-## 4. Integración continua propuesta
+Conservar copias de prueba sintéticas y verificar restauración web/Android, reinicio y offline. Los datos públicos permanecen separados; una futura caché pública tendrá pruebas de retención/borrado y no viajará como anotación privada en una copia.
 
-Ejecutar en cada cambio: instalación desde lockfile, tipos, lint, pruebas sin modo watch y exportación web. Añadir pruebas de reglas con emulador cuando exista Firebase conectado y builds nativas de desarrollo en cambios que afecten SDK, permisos o configuración nativa.
+## Dispositivos y comprensión
 
-Comandos de referencia actuales, algunos pendientes de reparar:
+CAL-02 exige al menos Android físico representativo y uno de recursos modestos, registrando modelo, SO, versión/commit y resultado. Probar cámara con envases reales, iluminación, linterna, permiso denegado/bloqueado, ajustes, segundo plano y reescaneo. Entrada manual siempre disponible; respuestas tardías no sustituyen el producto activo.
+
+Probar comparación/cesta, teclado, fuente ampliada, controles alcanzables, lector TalkBack, temas y errores sin depender del color. Red lenta/sin red, límites de biblioteca, importación/exportación y actualización deben formar parte del recorrido. Si se distribuye iOS, añadir build nativa, dispositivo y VoiceOver antes de declararlo soportado.
+
+CAL-01/GLU-01 validan que participantes entienden precio observado frente a precio actual garantizado, parcial frente a completo, diferencia de muestra frente a ahorro real, y declaración de gluten frente a certificación. Registrar tarea, hallazgo, severidad, corrección y revalidación. No dar por realizadas sesiones o revisión experta al pasar tests.
+
+## CI y controles por cambio
+
+El workflow existente comprueba app, Firebase emulado, dependencias, secretos y Android. Revisar protección de rama por separado: un workflow correcto no garantiza que GitHub impida integrar sin él. Los resultados siempre se asocian a un commit, no a todas las revisiones futuras.
+
+Comandos actuales de referencia, con Node/npm fijados y Java 21 para emuladores:
 
 ```bash
 npm ci
-npx tsc --noEmit
-npm run lint
-npm test -- --watchAll=false --runInBand --ci
-npx expo install --check
-npx expo export --platform web
-npm audit --package-lock-only --json
+npm run check
+npm run test:e2e
+npm run secrets:check
+npm run audit:security
 ```
 
-Fijar Node/npm y SDK; evitar instalación interactiva o actualizaciones del lockfile dentro de CI. Los jobs ordinarios no deben usar credenciales de producción. No publicar automáticamente desde una rama de trabajo sin proceso de release definido.
+Pruebas de reglas/servidor con `demo-sin-gluten`, sin credenciales de producción; comandos en [Despliegue y pruebas](DESPLIEGUE_Y_PRUEBAS.md). Cambios de SDK, permisos o configuración nativa requieren build pertinente. Documentación solamente: revisar enlaces, coherencia de prioridades/IDs, diff y secretos; no reconstruir APK ni reiniciar Expo sin necesidad.
 
-La auditoría de dependencias necesita interpretación: un aviso heredado de una herramienta de compilación tiene exposición diferente a una vulnerabilidad en un servicio público. Registrar excepciones justificadas con responsable, alcance y fecha de revisión; no silenciar categorías completas.
+## Seguridad y bloqueos de distribución
 
-## 5. Dependencias: punto de partida
+SEG-01 sigue abierto: tres avisos de origen transitivo en herramientas de desarrollo (Zod, node-forge, OpenTelemetry), ocho entradas afectadas de app y cero en servidor en el informe registrado. Excepciones exactas temporales hasta **22-11-2026**; [Dependencias](DEPENDENCIAS.md) detalla exposición y versiones.
 
-`npm audit --package-lock-only --json`, ejecutado el 2026-10-23, informa de **110 entradas afectadas**: 6 críticas, 77 altas, 22 moderadas y 5 bajas. Cuenta paquetes afectados, incluidas dependencias transitivas y herramientas, no incidentes ni ataques demostrados.
+`audit:security` permite esa excepción controlada; **`audit:release` sigue bloqueado** y debe pasar para publicación general. No ampliar excepciones para simular limpieza, ocultar avisos ni aplicar `audit fix --force`. Un aviso nuevo se evalúa por alcance y puede bloquear antes. Revisar seguridad antes de beta y de cada distribución.
 
-Entre las entradas críticas aparecen `@remix-run/node`, `form-data`, `protobufjs`, `shell-quote`, `tar` y `websocket-driver`. El informe incluye paquetes directos como Expo, React Native, Jest y navegación a través de sus cadenas. Hace falta reconstruir cada ruta con el informe actualizado y `npm explain <paquete>`.
+Clave histórica revocada, archivos de entorno excluidos y escaneo de archivos/historial con excepción exacta documentada. No registrar códigos de autorización, tokens ni valores de `.env` en evidencia. Sin secretos administrativos en variables públicas. [Credenciales](SEGURIDAD_CREDENCIALES.md).
 
-Procedimiento: actualizar informe → identificar cadena y uso → elegir actualización compatible → instalar desde cero → ejecutar controles → verificar builds → registrar resolución o exposición residual. No aplicar `npm audit fix --force` como sustituto de la migración del SDK.
+Nube opcional fuera del MVP. Si en el futuro se activa, deberá pasar aislamiento entre cuentas, autorización administrativa, validación, cuotas, moderación, borrado/TTL, conflictos, coste y recuperación remota. Tener pruebas en emulador no acredita ese despliegue.
 
-## 6. Configuración y entornos
+## Métricas y límites operativos
 
-| Entorno propuesto | Datos y finalidad |
+No hay telemetría remota configurada ni beta medida. Empezar con registro local de pruebas y sesiones consentidas, sin enviar cesta, notas o historial identificable. No incorporar un receptor de pago para obtener métricas.
+
+| Señal propuesta | Cómo interpretarla |
 | --- | --- |
-| Local | Fixtures, emuladores y pruebas; configuración documentada. |
-| Desarrollo/integración | Proveedor de pruebas cuando proceda, Firebase de pruebas y datos no productivos. |
-| Beta | Build distribuida de forma controlada, origen de datos explícito y observabilidad validada. |
-| Producción | Proyectos, permisos, claves públicas restringidas y servicios operativos propios. |
+| Cobertura de producto | Productos con al menos una observación elegible / N consultados; indicar zona, fechas, filtros, páginas y fallos aparte. |
+| Cobertura de cesta | Cestas completas por establecimiento / cestas evaluadas, con criterio y muestra declarados; no confundir con porcentaje de cadenas cubiertas. |
+| Diferencia estimada | Solo entre cestas completas y condiciones equivalentes de la muestra. Ahorro real requiere contrastar compra equivalente efectuada. |
+| Comprensión y utilidad | Personas que completan la tarea y explican faltantes/condiciones; registrar número de sesiones y hallazgos. |
+| Latencia y recursos | Separar frío/caliente, offline/red, proveedor/cálculo/render; equipo, SO, datos y repetición registrados antes de fijar umbrales. |
+| Fallos y disponibilidad | Versión, plataforma, sesiones e incidentes; distinguir caída externa de fallo local. No inferir 99,5 % de estabilidad de unos pocos recorridos. |
+| Tráfico | Peticiones por acción, cancelaciones/429 y caché; no consultar automáticamente toda la biblioteca/cesta. |
 
-El hook actual apunta a staging de Open Food Facts y el servicio a producción. Unificarlos antes de distribuir. La API oficial [distingue ambos despliegues](https://openfoodfacts.github.io/openfoodfacts-server/api/) y documenta su uso e identificación de clientes.
+DAT-01 establece línea base de cobertura antes de integrar nuevas fuentes; DAT-02/DAT-03 necesitan justificar retención/volumen. Límites actuales de proveedor en [Comparador](COMPARADOR_DE_PRECIOS.md); presupuesto de consultas desde cesta se fijará antes de implementarlo. No prometer consultas ilimitadas porque no se pague backend.
 
-Variables actuales: `EXPO_PUBLIC_PROJECT_ID` y `EXPO_PUBLIC_API_KEY`. Futuras variables de entorno y URL del proveedor deberán documentarse cuando se implementen, con validación y fallos comprensibles al arrancar. No añadir secretos administrativos a variables públicas ni a bundles web/móvil.
+## Beta, publicación y mantenimiento
 
-El `.env` versionado es un problema de configuración y separación de entornos; su clave pública Firebase no demuestra por sí sola una filtración de credenciales privilegiadas. Revisar restricciones, reglas y contenido antes de decidir medidas. Firebase [explica que estas claves identifican el proyecto y que la autorización depende de otros controles](https://firebase.google.com/docs/projects/api-keys).
+BET-01 propone 5–10 participantes con consentimiento, versión identificable y soporte. Cerrar antes fallos críticos, CAL-01/CAL-02, revisión de gluten aplicable, datos recuperables y revisión de seguridad. Ajustar alcance si cobertura insuficiente; no sustituir faltantes con precios inventados ni cambiar silenciosamente la promesa.
 
-## 7. Seguridad de aplicación y datos
+Antes de publicación general REL-02:
 
-- Validar códigos, URLs externas y payloads. No abrir automáticamente el contenido de un QR desconocido.
-- Reglas de Firestore/Storage con denegación inicial, acceso por propietario, campos permitidos y roles protegidos. Versionar y probar lo que se despliega.
-- Escritura del catálogo y publicación de precios desde un ingreso controlado. Verificar permisos en servicios administrativos que no queden cubiertos por las reglas de cliente.
-- Contribuciones con autenticación, límites, idempotencia y moderación; no aceptar un `uid` o estado de publicación elegido libremente por el usuario.
-- Imágenes remotas con límites y orígenes admitidos. Si se permiten subidas: tamaño/tipo, rutas por usuario, revisión y limpieza de metadatos innecesarios.
-- Permisos mínimos: para un escáner no hace falta grabar audio. Revisar `recordAudioAndroid: true` y el permiso de micrófono actual al preparar la build.
-- Errores sin credenciales ni volcados completos de respuestas. Retirar los `console.log` de producto y código del camino habitual.
-- Cuentas y tokens según los mecanismos soportados por la plataforma; revisar persistencia y cierre de sesión cuando se implemente autenticación.
+- Flujo de cesta/comparación definido para esa versión, cobertura y limitaciones entendidas; evidencia de pruebas y compras de muestra.
+- Controles sobre el commit final, `audit:release` y secretos correctos, sin fallos críticos abiertos.
+- Plataformas/dispositivos y accesibilidad comprobados; no anunciar iOS nativo sin build y prueba.
+- Migraciones, copias, borrado y recuperación ensayados con datos existentes; soporte asignado.
+- Nombre y presentación comercial revisados, Mesa conservada, firma de publicación custodiada fuera de Git y canal elegido.
+- Privacidad, licencias/atribución, ayuda y soporte coherentes con datos realmente tratados.
+- Distribución gradual y mecanismo para detenerla/corregirla; no reinstalar ni retroceder sin compatibilidad de datos comprobada.
 
-## 8. Privacidad y atribución
-
-El historial de consultas puede revelar hábitos personales. Mantenerlo local por defecto en el MVP, con borrado y límites. Sincronizar solo con una función y una decisión de usuario claras; no recopilar perfiles de salud para ofrecer una consulta de producto.
-
-Separar telemetría técnica de historial identificable. Documentar qué datos se recogen, finalidad, retención, acceso y eliminación según lo realmente implementado. Revisar requisitos aplicables al mercado elegido antes de publicar, especialmente si cambia el alcance o se recopila información sensible.
-
-Mostrar atribución y enlace a Open Food Facts. Su [documentación de licencias](https://openfoodfacts.github.io/openfoodfacts-server/api/tutorials/license-be-on-the-legal-side/) distingue base de datos, contenidos e imágenes. Revisar las condiciones de un catálogo derivado y de las imágenes antes de distribuirlos; elegir la licencia del código por separado.
-
-## 9. Observabilidad y presupuesto
-
-| Señal | Para qué sirve | Precaución |
-| --- | --- | --- |
-| Fallos y cierres por versión/plataforma | Detectar regresiones de publicación. | Sin datos de producto o usuario innecesarios en el informe. |
-| Latencia por etapa y fuente | Distinguir detección, red, caché y renderizado. | No mezclar resultados offline con respuestas del proveedor. |
-| No encontrado, timeout, `429` y contrato inválido | Detectar problemas de catálogo, cuota o integración. | No interpretar «no encontrado» como «no apto». |
-| Estado `unknown`/`conflicting` agregado | Vigilar calidad de datos e interpretación. | Sin vincular consultas a perfiles individuales. |
-| Consultas externas y lecturas/escrituras remotas | Prever coste y necesidad de caché. | Paginación y límites; evitar listeners indiscriminados. |
-| Cola de contribuciones/rechazos | Operar moderación cuando exista. | Acceso restringido y retención definida. |
-
-Fijar presupuesto mensual y alertas antes de nube compartida. Medir coste por 1.000 consultas y simular 10× el volumen beta esperado. No hay un coste ni capacidad máxima demostrados en esta auditoría.
-
-El objetivo inicial de sesiones sin cierre es 99,5 % en beta. La disponibilidad del proveedor se mide por separado; no prometer disponibilidad total de un servicio externo. Mostrar fallos y datos guardados con contexto.
-
-## 10. Publicación y recuperación
-
-Antes de beta: nombre e identificadores propios, esquema de enlaces, iconos, splash, permisos en español, política de privacidad, atribución, soporte y matriz de plataformas. Verificar los requisitos vigentes de las tiendas al preparar la publicación; no asumir que el SDK antiguo los cumple.
-
-Separar canal de desarrollo, beta y producción. Asociar cada build a commit, versiones, entorno y migraciones. Cambios nativos o de runtime necesitan una build compatible; una actualización de JavaScript no sustituye ese requisito.
-
-Publicar de forma gradual, vigilar errores y tener un responsable de recuperación. Documentar cómo detener una distribución y entregar una corrección; elegir el mecanismo concreto según la plataforma y servicio de builds que se adopte. Mantener las migraciones compatibles con las versiones todavía activas.
-
-Si la nube guarda datos propios, definir copias, restauración y simulacro de recuperación. Para datos importados reconstruibles, conservar origen y proceso de reimportación. Restaurar una copia debe respetar la política de eliminación de datos personales.
-
-## 11. Criterios para publicación general
-
-- Flujo completo del MVP y casos de información ambigua verificados; lenguaje de resultado revisado.
-- Tipos, lint, pruebas y builds pasan desde instalación limpia.
-- Sin fallos críticos conocidos del recorrido; avisos de dependencias clasificados y riesgos aplicables resueltos.
-- Cámara, segundo plano, permisos y accesibilidad comprobados en dispositivos soportados.
-- Historial, favoritos, funcionamiento sin red y borrado probados tras reinicios y migraciones.
-- Si hay nube: aislamiento entre usuarios, validación de contribuciones, índices y costes comprobados.
-- Fuente, atribución, privacidad, licencia y soporte visibles y coherentes con la app.
-- Monitorización, presupuesto, responsable operativo y recuperación preparados.
-
-El estado actual todavía no satisface estos criterios. El [plan de mejoras](PLAN_MEJORAS.md) define cómo alcanzarlos por fases.
+No contratar cuentas de tienda o backend por cerrar documentación. La APK actual tiene firma de desarrollo y no acredita publicación. Mantener nube desactivada en todos los perfiles, revisión semanal de dependencias y excepciones antes del 22-11-2026. Registrar responsable, versión, evidencia y límites de cada entrega; la app profesional exige ese mantenimiento además de nuevas funciones.

@@ -1,5 +1,7 @@
 # Copias locales y recuperación
 
+> **Planificación actualizada 26-10-2026.** Contrato v1 y evidencia de la iteración 7. La cesta todavía no existe; CES-02 ampliará esquema, copias, migración y borrado en una futura entrega. [Hoja de ruta vigente](HOJA_DE_RUTA.md) · [Backlog](PLAN_MEJORAS.md).
+
 Iteración 7 · 25 de octubre de 2026. Implementación de F-03 de la hoja de ruta para recuperar o trasladar la biblioteca sin cuenta ni backend. La nube permanece desactivada.
 
 ## Uso

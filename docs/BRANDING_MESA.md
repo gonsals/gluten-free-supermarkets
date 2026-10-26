@@ -1,6 +1,8 @@
 # Mesa · Sistema visual aplicado
 
-**Dirección B · Mesa elegida por el propietario el 25 de octubre de 2026.** Se aplica al producto real como paso 2 de la [hoja de ruta](HOJA_DE_RUTA.md). Sustituye a la primera identidad de hoja y verde, que no convencía al propietario. Las tres exploraciones iniciales permanecen en [Branding](BRANDING.md).
+> **Planificación actualizada 26-10-2026.** Evidencia de Mesa aplicada (paso 2 del plan anterior). El nuevo enfoque conserva esta dirección; MAR-01 revisa el nombre comercial y CAL-02 la validación física. [Hoja de ruta vigente](HOJA_DE_RUTA.md) · [Backlog](PLAN_MEJORAS.md).
+
+**Dirección B · Mesa elegida por el propietario el 25 de octubre de 2026.** Se aplica al producto real como paso 2 de la [hoja de ruta anterior](historico/HOJA_DE_RUTA_ANTES_DEL_COMPARADOR.md). Sustituye a la primera identidad de hoja y verde, que no convencía al propietario. Las tres exploraciones iniciales permanecen en [Branding](BRANDING.md).
 
 ## Sistema
 

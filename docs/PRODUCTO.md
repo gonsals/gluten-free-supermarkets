@@ -1,137 +1,119 @@
-# Producto y experiencia de uso
+# Producto · Comparar precios para decidir la compra
 
-**Actualización de prioridad, 2026-10-26:** el propietario centra la app en comparar precios para comprar de forma más económica y conserva gluten como función adicional. Se solicitan sugerencias de supermercado y fuentes públicas sin servicios de pago. El [comparador de precios](COMPARADOR_DE_PRECIOS.md) describe la entrega actual y el siguiente paso de cesta completa. Esta decisión sustituye la prioridad inicial indicada más abajo.
+Especificación vigente del **26-10-2026**. Sustituye el enfoque inicial centrado en consulta de gluten. [Hoja de ruta](HOJA_DE_RUTA.md) para orden de entrega; [backlog](PLAN_MEJORAS.md) para estados; [comparador actual](COMPARADOR_DE_PRECIOS.md) para el contrato implementado.
 
-**Especificación inicial de producto**, 2026-10-23. El texto siguiente conserva los objetivos definidos antes de implementar. Las funciones ya entregadas y las validaciones pendientes están en [Implementación](IMPLEMENTACION.md); [Estado actual](ESTADO_ACTUAL.md) es la auditoría histórica del prototipo.
+## Propuesta y público inicial
 
-## 1. Visión y alcance
+Ayudar a preparar una compra, comparar cuánto costaría en distintos establecimientos y elegir entre opciones con datos suficientes. Escanear o introducir un código facilita identificar el producto, anotar un precio y compararlo. La información sobre gluten es una función complementaria para quien la necesite.
 
-Ayudar a comprar alimentos consultando, de forma rápida y comprensible, la información disponible sobre gluten de un producto identificado por su código de barras.
+Contexto inicial: compra cotidiana en España, EUR y español. El público prioritario son personas que quieren controlar el coste de la compra; incluye a quienes buscan productos con declaración sin gluten y desean contrastar sus precios. Validar utilidad con compras reales antes de ampliar mercado o prometer cobertura nacional.
 
-La propuesta inicial es centrarse en España y en español, por el contexto del proyecto; mercado y público concretos quedan pendientes de validación. Android e iOS son los objetivos móviles propuestos. La web sirve inicialmente como apoyo, con entrada manual como alternativa si no dispone de lectura de códigos compatible.
+Funcionamiento local sin cuenta obligatoria ni costes de backend contratado. Open Food Facts aporta fichas; Open Prices, observaciones públicas; la persona puede anotar precios privados. Ninguna de esas fuentes acredita existencias actuales ni acceso oficial a todos los supermercados.
 
-La primera versión profesional debe resolver bien una tarea: **consultar un producto, entender la evidencia y recuperar la consulta después**. La comparación de precios se plantea como una segunda etapa, apoyada por los servicios incipientes del repositorio.
+## Alcance real y siguiente objetivo
 
-No debe presentar una etiqueta de una base de datos como certificación propia ni convertir información ausente en una conclusión sobre la composición. La experiencia debe explicar la fuente y permitir consultar el envase y los datos originales.
-
-## 2. Alcance del MVP propuesto
-
-| Capacidad | Resultado esperado |
+| Capacidad | Estado al 26-10-2026 |
 | --- | --- |
-| Escanear | Una lectura válida inicia una única consulta; cámara y linterna funcionan en los dispositivos soportados. |
-| Introducir código | Consultar sin cámara o con etiqueta dañada; validar formato sin perder ceros iniciales. |
-| Entender el resultado | Nombre, marca, imagen opcional, señales sobre gluten, ingredientes/alérgenos/trazas disponibles, fuente y fecha de consulta. |
-| Recuperarse de errores | Distinguir código inválido, producto inexistente, sin red, timeout y fallo del proveedor. Reintentar o cambiar de producto. |
-| Consultar historial | Recuperar consultas locales tras reiniciar; buscar por nombre o código y borrar el historial. |
-| Favoritos | Marcar, desmarcar y consultar productos guardados localmente. |
-| Usar datos guardados sin conexión | Mostrar una ficha previamente consultada con fecha y estado de actualización visibles. |
-| Acceder de forma inclusiva | Español consistente, lector de pantalla, contraste, tipografía escalable y tamaños táctiles adecuados. |
-| Confiar en el servicio | Información de origen, atribución, privacidad y canal para comunicar errores. |
+| Comparar mismo GTIN/envase con fuentes, fechas, tienda y filtros | Implementado, iteración 8. |
+| Proponer supermercado desde datos explícitos o asociaciones acotadas de marca | Implementado; editable y sin deducir sucursal o disponibilidad. |
+| Guardar precios privados y consultar Open Prices | Implementado; datos públicos separados y no incluidos en copias privadas. |
+| Consultar ficha, gluten, trazas y procedencia | Implementado técnicamente; revisión experta/comprensión pendientes. |
+| Biblioteca offline, favoritos, copias y restauración | Implementado; esquema/copia v1, sin cesta. |
+| Cesta persistente con cantidades, copias y borrado | Siguiente entrega CES-01/CES-02; pendiente. |
+| Totales por establecimiento y cobertura completa | CES-03, pendiente tras cesta e identidad de tienda. |
+| Equivalencia por formato/unidad y alternativas | UNI-01/ALT-01, pendientes; no se equiparan productos por nombre. |
+| Cobertura suficiente por zona y uso durante compras reales | DAT-01/CAL-01/BET-01, pendientes de medir. |
 
-Fuera del MVP: comparador de precios, colaboración pública, mapas, alertas de ofertas, recomendaciones personalizadas, extracción de ingredientes mediante IA y cuentas obligatorias. Las cuentas solo se justifican cuando exista sincronización u otra función que las necesite.
+El MVP objetivo del nuevo enfoque incluye cesta, totales comparables y cobertura explícita. La app actual es su base por producto, no un comparador de cestas ya terminado. Alternativas amplían el núcleo en la fase siguiente. Mapas, publicación propia de precios, sincronización, alertas e IA quedan condicionados a demanda y viabilidad; no son requisitos para activar servicios.
 
-## 3. Pantallas y recorridos
+## Reglas de precio y de comparación
 
-### Inicio
+Cada referencia debe mantener producto/código y envase, importe y moneda, fecha de observación, procedencia, tienda/sucursal o ámbito, y condiciones relevantes. Distinguir fecha de observación, recepción y consulta; consultar hoy no actualiza un precio observado hace un mes.
 
-Explicar la finalidad en una frase y ofrecer «Escanear producto» e «Introducir código». Mostrar accesos a favoritos y consultas recientes, con un estado vacío útil. Sustituir Lorem ipsum e imágenes de plantilla por contenido e identidad propios.
+Actualmente se compara el **mismo GTIN y envase**. Los precios privados se guardan en céntimos enteros y se convierten a milésimas de EUR en el comparador; los públicos admiten hasta tres decimales. El cálculo no usa importes binarios de coma flotante como autoridad monetaria. No mezclar precio de envase con precio por kg/l de una categoría a granel.
 
-### Escáner
+Seleccionar primero la observación más reciente por referencia de sucursal y origen; después filtrar edad, condiciones y ubicación. Si la más reciente es una oferta excluida, no reaparece una antigua más barata como precio actual. Por defecto: siete días y sin ofertas ni notas privadas sin revisar; las ofertas privadas vencidas no entran en el ranking. El historial conserva los registros originales.
 
-Mostrar por qué se pide acceso a la cámara antes o junto al permiso del sistema. Contemplar permiso pendiente, concedido, denegado y bloqueado. Si está bloqueado, ofrecer ajustes del dispositivo cuando proceda y entrada manual.
+El ranking actual se limita a referencias cargadas, sin unión automática de la sucursal privada con la pública. España es filtro local sobre datos públicos; el país de una anotación privada no se inventa. Un error, dato descartado o límite de paginación debe distinguirse de «no hay precios».
 
-Mantener controles de linterna y entrada manual accesibles. Desactivar captura al perder foco, al pasar a segundo plano y cuando corresponda durante la presentación del resultado. No bloquear cada escaneo con un aviso modal del navegador.
+## Cesta y totales — contrato objetivo pendiente
 
-El rectángulo visual debe ser una ayuda de encuadre honesta: si no se aplica una región de detección real, no prometer que solo se leen códigos dentro de él.
+Una primera cesta activa contiene productos identificados y número entero de envases. Propuesta inicial: hasta 100 líneas distintas y 1–99 envases por línea; peso variable y fracciones se diseñarán después con su contrato. Cambiar cantidades o filtros invalida/recalcula las estimaciones. Las líneas sin precio permanecen visibles.
 
-### Ficha del producto
+Comparar por **establecimiento o ámbito verificado**, sin sumar el precio de una sucursal y otro de otra para crear una cesta de cadena ficticia. Una observación sin localización suficiente puede conservarse, pero no cubre silenciosamente una línea de cualquier sucursal. Los vínculos entre referencias de distinto origen requieren confirmación y pueden deshacerse.
 
-Cabecera con nombre, marca, código e imagen opcional. Resumen de la información sobre gluten seguido de su explicación y evidencias. Ingredientes, alérgenos y trazas disponibles en secciones legibles, sin ocultar contradicciones.
+Para cada establecimiento:
 
-Mostrar «Datos de Open Food Facts», enlace al producto y fecha de última consulta. Si se conoce la fecha de modificación de la fuente, mostrarla por separado: no equivale a fecha de verificación del producto. Incluir favorito, volver a escanear y comunicar un problema con los datos.
+1. Resolver precio elegible por línea y conservar sus referencias/condiciones. Si dos fuentes vinculadas discrepan, aplicar una regla determinista documentada y mostrar el conflicto; no elegir siempre la más barata para ocultarlo.
+2. Multiplicar el precio por el número de envases con precisión entera. Los totales calculados son estimaciones basadas en observaciones, no un ticket garantizado.
+3. Indicar cobertura por líneas distintas y cantidades, productos faltantes y motivo: sin dato, antiguo, oferta excluida, formato incompatible o proveedor fallido.
+4. Ordenar por total solo establecimientos con cobertura completa bajo los mismos filtros. Mostrar aparte subtotales incompletos, nunca cero para un faltante.
+5. Mostrar diferencia frente a otras cestas completas de la muestra. Con una sola completa no hay base para afirmar ahorro comparativo.
 
-Si no hay nombre o imagen, mantener una ficha utilizable. Si no hay datos suficientes, mostrar qué falta. El panel debe poder desplazarse con textos largos y fuentes ampliadas.
+Ejemplo sintético: cesta de **2 envases de leche + 1 de pasta**, mismo código por producto en cada tienda.
 
-### Historial y favoritos
+| Establecimiento | Leche por envase | Pasta por envase | Resultado |
+| --- | --- | --- | --- |
+| A | 1,20 € | 2,10 € | Completa: 2 × 1,20 + 2,10 = **4,50 €**. |
+| B | 1,05 € | Sin dato | Parcial: **2,10 €**, 1/2 líneas y 2/3 envases; falta pasta. Fuera del ranking de totales. |
+| C | 1,35 € | 2,05 € | Completa: 2 × 1,35 + 2,05 = **4,75 €**. |
 
-Listas con nombre, marca, resumen informativo y fecha. Consulta local paginada, detalle accesible y eliminación sencilla. Diferenciar limpiar historial de eliminar favoritos. No sobrescribir el contexto de una consulta antigua al actualizar el catálogo: indicar cuándo la ficha mostrada es más reciente.
+A tiene el menor total **entre las cestas completas de esta muestra**, con diferencia estimada de 0,25 € frente a C. B no puede presentarse como la compra más barata. Los ejemplos no son precios reales ni cobertura de cadenas.
 
-### Información y ajustes
+La implementación de CES-03 debe fijar y probar redondeo de presentación: conservar milésimas en operaciones, mostrar precisión suficiente cuando afecte al orden y redondear el total mostrado de manera consistente. No derivar un ahorro distinto por sumar importes ya redondeados. Gastos de envío/desplazamiento, fidelidad y stock solo se incorporan si hay datos y condiciones explícitos; inicialmente se excluyen del total y se explica.
 
-Privacidad, atribución, versión de la app, permisos, gestión del almacenamiento y ayuda. Si se incorpora sincronización: estado de sincronización, cerrar sesión, exportar y eliminar datos de la cuenta.
+## Formatos y alternativas — fase posterior
 
-## 4. Política de información sobre gluten
+Separar tres preguntas: cuánto cuesta el envase, cuánto cuesta por unidad compatible y cuántos envases hacen falta para una cantidad requerida. Un multipack barato por kg puede exigir más desembolso y dejar sobrante. Mostrar ambos efectos.
 
-Esta política es una especificación funcional propuesta. Debe validarse con personas usuarias y revisión experta antes de publicar afirmaciones destinadas a población celíaca. Las etiquetas de interfaz describen datos de origen; no deben sugerir una evaluación clínica propia.
+Convertir solo unidades compatibles con cantidades conocidas: masa con masa, volumen con volumen y unidades con unidades equivalentes. No convertir gramos a mililitros sin datos específicos ni asumir formatos por el nombre. Los productos con códigos distintos requieren un grupo de equivalencia explícito y confirmación de sustitución.
 
-### Estados principales
+La declaración sin gluten puede filtrar alternativas cuando haya evidencia compatible; no convierte versiones con/sin gluten en sustitutos automáticos ni permite asegurar aptitud. Comparar coste respetando la selección de la persona y conservar los avisos de la ficha.
 
-| Estado interno propuesto | Texto de referencia | Condición |
-| --- | --- | --- |
-| `declared_gluten_free` | «Figura como sin gluten en la fuente» | Declaración reconocida por la taxonomía, sin evidencia explícita contradictoria detectada. |
-| `declared_gluten` | «La fuente declara gluten» | Declaración explícita de gluten en los datos interpretados. |
-| `unknown` | «Información insuficiente» | Faltan datos o no hay evidencia que sustente los otros estados. |
-| `conflicting` | «Datos contradictorios: revisa el etiquetado» | Coexisten declaraciones incompatibles o la respuesta presenta inconsistencias relevantes. |
+## Recorridos y presentación
 
-Las **trazas se conservan como una señal adicional**, visible incluso si existe una declaración sin gluten. Por sí solas no se convierten en una conclusión binaria ni se descartan. Un resultado sin declaración concluyente pero con trazas debe destacarlas claramente.
-
-### Reglas de interpretación
-
-1. Preservar campos originales relevantes y distinguir ausente, vacío y valor conocido cuando el contrato lo permita.
-2. Normalizar etiquetas mediante un adaptador versionado. `en:no-gluten` es la entrada canónica observada; tratar variantes heredadas explícitamente cuando estén acreditadas, sin comparar textos libres de forma indiscriminada. Fuente: [taxonomía oficial](https://raw.githubusercontent.com/openfoodfacts/openfoodfacts-server/main/taxonomies/labels.txt).
-3. Considerar etiquetas, alérgenos y trazas como señales diferentes. No inferir automáticamente que un producto sin alérgenos declarados es sin gluten.
-4. Dar prioridad a mostrar contradicciones sobre una presentación positiva. Una declaración sin gluten junto con gluten declarado no debe producir una tarjeta verde sin explicación.
-5. Mostrar ingredientes como evidencia de la fuente. La interpretación automática de cereales, derivados y tratamientos requiere reglas revisadas; una búsqueda de palabras no basta para certificar aptitud.
-6. La falta de ingredientes, etiquetas o alérgenos nunca equivale a una declaración de ausencia.
-7. La antigüedad es una dimensión aparte. Un dato guardado no se presenta como recién verificado ni como seguro por haber sido un favorito.
-8. La valoración calculada debe almacenar versión de reglas y motivos, para poder reproducirse y actualizarse.
-
-### Casos de aceptación mínimos
-
-| Entrada | Comportamiento esperado |
+| Pantalla | Comportamiento vigente / previsto |
 | --- | --- |
-| Etiquetas ausentes, resto de datos ausente | Información insuficiente; sin excepción y sin «contiene gluten» inventado. |
-| Declaración reconocida sin gluten | Mostrar declaración atribuida a la fuente y sus evidencias. |
-| Gluten declarado sin declaración sin gluten | Mostrar presencia declarada y campo de origen. |
-| Declaración sin gluten y declaración explícita de gluten | Estado contradictorio, sin ocultar ninguna evidencia. |
-| Solo trazas declaradas | Información insuficiente con aviso de trazas visible. |
-| Declaración sin gluten y trazas | Conservar ambos datos; mostrar trazas junto a la declaración. |
-| Alérgenos en texto libre no reconocible | Preservar texto; no convertirlo en una ausencia confirmada. |
-| Datos guardados antiguos o sin red | Mostrar fecha y condición de dato guardado; permitir actualizar cuando haya red. |
+| Inicio | Compra económica como propósito y acceso principal a comparar. En la entrega de cesta, añadir acceso a cesta activa con estado y faltantes. |
+| Comparar | Código → referencias públicas/privadas → filtros, fuente, fecha y ranking del mismo envase. Futuro acceso a totales sin confundir ranking de producto y cesta. |
+| Consultar | Escáner o entrada manual, validación EAN/UPC y recuperación de permisos/errores. Cámara/linterna se desactivan al salir o pasar a segundo plano. |
+| Ficha | Identidad, comparar/anotar, tiendas declaradas y evidencia de gluten completa; ingredientes, alérgenos, trazas, fuente/fechas. El acceso desde comparar debe preservar todo ese contexto. |
+| Anotar precio | Proponer supermercado cuando haya base; permitir corregir o vaciar sin sobrescribir la edición al llegar metadatos. Fecha, envase, oferta, notas y localidad explícitos. |
+| Biblioteca | Productos guardados y precios privados, historial y favoritos. Próxima entrega permite añadir a cesta; limpiar historial no elimina productos aún referenciados. |
+| Cesta, pendiente | Añadir/editar/quitar, cantidades y persistencia; después, comparación completa/parcial con faltantes y condiciones. No se presenta como pantalla ya construida. |
+| Ajustes | Privacidad, atribución, versión, ayuda, exportación, restauración y borrado. La incorporación de cesta amplía todos los controles de datos. |
 
-## 5. Segunda etapa: precios y supermercados
+Mantener Mesa en claro/oscuro, textos comprensibles, etiquetas accesibles, fuente ampliada y acciones alcanzables. Ningún resultado depende solo del color. No añadir cuentas o detalles de implementación a una compra que no los necesita.
 
-La utilidad propuesta sería responder «¿dónde se ha observado este producto y a qué precio?». Un precio observado no acredita disponibilidad actual.
+## Información sobre gluten — función complementaria conservada
 
-Cada observación necesita producto, sucursal o ámbito de la cadena, importe, moneda, cantidad/envase, fecha de observación, fecha de recepción y procedencia. Las ofertas requieren condiciones y vencimiento. Comparar el mismo código y formato; el precio por unidad necesita cantidades y unidades compatibles.
-
-Mostrar antigüedad y ámbito geográfico. No mezclar una observación de una sucursal con un precio nacional. La colaboración pública necesita autenticación, validación, control de abuso y moderación antes de activarse.
-
-No se ha demostrado acceso a catálogos, stock ni precios oficiales de supermercados. Esas integraciones deberán estudiarse y acordarse; no forman parte de lo implementado.
-
-## 6. Objetivos de calidad propuestos
-
-Son metas iniciales para medir en beta, no resultados actuales ni compromisos validados con el proveedor.
-
-| Área | Meta inicial |
+| Estado | Significado |
 | --- | --- |
-| Claridad | Todos los resultados muestran fuente, motivo y estado de información; ningún dato ausente se transforma en Sí/No. |
-| Respuesta | p95 inferior a 3 s con caché o red de referencia; separar tiempo de detección, consulta y renderizado. |
-| Recuperación | Timeout visible, objetivo inicial de 8 s por intento; límite de reintentos y cancelación al cambiar de producto. |
-| Estabilidad | Objetivo de al menos 99,5 % de sesiones sin cierre inesperado en beta, con muestra y versión registradas. |
-| Accesibilidad | Flujos principales comprobados con VoiceOver/TalkBack y fuente ampliada; información nunca basada solo en color. |
-| Sin conexión | Historial y favoritos consultables tras reinicio sin red; fecha visible y actualización sin perder contenido. |
-| Privacidad | Consulta e historial local sin cuenta; analítica no incluye el historial de compra identificable. |
+| `declared_gluten_free` | Figura como sin gluten en la fuente, sin declaración explícita contradictoria detectada por las reglas. |
+| `declared_gluten` | La fuente declara gluten. |
+| `unknown` | Información insuficiente para los estados anteriores. |
+| `conflicting` | Datos contradictorios; mostrar las evidencias y pedir revisar etiquetado. |
 
-Antes de ampliar alcance: validar con pruebas de uso si las personas entienden «información insuficiente», si distinguen fuente y certificación, y si el historial resuelve una necesidad real.
+Las trazas son una señal adicional visible incluso junto a una declaración sin gluten. Datos ausentes, alérgenos vacíos o un nombre de producto no equivalen a ausencia confirmada de gluten. Las etiquetas se interpretan mediante reglas versionadas y taxonomías admitidas; una búsqueda libre de ingredientes no certifica aptitud.
 
-## 7. Decisiones pendientes
+Conservar evidencia, campos ausentes, motivos y versión de reglas. Diferenciar fecha de modificación de la fuente, consulta y evaluación automática. Una ficha favorita, restaurada o antigua no se presenta como verificada recientemente. La app muestra información de la fuente, no una certificación propia. [Protocolo experto y casos](VALIDACION_GLUTEN.md); revisión experta y comprensión siguen pendientes antes de beta dirigida a ese público.
 
-- Público prioritario y validación experta del lenguaje sobre gluten.
-- Mercado inicial, nombre definitivo, dispositivos soportados y papel de la versión web. La dirección visual B · Mesa fue elegida por el propietario el 25-10-2026; ver [sistema aplicado](BRANDING_MESA.md).
-- Reglas definitivas, taxonomías admitidas y revisión de contradicciones.
-- Tiempo de refresco y retención del historial; valores iniciales propuestos en arquitectura.
-- Presupuesto operativo, responsables de soporte y cadencia de publicación.
-- Si los precios son realmente una prioridad tras validar el escáner.
+## Privacidad, fuentes y costes
 
-Estas decisiones no impiden estabilizar el código ni implementar manejo de errores y pruebas.
+Precios privados, notas, cesta e historial permanecen locales por defecto. Abrir una consulta pública envía el código y datos técnicos de conexión al proveedor; no envía anotaciones privadas ni la biblioteca completa. La futura consulta desde cesta debe ser explícita, acotada y cancelable; no una descarga automática de todo el catálogo.
+
+Mantener Open Food Facts, Open Prices/ODbL y OpenStreetMap/ODbL atribuidos según los datos utilizados. Las copias privadas no convierten datos públicos en aportaciones propias. La caché pública persistente es una propuesta condicionada; hoy solo existe en memoria.
+
+No activar servicios de pago, facturación, cuentas obligatorias, mapas alojados o IA para cumplir el núcleo. Los posibles costes de distribución se revisan al elegir canal; la ausencia de backend contratado no acredita que publicar en cualquier tienda sea gratuito.
+
+## Qué validar y medir
+
+| Pregunta | Evidencia necesaria; todavía pendiente |
+| --- | --- |
+| ¿Se entiende qué cesta es comparable? | Sesiones con completas/parciales; identificar faltantes y no elegir un subtotal como menor total. |
+| ¿Hay datos útiles en una zona? | N productos y fechas declarados, proporción con precio elegible y de cestas completas; errores de proveedor separados. |
+| ¿Ayuda a decidir la compra? | Compra equivalente o sesión observada con cantidades y condiciones; diferencia estimada separada del ahorro efectivamente comprobado. |
+| ¿Es usable y estable? | Matriz física/accesibilidad y fallos/tiempos por versión y entorno, con denominadores; sin porcentajes deducidos de unas pocas pruebas. |
+| ¿Se comprende gluten como evidencia? | Revisión experta y participantes que distinguen declaración de certificación, trazas y desconocido. |
+
+No hay métricas de ahorro, cobertura, p95 o estabilidad de beta demostradas. [Calidad y operación](CALIDAD_Y_OPERACION.md) define cómo obtenerlas. Quedan por decidir nombre definitivo, alcance de plataformas/distribución, responsables y umbrales tras medir la línea base; la prioridad de precios ya está decidida.

@@ -1,8 +1,10 @@
 # Revisión de branding · Paso 1
 
+> **Planificación actualizada 26-10-2026.** Evidencia histórica de exploración (paso 1 del plan anterior). Mesa ya fue elegida; el seguimiento vigente es MAR-01 para naming y CAL-02 para validación física. [Hoja de ruta vigente](HOJA_DE_RUTA.md) · [Backlog](PLAN_MEJORAS.md).
+
 **Actualización 25-10-2026: el propietario ha elegido B · Mesa y autorizado su aplicación.** Ver [sistema aplicado](BRANDING_MESA.md). El brief y las comprobaciones siguientes documentan la exploración del día 24.
 
-Fecha: **24 de octubre de 2026**. Entregable de la [hoja de ruta](HOJA_DE_RUTA.md), paso 1. El propietario ha indicado que **no le encanta el branding generado**. La identidad actual queda provisional y no aprobada; no se interpreta su implementación técnica como aceptación estética.
+Fecha: **24 de octubre de 2026**. Entregable de la [hoja de ruta anterior](historico/HOJA_DE_RUTA_ANTES_DEL_COMPARADOR.md), paso 1. El propietario ha indicado que **no le encanta el branding generado**. La identidad actual queda provisional y no aprobada; no se interpreta su implementación técnica como aceptación estética.
 
 ## Brief
 

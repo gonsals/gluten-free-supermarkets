@@ -1,154 +1,79 @@
-# Plan de mejoras y criterios de entrega
+# Backlog de ejecución · Comparador de compra
 
-**Plan inicial del 2026-10-23, seguimiento actualizado el 2026-10-25.** Los criterios originales se conservan; el seguimiento siguiente distingue implementación local de validación de publicación. Las pruebas y decisiones vigentes están en [Implementación](IMPLEMENTACION.md). El punto de partida histórico es [Estado actual](ESTADO_ACTUAL.md).
+Actualizado el **26-10-2026**, conforme al enfoque acordado. La [hoja de ruta](HOJA_DE_RUTA.md) es la única referencia de orden de entrega; [Producto](PRODUCTO.md) define reglas y [Calidad](CALIDAD_Y_OPERACION.md) las comprobaciones. La evidencia base es `638980a`, no una declaración de que las tareas pendientes estén implementadas.
 
-## Seguimiento de ejecución
+## Convenciones y responsabilidad
 
-Para decidir el trabajo siguiente, consultar la [hoja de ruta vigente](HOJA_DE_RUTA.md). Tras rechazar la primera identidad, el propietario eligió **B · Mesa el 25-10-2026**; su aplicación se documenta en [Branding Mesa](BRANDING_MESA.md). Aquí se conserva el plan original como trazabilidad.
+- **P0:** bloqueo de seguridad/fiabilidad antes de la distribución afectada; **P1:** núcleo y beta; **P2:** mejora condicionada a validar el núcleo; **P3:** exploración.
+- Estados: **verificada**, **pendiente**, **bloqueada** o **condicionada**. «Verificada» incluye el alcance y las limitaciones de su evidencia; no implica validación externa.
+- Responsable por defecto: técnico que ejecute la tarea y documente resultado/commit. MAR-01 requiere decisión del propietario; GLU-01, revisión experta por designar; BET-01, coordinación y participantes por concretar. No son revisiones ya realizadas.
+- Un hito de datos no se entrega a medias: cesta, migración, copias y borrado forman una sola entrega revisable. No hay estimaciones de calendario sin disponibilidad y muestra.
 
-| IDs | Estado del código y evidencia | Pendiente para cerrar el criterio completo |
-| --- | --- | --- |
-| B-01 | Stack actualizado conjuntamente, lockfiles, comprobaciones y exportaciones. | Validación nativa completa, especialmente iOS. |
-| B-02 | Auditorías comparadas, correcciones compatibles y control de excepciones temporales en CI. | Resolver/evaluar los avisos transitivos antes de publicar. |
-| B-03 a B-06 | Dependencias antiguas retiradas, Node/npm fijados, tests útiles, lint y configuración segura local. | Revisión de configuración del entorno real al activarlo. |
-| B-07 | Workflow ejecutado correctamente en GitHub para la base `f2f5c42`, incluidos app, Firebase, dependencias, secretos y Android. | Revisar protección de rama y mantener controles por cambio. |
-| G-01 a G-03 | Dominio versionado, cliente único y control de consulta con pruebas. | Revisión experta del lenguaje y de las reglas. |
-| G-04 a G-06 | Cámara, entrada manual y ficha implementadas; recuperación web probada. | Cámara física, lectores de pantalla y fuentes ampliadas nativas. |
-| M-01 a M-05 | Biblioteca, persistencia, offline, identidad, ayuda, exportación y borrado implementados. | Validación de uso y accesibilidad en dispositivos. |
-| M-06, R-03, R-06 | Base preparada para beta. | Personas usuarias, matriz física y métricas de beta. |
-| R-01 | Identificadores, permisos mínimos y perfiles definidos. Preview ARM64/x86_64 instalada y probada sin Metro; manifiesto con SHA-256 y firma de desarrollo. | Confirmar identidad, firma de publicación y distribución real en dispositivos físicos. |
-| R-02 | Eventos técnicos con campos permitidos y envío desactivado sin endpoint. | Receptor, retención, alertas y medición en beta. |
-| R-04 | Guía de despliegue y recuperación escrita. | Responsables y ensayo real de reversión. |
-| R-05 | Licencia MIT y atribución incluidas. | Revisión de textos finales y titularidad antes de publicar. |
-| C-01 a C-03 | Cuenta opcional, reglas, transacciones y sincronización manual de favoritos probadas en emuladores. Auth, base europea, reglas e índices ya configurados en el proyecto real; lecturas privadas sin autenticar rechazadas. | Functions, entorno independiente de beta y pruebas de dos cuentas. Nube de la app desactivada; [detalle remoto](FIREBASE_REAL.md). |
-| C-04 | Caché local y refresco bajo demanda. | Caché compartida global, si el uso medido la justifica. |
-| C-05 | Exportación local, borrado autenticado y bloqueo temporal remoto implementados y probados en emuladores. | Desplegar y verificar borrado/TTL con facturación configurada; política final de retención y copias de seguridad real. |
-| P-01, P-02 | Observaciones privadas por tienda/sucursal, modelo validado y procedencia explícita. | Validación de utilidad con personas compradoras. |
-| P-03 | Envío verificado, cuota, idempotencia y moderación implementados y probados. | Canal de reportes de usuarios y operación de moderación en beta. |
-| P-04 | Consulta paginada compartida, precio por unidad y antigüedad visibles. | Pruebas de uso para comparación de formatos. |
-| P-05 | Índices, límites de consulta y máximo de instancias definidos. | Prueba de carga, presupuesto y costes observados. |
+## Base y siguiente entrega
 
-Las evoluciones P3 no se consideran requisitos implementados: necesitan validar demanda y fuentes. No hay integración oficial con supermercados ni promesa de existencias.
-
-Decisión vigente del propietario, 2026-10-24: mantener la versión local sin costes de backend. Las funciones de nube de C-01 a C-05 y la publicación compartida de P-03 son ampliaciones futuras, no requisitos para entregar la app local. No activar Blaze ni condicionar la versión local a desplegar Functions. Todos los perfiles EAS desactivan la nube.
-
-## 1. Orden y prioridades
-
-- **P0:** bloquea una interpretación fiable de la información principal.
-- **P1:** necesario para un MVP estable o para activar de forma segura la función asociada.
-- **P2:** mejora de experiencia, mantenimiento o ampliación del producto; algunos elementos serán requisito de publicación dentro de su fase.
-- **P3:** evolución que exige validar demanda y viabilidad antes de construirla.
-
-Orden propuesto: base técnica y reglas → escaneo completo → utilidad local → beta → nube opcional → precios. Las tareas de seguridad de nube son obligatorias antes de conectar escrituras, aunque esa fase llegue después del MVP local.
-
-El esfuerzo indicado es relativo: S = acotado, M = varios componentes, L = transversal. No es una estimación de calendario; faltan responsables, disponibilidad, dispositivos y alcance definitivo.
-
-## 2. Fase 0 · Recuperar una base técnica verificable
-
-Objetivo: poder instalar, comprobar, probar y compilar de manera reproducible antes de ampliar funciones.
-
-| ID | Prioridad / esfuerzo | Trabajo | Criterio de aceptación |
+| ID | Prioridad / estado | Dependencias | Trabajo y aceptación |
 | --- | --- | --- | --- |
-| B-01 | P1 / M | Elegir SDK objetivo y actualizar de forma coordinada Expo, React Native, Router, navegación, Jest y renderer. | Matriz compatible documentada; instalación limpia, tipos y comprobación de Expo pasan; builds de desarrollo Android/iOS verificadas. |
-| B-02 | P1 / M | Clasificar los avisos de `npm audit` por cadena, entorno y posibilidad de explotación; resolver los aplicables. | Registro con versión, exposición y resolución; ningún crítico/alto aplicable sin resolver antes de publicar. |
-| B-03 | P1 / S | Retirar dependencias sin uso, empezando por revisar `react-native-camera`; fijar Node y gestor de paquetes. | No quedan imports rotos; lockfile actualizado de forma controlada; versión de entorno en README y CI. |
-| B-04 | P1 / S | Reparar Jest y establecer una primera prueba real del dominio. | Pruebas ejecutadas, no solo suite iniciada; no se aceptan snapshots actualizados para ocultar fallos. |
-| B-05 | P2 / S | Configurar ESLint y scripts de comprobación; retirar o reparar `reset-project`. | Todos los comandos documentados funcionan sin configuración interactiva en CI. |
-| B-06 | P1 / S | Preparar `.env.example`, validación de configuración y separación de entornos. Revisar seguimiento de `.env`. | Ejemplo sin valores reales; secretos de servidor fuera del cliente; proyecto de pruebas separado antes de escrituras. |
-| B-07 | P1 / M | CI con instalación limpia, tipos, lint, tests y exportación web. | Un fallo bloquea integración; resultados visibles por cambio. |
+| CMP-00 | P1 / verificada técnicamente | — | Iteración 8: comparación del mismo GTIN/envase, sugerencia de tienda, Open Prices separado de anotaciones, Mesa y biblioteca. 144 pruebas de app, 34 de seguridad y 23 recorridos web; [CI con cinco controles correctos](https://github.com/gonsals/gluten-free-supermarkets/actions/runs/40270570028). Sin cesta, cobertura nacional demostrada ni validación física. [Contrato](COMPARADOR_DE_PRECIOS.md). |
+| CES-01 | P1 / pendiente; siguiente | CMP-00 | Una cesta activa: añadir desde producto/biblioteca, editar número de envases, quitar y vaciar con confirmación. Propuesta: 100 líneas distintas y 1–99 envases enteros; agrupar mismo GTIN sin duplicados. Admitir falta de ficha o precio y explicar el dato ausente. Acciones accesibles y funcionamiento local. No mostrar todavía totales por tienda. |
+| CES-02 | P1 / pendiente; misma entrega | CMP-00 | Versionar esquema y copia para la cesta, migrar v1 con cesta vacía, exportar/restaurar/borrar y conservar fichas referenciadas. Probar reinicio offline, archivo v1/v2, fallo de escritura, actualización y clientes incompatibles sin pérdida silenciosa. Documentar límites y política de concurrencia. CES-01 y CES-02 se cierran juntas. |
 
-Actualizar primero las incompatibilidades conocidas del SDK existente puede ayudar a recuperar una referencia, pero **no es el destino final** si deja problemas aplicables sin resolver. Elegir una versión de SDK mantenida y verificar cada salto siguiendo la [guía oficial de actualización](https://docs.expo.dev/workflow/upgrading-expo-sdk-walkthrough/). No aplicar versiones mayores aisladas propuestas por una herramienta sin validar el conjunto.
+## Total por establecimiento y cobertura
 
-Salida de fase: entorno reproducible y comprobaciones útiles. Todavía no implica tener un producto completo.
-
-## 3. Fase 1 · Consulta y resultado fiables
-
-Objetivo: que el escáner resuelva el recorrido principal sin conclusiones inventadas ni estados atascados.
-
-| ID | Prioridad / esfuerzo | Trabajo | Criterio de aceptación |
+| ID | Prioridad / estado | Dependencias | Trabajo y aceptación |
 | --- | --- | --- | --- |
-| G-01 | P0 / M | Implementar modelo de evidencia y reglas de [Producto](PRODUCTO.md). Sustituir booleano por estados y señales. | Casos con ausencia, etiquetas, gluten declarado, trazas y contradicciones probados; ficha y persistencia usan la misma interpretación. |
-| G-02 | P1 / M | Unificar clientes Open Food Facts y validar respuestas externas. | Un adaptador por contrato; campos opcionales no rompen UI; entornos explícitos; fuente y fechas conservadas. |
-| G-03 | P1 / M | Definir estado de consulta, cancelación, timeout y reintentos limitados. | Respuesta antigua descartada; cerrar/reintentar limpia estado; fallo HTTP, sin red y no encontrado se distinguen. |
-| G-04 | P1 / M | Controlar cámara por foco y primer plano, errores de montaje y permisos. | Cámara inactiva al salir; retorno funcional; denegación permanente tiene salida útil. |
-| G-05 | P1 / M | Validar códigos, bloquear eventos repetidos y añadir entrada manual. | Un escaneo produce una consulta; mismo código se puede consultar de nuevo tras cerrar; QR no compatible se rechaza con explicación. |
-| G-06 | P1 / M | Diseñar ficha completa y accesible con evidencias, scroll y recuperación. | Sin datos obligatorios inventados; ingredientes largos legibles; lector de pantalla y fuentes ampliadas comprobados. |
+| TIE-01 | P1 / pendiente | CMP-00 | Definir cadena, sucursal y referencia sin ámbito suficiente. Vínculo explícito entre referencias privadas/públicas, con deshacer y procedencia; no inferir identidad por nombre/localidad. Los precios sin sucursal suficiente siguen anotados pero no completan una cesta física de otra tienda. Probar homónimos, dos sucursales y vínculo erróneo corregido. |
+| CES-03 | P1 / pendiente | CES-01, CES-02, TIE-01 | Calcular total por establecimiento con cantidades y observaciones elegibles. Seleccionar la última antes de filtros, no rescatar un precio viejo al excluir una oferta nueva. Ranking solo con cobertura completa; incompletas muestran subtotal y faltantes, nunca cero. Con una sola completa no afirmar ahorro. Misma precisión y política de redondeo en dominio/UI; fuentes, antigüedad y condiciones por línea. |
+| DAT-01 | P1 / pendiente; paralela a cesta | CMP-00 | Medir cobertura con lista y zona de prueba declaradas: N productos, fechas, referencias, observaciones elegibles, páginas consultadas y cestas completas. Consulta acotada, sin barrido de bibliotecas ni datos privados enviados. Separar ausencia de dato de fallo de proveedor. Registrar decisión de alcance o fuente antes de prometer cobertura. |
+| DAT-02 | P2 / condicionada | DAT-01 | Si la medición justifica uso público offline, diseñar caché persistente separada, acotada, con origen/fecha/caducidad/borrado. No exportarla como anotación privada ni presentar un dato viejo como actual. Probar expiración, red caída, límites y atribución. Hoy la caché pública es solo de memoria. |
+| DAT-03 | P2 / condicionada | DAT-01 | Investigar otro proveedor público que cubra una carencia medida. Documentar acceso, licencia/atribución, ámbito, formatos, frecuencia permitida y carga. Adaptador aislado con validación, cancelación, cuotas y pruebas de contrato antes de integrarlo. Sin claves de pago, scraping masivo ni backend contratado. |
 
-Dependencias: G-01 y G-02 definen contratos para G-03 y G-06. G-04/G-05 pueden avanzar cuando exista una forma estable de simular el resultado.
+## Formatos, alternativas y evidencia
 
-Salida de fase: recorrido verificado en Android e iOS: permitir/denegar cámara → escanear o introducir código → cargar → mostrar ficha o error → volver a consultar. G-01 requiere revisión del lenguaje y reglas antes de una beta dirigida a usuarios.
-
-## 4. Fase 2 · MVP útil en una compra real
-
-| ID | Prioridad / esfuerzo | Trabajo | Criterio de aceptación |
+| ID | Prioridad / estado | Dependencias | Trabajo y aceptación |
 | --- | --- | --- | --- |
-| M-01 | P1 / M | Historial local con esquema versionado, límite y borrado. | Sobrevive a reinicios, no duplica eventos repetidos, lista paginada y borrado verificable. |
-| M-02 | P1 / M | Favoritos locales y detalle desde listas. | Marcar/desmarcar sobrevive a reinicios; limpiar historial no elimina favoritos. |
-| M-03 | P1 / M | Caché local y consulta de fichas guardadas sin conexión. | Fuente y antigüedad visibles; no se borra el contenido al fallar una actualización; almacenamiento acotado. |
-| M-04 | P2 / M | Sustituir inicio de ejemplo, textos e identidad visual. | Ningún Lorem ipsum, logo React ni etiqueta de navegación de plantilla; español consistente y tema coherente. |
-| M-05 | P1 / M | Completar ayuda, atribución, privacidad y comunicación de errores. | Accesibles dentro de la app; decisiones de datos descritas según comportamiento real. |
-| M-06 | P1 / M | Pruebas de uso del recorrido de compra y estados ambiguos. | Hallazgos registrados, bloqueos corregidos y comprensión del resultado validada. |
+| UNI-01 | P1 / pendiente | CES-03 | Normalizar cantidades conocidas en masa, volumen o unidades compatibles. Probar multipacks, cantidad ausente y unidades incompatibles; conservar precisión sin dividir por cero. Mostrar precio unitario separado del coste de envases enteros, redondeo y cantidad sobrante. |
+| ALT-01 | P1 / pendiente | UNI-01 | Grupos de sustitución explícitos y revisables; confirmar cada alternativa y sus cantidades. Declaración sin gluten como criterio opcional, con acceso a trazas/fuente/fecha y exclusión de contradicciones del filtro positivo. No tratar ausencia de información o nombre parecido como equivalencia ni confirmar aptitud propia. |
+| GLU-01 | P1 / pendiente; bloqueo antes de beta dirigida | CMP-00 | Revisar con persona experta los cuatro estados, trazas, contradicciones y lenguaje; comprobar comprensión con participantes, registrar hallazgos/correcciones y versión. La preparación técnica de [Validación gluten](VALIDACION_GLUTEN.md) ya está entregada; la revisión externa no. |
 
-Salida de fase: MVP local completo según [Producto](PRODUCTO.md), con pruebas de recuperación y accesibilidad. La incorporación de login no es una condición para esta fase.
+## Fiabilidad, beta y publicación
 
-## 5. Fase 3 · Preparación y operación de beta
-
-| ID | Prioridad / esfuerzo | Trabajo | Criterio de aceptación |
+| ID | Prioridad / estado | Dependencias | Trabajo y aceptación |
 | --- | --- | --- | --- |
-| R-01 | P1 / M | Identificadores propios, permisos mínimos, firma y perfiles de builds. | Paquetes de beta instalables en dispositivos; permisos alineados con las funciones, sin audio innecesario para escanear. |
-| R-02 | P1 / M | Medición de fallos y tiempos sin historial identificable. | Versión y entorno adjuntos; errores del recorrido rastreables; filtros de privacidad comprobados. |
-| R-03 | P1 / M | Pruebas nativas completas y matriz de dispositivos. | Casos críticos de [Calidad](CALIDAD_Y_OPERACION.md) pasan en versiones soportadas. |
-| R-04 | P1 / M | Procedimiento de publicación, recuperación y soporte. | Responsable y pasos definidos; recuperación de una versión problemática ensayada según el mecanismo elegido. |
-| R-05 | P1 / S | Formalizar licencia del código y condiciones de reutilización de datos. | Archivo de licencia acordado; atribución y textos de publicación coherentes. |
-| R-06 | P1 / M | Beta gradual con revisión de métricas y feedback. | Sin bloqueos conocidos; objetivos de estabilidad medidos con muestra declarada; presupuesto operativo aprobado. |
+| SEG-01 | P0 / bloqueada para publicación general | CMP-00 | Resolver cadenas de Zod, node-forge y OpenTelemetry con conjunto compatible; no ampliar excepciones ni usar actualizaciones forzadas. Vencimiento actual 22-11-2026. Cierre: secretos y `audit:release` correctos, controles de runtime pertinentes y registro de resolución. [Estado](DEPENDENCIAS.md). No impide desarrollar la cesta local. |
+| CAL-01 | P1 / pendiente; incremental | CES-03, UNI-01, ALT-01, DAT-01 | Verificar el recorrido de compra integrado: códigos, cantidades, identidad de tienda, precios, filtros, cobertura y totales contra casos reproducibles y muestra real declarada. Diferenciar precio observado, estimación y ahorro comprobado. Tests de cada tarea se ejecutan antes de cerrar esa tarea; esta dependencia corresponde al cierre integral. |
+| CAL-02 | P1 / pendiente; incremental | CES-02, CES-03 | Matriz Android física: cámara/linterna, permisos, segundo plano, offline, texto ampliado, TalkBack, almacenamiento, migración y recuperación. Registrar modelo/SO/commit. Sin fallos críticos. iOS físico/VoiceOver y build nativa obligatorios si se incluye iOS en distribución. |
+| MAR-01 | P1 / pendiente de decisión | CMP-00 | Revisar nombre y textos de tienda conforme a compra/precios, conservando Mesa. Presentar propuesta concreta y registrar decisión del propietario y comprobaciones de disponibilidad antes de registro público. SinGluten continúa como nombre de trabajo. No reabrir tres direcciones visuales ya elegidas. |
+| REL-01 | P1 / pendiente | CES-03, MAR-01 | Preparar distribución local: firma y custodia fuera de Git, versión/commit, privacidad, licencias/atribución de datos, soporte y mecanismo de detener/corregir entrega. Ensayar recuperación con datos migrados. Elegir canal sin contratar nada por defecto; requisitos de seguridad según alcance en Calidad. |
+| BET-01 | P1 / pendiente | CAL-01, CAL-02, GLU-01, REL-01 | Beta controlada propuesta de 5–10 personas; consentimiento, preguntas, muestra, versión y métricas definidos. Observar preparación de cesta, comparación y anotación. Registrar cobertura y comprensión sin recoger historiales identificables por defecto. Corregir bloqueos antes de ampliar. No es evidencia de estabilidad porcentual por sí sola. |
+| REL-02 | P1 / pendiente | BET-01, SEG-01 | Publicación controlada: criterios de Calidad cumplidos, controles sobre revisión final, recuperación ensayada y soporte asignado. Revisar protección de rama y flujo de integración. La nube opcional permanece desactivada; no publicar por el simple hecho de hacer push. |
 
-Salida de fase: beta profesional mantenible. La publicación general requiere completar los controles de entrega, no solo distribuir un enlace.
+SEG-01 debe revisarse en cada entrega: un hallazgo nuevo que afecte al funcionamiento local puede bloquear también una beta. Su estado actual no autoriza a ignorar un fallo nuevo. Antes de BET-01, registrar esta revisión además de las dependencias de la tabla.
 
-## 6. Fase 4 · Nube y sincronización opcionales
+## Evolución condicionada
 
-Activar cuando haya demanda de varios dispositivos, catálogo compartido o contribuciones. Las bases de esta fase pueden adelantarse si otra función las necesita.
-
-| ID | Prioridad / esfuerzo | Trabajo | Criterio de aceptación |
+| ID | Prioridad / estado | Dependencias | Trabajo y condición de salida |
 | --- | --- | --- | --- |
-| C-01 | P1 / L | Autenticación y enlace explícito de contenido local. | No se pierde información al iniciar/cerrar sesión; dos usuarios no comparten datos privados. |
-| C-02 | P1 / L | Reglas, índices, emuladores y controles de ingreso. | Pruebas de acceso permitido y denegado pasan; cliente no altera catálogo ni roles arbitrariamente. |
-| C-03 | P1 / L | Sincronización idempotente, conflictos y borrados. | Reintentos no duplican; eliminaciones no reaparecen; fallos y pendientes visibles. |
-| C-04 | P1 / M | Refresco controlado del catálogo y caché compartida si procede. | Límites globales, fechas, costes y permisos probados; cliente no puede publicar evidencia arbitraria como validada. |
-| C-05 | P1 / M | Exportación/borrado de cuenta y política remota de retención. | Borrado propagado según política, sin restaurar datos por una cola antigua; soporte documentado. |
+| CES-04 | P2 / condicionada | CES-03, BET-01 | Repartir cesta entre tiendas si mejora una compra real. Comparar visitas, cobertura y costes extra aportados; explicar límites y evitar promesas de óptimo global sin todos los datos. |
+| FUT-01 | P2 / condicionada | BET-01 | Biblioteca, filtros, avisos de antigüedad y optimización de listas/arranque/APK: solo con problema o perfilado previo y medición antes/después. |
+| FUT-02 | P3 / condicionada | DAT-01, BET-01 | Búsqueda externa, alertas, idiomas o mercados: demanda y contrato/cuotas probados antes de comprometer integración. |
+| FUT-03 | P3 / fuera de alcance actual | BET-01 | Sincronización/contribuciones propias: solo tras decisión expresa de presupuesto y demanda; aislamiento, abuso, moderación, conflictos, borrado y coste validados. El código Firebase opcional no exige activarlo. |
+| FUT-04 | P3 / condicionada | BET-01 | Mapas/OCR/IA: demostrar utilidad frente a complejidad, revisar privacidad y recursos; confirmar textos extraídos y no inferir certificación ni datos de precio inexistentes. |
 
-Salida de fase: sincronización confiable y costes medidos. Las reglas de Firebase desplegadas deben revisarse, no deducirse de que exista una clave pública.
+## Trazabilidad del plan anterior
 
-## 7. Fase 5 · Precios por supermercado
+Los IDs de este backlog tienen prefijos nuevos para evitar reutilizar los del [plan inicial archivado](historico/PLAN_MEJORAS_ANTES_DEL_COMPARADOR.md). Los documentos de iteraciones conservan sus referencias históricas.
 
-| ID | Prioridad / esfuerzo | Trabajo | Criterio de aceptación |
-| --- | --- | --- | --- |
-| P-01 | P2 / M | Validar utilidad y fuente de precios; definir cadena frente a sucursal. | Alcance de cada dato inequívoco; no se promete stock ni integraciones inexistentes. |
-| P-02 | P1 de esta función / L | Modelo de observaciones y migración del esquema incipiente. | Importe entero, moneda, envase, fechas, autor y procedencia; histórico preservado. |
-| P-03 | P1 de esta función / L | Ingreso autenticado, límites, revisión y reportes. | Datos inválidos/abusivos rechazados; usuario no modifica moderación ni autor. |
-| P-04 | P2 / M | Comparador paginado y precio por unidad cuando sea válido. | Comparaciones del mismo formato, antigüedad visible, ofertas contextualizadas y unidades compatibles. |
-| P-05 | P1 de esta función / M | Índices, medición de coste y prueba de carga. | Latencia y coste dentro del presupuesto acordado; sin lecturas globales por cada búsqueda. |
-
-Salida de fase: comparar observaciones trazables, sin presentar precios antiguos como vigentes ni una observación como disponibilidad garantizada.
-
-## 8. Evoluciones a validar
-
-P3: búsqueda avanzada por nombre/categoría, lista de compra, alternativas, mapas, avisos de precio y extracción de datos del envase. Cada una requiere demostrar necesidad, calidad de fuente y coste de mantenimiento. La IA no debe introducirse como sustituto de las reglas de evidencia ni como certificador automático de aptitud.
-
-## 9. Trazabilidad de hallazgos
-
-| Hallazgo de auditoría | Tareas que lo resuelven |
+| Referencia anterior | Situación y seguimiento vigente |
 | --- | --- |
-| A-01: interpretación | G-01, G-06, M-06 |
-| A-02: API y entornos | B-06, G-02 |
-| A-03: estado y concurrencia | G-03, G-05 |
-| A-04: cámara | G-04, G-05, R-03 |
-| A-05: dependencias y tests | B-01 a B-04, B-07 |
-| A-06: persistencia y acceso | C-01 a C-05, P-02, P-03 |
-| A-07: UX y accesibilidad | G-06, M-04, M-06 |
-| A-08: herramientas y documentación | B-05, B-07, R-04, R-05 |
+| Pasos 1–2, branding | Mesa ya elegida/aplicada; solo queda MAR-01 para nombre y presentación comercial, más CAL-02 para validación física. |
+| Paso 3 / G-01 a G-06 | Implementación técnica disponible; GLU-01 y CAL-02 cierran validación externa y de plataforma. |
+| Pasos 4–7 / B-02, R-01 a R-06 | SEG-01, CAL-01/CAL-02, REL-01, BET-01 y REL-02. |
+| F-01 y F-04 / P-01 a P-05 | CMP-00 ya disponible; cesta elevada a CES-01/CES-02/CES-03, tiendas TIE-01, cobertura DAT-01 y formatos UNI-01/ALT-01. |
+| F-03, importación de copias | Implementada en iteración 7; CES-02 amplía el contrato a cesta. No rehacer importación desde cero. |
+| F-02, F-05 y F-06 | FUT-01, condicionadas a evidencia de uso/rendimiento. |
+| C-01 a C-05 y P-03 del plan inicial | Nube/contribuciones opcionales, fuera del MVP local; FUT-03. No preceden ni bloquean el comparador. |
+| F-07 a F-11 | FUT-02/FUT-03/FUT-04 y DAT-03 según fuente y demanda; sin compromiso de contratación. |
 
-## 10. Regla de finalización
+## Regla de cierre
 
-Una tarea queda terminada cuando cumple sus criterios, tiene verificación adecuada y documentación actualizada. Un hito se cierra con el recorrido completo probado, sin bloqueos conocidos y con sus limitaciones explícitas. Registrar responsable, evidencia y fecha al ejecutarlo; no marcarlo completado únicamente porque el código compile.
-
-El primer bloque del plan original era **B-01 a B-04 + G-01**. La base técnica y el núcleo de interpretación ya están implementados; el orden pendiente se mantiene en la [hoja de ruta vigente](HOJA_DE_RUTA.md), con revisión de branding, validación experta y controles de publicación.
+Registrar por tarea: responsable real, commit, criterio cumplido, comprobaciones, límites y fecha. Cambiar el estado solo tras revisar esa evidencia. La próxima entrega técnica concreta es **CES-01 + CES-02**; DAT-01 puede investigarse en paralelo. Este documento no da por comenzada una implementación por haberla planificado.

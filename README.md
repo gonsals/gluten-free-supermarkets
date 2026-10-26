@@ -4,7 +4,7 @@ App de compra en **Expo 58, React 19 y React Native 0.88**, enfocada en comparar
 
 **Prioridad elegida el 26-10-2026: comprar de forma más económica.** La comparación actual es por código y envase; la cesta completa y la comparación de alternativas por cantidad son siguientes pasos. [Alcance y fuentes](docs/COMPARADOR_DE_PRECIOS.md).
 
-**Estado: MVP implementado y en validación.** La app y el servidor tienen pruebas automatizadas. El proyecto Firebase real ya tiene autenticación por correo y Firestore con reglas e índices desplegados; las funciones y la activación de nube en la app siguen pendientes. No se ha publicado en tiendas. El estado remoto y sus límites están en [Firebase real](docs/FIREBASE_REAL.md).
+**Estado: comparador por producto implementado; cesta pendiente.** La próxima entrega es cesta local con cantidades, migración, copias y borrado; después, totales por establecimiento con cobertura explícita. [Orden y criterios vigentes](docs/HOJA_DE_RUTA.md). No se ha publicado en tiendas. Firebase permanece como ampliación opcional desactivada, fuera del núcleo; [estado remoto](docs/FIREBASE_REAL.md).
 
 ## Funcionalidades
 
@@ -75,7 +75,7 @@ La [hoja de ruta vigente](docs/HOJA_DE_RUTA.md) organiza los siguientes pasos y 
 
 | Documento | Uso |
 | --- | --- |
-| [Próximos pasos y mejoras futuras](docs/HOJA_DE_RUTA.md) | Orden de trabajo, revisión prioritaria de branding, criterios de lanzamiento y evolución sin costes de backend. |
+| [Hoja de ruta vigente](docs/HOJA_DE_RUTA.md) | Cesta → totales por establecimiento → formatos/alternativas → validación → beta; cobertura y seguridad en paralelo. |
 | [Revisión de branding](docs/BRANDING.md) | Brief, tres direcciones de diseño y comparativa visual navegable en claro/oscuro. |
 | [Branding Mesa](docs/BRANDING_MESA.md) | Dirección elegida, sistema visual aplicado, recursos regenerables y comprobaciones de la app real. |
 | [Validación de resultados sobre gluten](docs/VALIDACION_GLUTEN.md) | Iteración 3: guía offline, evidencia visible, doce casos reproducibles y protocolo de revisión experta todavía pendiente. |
@@ -89,18 +89,20 @@ La [hoja de ruta vigente](docs/HOJA_DE_RUTA.md) organiza los siguientes pasos y 
 | [Despliegue y pruebas](docs/DESPLIEGUE_Y_PRUEBAS.md) | Configuración local, emuladores, nube, builds y operación. |
 | [Firebase real](docs/FIREBASE_REAL.md) | Recursos configurados, verificaciones remotas y requisitos que faltan para activar la nube. |
 | [Seguridad de credenciales](docs/SEGURIDAD_CREDENCIALES.md) | Clave histórica revocada, alcance del escaneo y prevención de nuevas exposiciones. |
-| [Producto](docs/PRODUCTO.md) | Finalidad, reglas de evidencia y criterios de experiencia. |
-| [Arquitectura](docs/ARQUITECTURA.md) | Diseño de referencia y responsabilidades. |
-| [Plan de mejoras](docs/PLAN_MEJORAS.md) | Trazabilidad del plan inicial y avance de su ejecución. |
+| [Producto](docs/PRODUCTO.md) | Compra económica, precios, cobertura, cesta completa/parcial y gluten complementario. |
+| [Arquitectura](docs/ARQUITECTURA.md) | Base local actual y diseño pendiente de cesta, migraciones, tiendas y proveedores. |
+| [Backlog de ejecución](docs/PLAN_MEJORAS.md) | IDs, prioridades, dependencias, estados y criterios de entrega del nuevo enfoque. |
+| [Planificación histórica](docs/historico/README.md) | Plan anterior conservado; deja de definir prioridades y estado vigentes. |
 | [Auditoría inicial](docs/ESTADO_ACTUAL.md) | Estado histórico del prototipo del commit `3044a18`. |
-| [Calidad y operación](docs/CALIDAD_Y_OPERACION.md) | Requisitos de calidad y publicación que deben mantenerse. |
+| [Calidad y operación](docs/CALIDAD_Y_OPERACION.md) | Evidencia actual, pruebas de totales/cobertura/datos, beta y bloqueos de publicación. |
 
 ## Organización
 
 ```text
 app/                    Rutas: inicio, consulta, biblioteca, precios, ajustes y moderación
 src/domain/             Producto, interpretación, códigos, precios y errores
-src/data/open-food-facts/ Cliente externo y normalización
+src/data/open-food-facts/ Fichas y normalización de evidencia
+src/data/open-prices/   Lectura pública acotada y normalización de precios
 src/data/local/         Repositorio transaccional y adaptadores SQLite/IndexedDB
 src/data/firebase/      Inicialización opcional y sincronización
 src/features/           Funcionalidades y componentes de pantalla
@@ -115,4 +117,4 @@ scripts/                Herramientas de desarrollo y exportación
 
 Un dato ausente no se convierte en «contiene gluten», ni una etiqueta recibida equivale a una certificación propia. La app muestra la evidencia de la fuente y sus limitaciones. Antes de una publicación dirigida a población celíaca se necesita validar el lenguaje y las reglas con revisión experta y pruebas de uso.
 
-Código bajo [MIT](LICENSE). Los datos e imágenes de Open Food Facts tienen [licencias y condiciones independientes](https://openfoodfacts.github.io/openfoodfacts-server/api/tutorials/license-be-on-the-legal-side/).
+Código bajo [MIT](LICENSE). Los datos e imágenes de Open Food Facts tienen [licencias y condiciones independientes](https://openfoodfacts.github.io/openfoodfacts-server/api/tutorials/license-be-on-the-legal-side/). Precios públicos: Open Prices/ODbL; ubicaciones: © OpenStreetMap contributors/ODbL. [Fuentes, atribución y límites implementados](docs/COMPARADOR_DE_PRECIOS.md).

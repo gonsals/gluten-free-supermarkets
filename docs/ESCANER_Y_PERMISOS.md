@@ -1,5 +1,7 @@
 # Iteración 6 · Escáner, permisos y reanudación
 
+> **Planificación actualizada 26-10-2026.** Evidencia de la iteración 6, dentro de la validación del plan anterior. El escáner apoya al comparador; las pruebas físicas pendientes siguen en CAL-02. [Hoja de ruta vigente](HOJA_DE_RUTA.md) · [Backlog](PLAN_MEJORAS.md).
+
 Fecha: **25 de octubre de 2026**. Continúa el paso 5 de la hoja de ruta sobre B · Mesa. La nube permanece desactivada y no se añaden dependencias, permisos ni servicios.
 
 ## Recorrido y cambios

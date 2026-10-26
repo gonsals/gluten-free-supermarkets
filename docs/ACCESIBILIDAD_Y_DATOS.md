@@ -1,5 +1,7 @@
 # Iteración 5 · Accesibilidad y conservación de datos
 
+> **Planificación actualizada 26-10-2026.** Evidencia del paso 5 del plan anterior. Las pruebas físicas y asistivas pendientes siguen en CAL-02; el orden actual prioriza cesta y comparación de totales. [Hoja de ruta vigente](HOJA_DE_RUTA.md) · [Backlog](PLAN_MEJORAS.md).
+
 Fecha: **25 de octubre de 2026**. Continúa la preparación técnica del paso 5 de la hoja de ruta. Se conserva B · Mesa, el funcionamiento local y la nube desactivada.
 
 ## Recorrido verificado

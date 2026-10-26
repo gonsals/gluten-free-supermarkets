@@ -1,5 +1,7 @@
 # Iteración 4 · Seguridad y pruebas
 
+> **Planificación actualizada 26-10-2026.** Evidencia del paso 4 del plan anterior. El bloqueo de seguridad continúa con ID SEG-01; este informe conserva resultados y fecha de su iteración. [Hoja de ruta vigente](HOJA_DE_RUTA.md) · [Backlog](PLAN_MEJORAS.md).
+
 Fecha: **25 de octubre de 2026**. Base de producto: `068c58f`, identidad B · Mesa y guía de resultados de la iteración 3. Las modificaciones de esta iteración afectan a controles y pruebas; no cambian el runtime, los datos locales ni las reglas de interpretación.
 
 ## Objetivo y corrección

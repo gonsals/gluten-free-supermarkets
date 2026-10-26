@@ -2,7 +2,7 @@
 
 Decisión del propietario, **26 de octubre de 2026**: orientar la app a comparar productos para comprar de forma más económica, conservando la información sobre gluten como función adicional. También solicita proponer el supermercado al anotar un precio cuando el producto lo identifica y autoriza investigar precios públicos sin contratar servicios.
 
-Esta decisión sustituye la prioridad de consulta de gluten de la especificación inicial. Se conserva la dirección visual Mesa. SinGluten y los identificadores técnicos siguen siendo nombres de trabajo; no se ha aprobado un nuevo nombre comercial.
+Esta decisión sustituye la prioridad de consulta de gluten de la especificación inicial. Se conserva la dirección visual Mesa. SinGluten y los identificadores técnicos siguen siendo nombres de trabajo; no se ha aprobado un nuevo nombre comercial. Este documento registra el contrato y la evidencia de la iteración 8; el orden vigente de entrega se mantiene únicamente en la [hoja de ruta](HOJA_DE_RUTA.md), con tareas en el [backlog](PLAN_MEJORAS.md).
 
 ## Entrega de la iteración 8
 
@@ -91,13 +91,15 @@ Se actualiza a la APK final y se repiten lectura de tienda, presencia del acceso
 
 Capturas: [tienda propuesta en Android](diseno/iteracion-8-tienda.png) y [comparación privada sin conexión pública](diseno/iteracion-8-comparador.png). Los registros, matriz y manifiesto del APK permanecen en `artifacts/iteration-8/`. No se presentan estas pruebas como validación física, nativa de iOS ni de conectividad pública desde Android: la consulta real fue con el cliente HTTP, los recorridos públicos completos usan navegador y respuestas controladas.
 
-La base `ac48ca0` tiene sus cinco jobs de CI correctos: [run 40219646093](https://github.com/gonsals/gluten-free-supermarkets/actions/runs/40219646093). El resultado corresponde a esa base; la nueva revisión requiere sus propios controles.
+La revisión de la iteración 8, **`638980a`**, tiene sus cinco jobs de CI correctos: [run 40270570028](https://github.com/gonsals/gluten-free-supermarkets/actions/runs/40270570028). El resultado corresponde a esa revisión; los cambios posteriores requieren sus propios controles.
 
-Siguiente trabajo de producto, en este orden:
+Continuación según la [hoja de ruta](HOJA_DE_RUTA.md):
 
-1. **Cesta persistente** con productos y número de envases, incluida en copias y borrado. Comparar total por sucursal solo con cobertura completa; mostrar faltantes y subtotales de las cestas incompletas. Nunca dar precio cero a un producto sin dato.
-2. **Alternativas por cantidad/unidad**, incluyendo opciones con declaración sin gluten. Verificar envase, unidad y criterios de equivalencia; no asumir equivalencia por un nombre parecido.
-3. **Cobertura de precios**: medir presencia por producto, cadena, zona y antigüedad; estudiar otras fuentes públicas con condiciones de uso y mantenimiento comprobados. No prometer integrar todas las cadenas ni fijar una frecuencia de scraping sin evidencia.
-4. Validar utilidad durante compras reales, fecha/condiciones, comprensión de ahorros, lectores de pantalla y rendimiento con bibliotecas cercanas al límite.
+1. **CES-01/CES-02:** cesta persistente con cantidades, migración, copias y borrado; siguiente entrega, todavía pendiente.
+2. **TIE-01/CES-03:** identidad de establecimiento y total con cobertura completa. Incompletas con subtotal y faltantes; nunca precio cero para un producto sin dato.
+3. **UNI-01/ALT-01:** formatos/unidades y alternativas explícitas, incluida información sobre gluten, sin equiparar productos por nombre.
+4. **CAL-01/CAL-02/GLU-01 y beta:** validación de compra, comprensión, accesibilidad, dispositivos y evidencia de gluten.
+
+**DAT-01**, medición de cobertura por producto/zona/antigüedad, acompaña la cesta desde el inicio; no espera al final. DAT-02/DAT-03, caché persistente y otras fuentes, se condicionan a esa medición y a contratos/permisos comprobados. No se promete integrar todas las cadenas ni realizar scraping masivo.
 
 La revisión experta de la información sobre gluten y los avisos de dependencias continúan pendientes según la hoja de ruta. El cambio de prioridad no los da por resueltos.

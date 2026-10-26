@@ -1,6 +1,8 @@
 # Validación del lenguaje y la evidencia sobre gluten
 
-Iteración 3, **25 de octubre de 2026**. Corresponde a la preparación técnica del paso 3 de la [hoja de ruta](HOJA_DE_RUTA.md). **La revisión experta y las pruebas de comprensión con personas usuarias siguen pendientes.** Las pruebas automáticas de este documento verifican el contrato del software; no acreditan aptitud clínica ni certifican alimentos.
+> **Planificación actualizada 26-10-2026.** Preparación técnica del paso 3 del plan anterior. Gluten es ahora complementario; GLU-01 mantiene pendiente la revisión experta y de comprensión. [Hoja de ruta vigente](HOJA_DE_RUTA.md) · [Backlog](PLAN_MEJORAS.md).
+
+Iteración 3, **25 de octubre de 2026**. Corresponde a la preparación técnica del paso 3 de la [hoja de ruta anterior](historico/HOJA_DE_RUTA_ANTES_DEL_COMPARADOR.md). **La revisión experta y las pruebas de comprensión con personas usuarias siguen pendientes.** Las pruebas automáticas de este documento verifican el contrato del software; no acreditan aptitud clínica ni certifican alimentos.
 
 ## Mejoras entregadas
 
