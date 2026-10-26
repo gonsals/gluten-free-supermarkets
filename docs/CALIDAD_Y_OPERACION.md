@@ -8,16 +8,19 @@ Base **`638980a`**, iteración 8. [CI con cinco controles correctos](https://git
 
 | Comprobación realizada | Alcance y límite |
 | --- | --- |
-| 164 pruebas de app / 14 suites, iteración 9 | Dominio, clientes, repositorio, consulta, permisos, copias, tiendas y comparación. Incluye 20 pruebas nuevas de cesta, migración, límites y conflicto. |
+| 183 pruebas de app / 16 suites, iteración 10 | Dominio, clientes, repositorio, consulta, permisos, copias, tiendas y comparación. Incluye 20 pruebas nuevas de cesta, migración, límites y conflicto. |
 | 35 pruebas de seguridad, iteración 9 | Política de auditoría y controles; no equivalen a un pentest ni eliminan avisos pendientes. |
-| 30 recorridos web correctos, ejecución final de iteración 9 | Los 23 anteriores y siete de cesta. Incluyen comparación, filtros, errores públicos, sugerencias, datos y ficha de gluten. Fixtures sintéticas, separadas de comprobaciones de proveedor real. |
+| 36 recorridos web correctos, ejecución final de iteración 10 | Treinta anteriores y seis nuevos de totales/vínculos/límites/cancelación. Incluyen comparación, filtros, errores públicos, sugerencias, datos y ficha de gluten. Fixtures sintéticas, separadas de comprobaciones de proveedor real. |
 | Tipos, lint y compatibilidad Expo | Correctos en la base registrada; cada cambio necesita sus controles pertinentes. |
 | Reglas y nube en emuladores | Siete pruebas de reglas y cinco de integración; no habilitan nube real ni constituyen requisito de cuenta para el MVP local. |
 | APK universal de iteración 8 | Compilada, instalada/actualizada en Pixel 8 emulado API 35; tienda sugerida, restauración y precio privado conservados. Sin Metro, nube desactivada y firma de desarrollo. |
 | APK universal de iteración 9 | Actualización desde biblioteca v1, cesta y cantidad tras arranque en frío, restauración v2 y vaciado que conserva favoritos/precios en Android emulado API 35. [Paquete y evidencia](CESTA_LOCAL.md). Sin Metro, nube desactivada y firma de desarrollo; físico pendiente. |
+| APK universal de iteración 10 | Migración de cesta v2, identidad explícita, total completo y subtotal parcial, persistencia tras reinicio y restauración v3 en Android emulado API 35. [Paquete y evidencia](TOTALES_Y_SUCURSALES.md). Sin Metro, nube desactivada y firma de desarrollo; físico pendiente. |
 | Lectura pública real acotada | GTIN 3274080005003: 17/17 registros aceptados en la comprobación registrada; no demuestra cobertura española ni frescura por cadena. |
 
-Cámara física, TalkBack, revisión experta, iOS nativo, beta, cobertura de cesta y métricas de uso siguen pendientes. Una exportación de JavaScript iOS no equivale a build/dispositivo nativo. El escaneo del ZIP y Gitleaks reducen riesgo de exposición, sin ser prueba universal de ausencia de cualquier secreto.
+Cámara física, TalkBack, revisión experta, iOS nativo, beta, cobertura real de fuentes para cesta y métricas de uso siguen pendientes. Una exportación de JavaScript iOS no equivale a build/dispositivo nativo. El escaneo del ZIP y Gitleaks reducen riesgo de exposición, sin ser prueba universal de ausencia de cualquier secreto.
+
+**Iteración 10:** identidad, totales y formato v3 descritos en [Totales y sucursales](TOTALES_Y_SUCURSALES.md). Las matrices siguientes sirven también como regresión; no dan por realizadas las validaciones físicas, expertas o de beta.
 
 ## Estrategia de verificación
 
@@ -39,7 +42,7 @@ No escribir tests que solo repliquen detalles internos. Para importes, cobertura
 
 ## Datos y recuperación
 
-CES-01/CES-02 se han entregado juntas: cesta, exportación/restauración/borrado y esquema/copia v2 con migración desde v1. [Cesta local](CESTA_LOCAL.md) registra contrato, evidencia y límites; la matriz siguiente se mantiene como control de regresión.
+CES-01/CES-02 se han entregado juntas: cesta, exportación/restauración/borrado y esquema/copia v2 en iteración 9, ampliada a v3 con sucursales en iteración 10. [Cesta local](CESTA_LOCAL.md) registra contrato, evidencia y límites; la matriz siguiente se mantiene como control de regresión.
 
 | Escenario | Resultado exigido antes de cerrar CES-02 |
 | --- | --- |

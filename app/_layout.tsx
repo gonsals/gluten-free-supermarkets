@@ -69,6 +69,7 @@ export default function RootLayout() {
           <Stack.Screen name="product/[barcode]" options={{ title: 'Detalle del producto' }} />
           <Stack.Screen name="prices/[barcode]" options={{ title: 'Comparar precios' }} />
           <Stack.Screen name="basket" options={{ title: 'Mi cesta' }} />
+          <Stack.Screen name="basket-comparison" options={{ title: 'Comparar cesta' }} />
           <Stack.Screen name="moderation" options={{ title: 'Revisión de contribuciones' }} />
           <Stack.Screen name="results-guide" options={{ title: 'Guía de resultados' }} />
           <Stack.Screen name="+not-found" options={{ title: 'Página no encontrada' }} />

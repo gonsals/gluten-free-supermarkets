@@ -5,7 +5,7 @@ let database: ReturnType<typeof openDB> | undefined;
 function getDatabase() {
   database ??= new Promise<Awaited<ReturnType<typeof openDB>>>((resolve, reject) => {
     let blocked = false;
-    const opening = openDB('sin-gluten', 2, {
+    const opening = openDB('sin-gluten', 3, {
       upgrade(db) {
         if (!db.objectStoreNames.contains('kv')) db.createObjectStore('kv');
       },

@@ -19,11 +19,11 @@ Expo 58 / React Native 0.88 / React 19, TypeScript y Node/npm fijados. [Versione
 
 ## Persistencia y límites actuales — iteración 9
 
-Biblioteca `LibraryData` **versión 2**, separada por entorno de Open Food Facts (`library:${offEnv}:v1`). Historial máximo de 1.000, 250 favoritos activos y 1.000 anotaciones privadas de precio. La retención de fichas se basa en referencias de historial/favoritos y un margen acotado; **la cesta y los precios privados ya se incorporan a esa política en la iteración 9**.
+Biblioteca `LibraryData` **versión 3**, separada por entorno de Open Food Facts (`library:${offEnv}:v1`). Historial máximo de 1.000, 250 favoritos activos y 1.000 anotaciones privadas de precio. La retención de fichas se basa en referencias de historial/favoritos y un margen acotado; **la cesta y los precios privados ya se incorporan a esa política en la iteración 9**.
 
 Las operaciones se serializan por instancia y leen la raíz actual antes de cada mutación. La comparación de raíz esperada y la escritura de metadatos/fichas son atómicas en SQLite/IndexedDB. Un conflicto se muestra sin sobrescribir; se comprueban además cantidades/cesta/snapshot de acciones destructivas. La iteración 9 prueba dos instancias y dos pestañas. El refresco al cambiar de ruta/foco no es sincronización instantánea entre ventanas.
 
-Copias actuales: `format: sin-gluten-library`, `backupVersion: 2`, datos `version: 2`, cesta incluida e importación compatible con v1; validación de hasta 20 MiB, códigos, fechas, referencias y límites. Restauración completa confirmada, sin fusión; conserva fechas, recalcula evaluación y elimina vinculación de cuenta. [Contrato completo](COPIAS_LOCALES.md). El nombre del formato es un identificador técnico que no se cambia por decidir un nombre comercial.
+Copias actuales: `format: sin-gluten-library`, `backupVersion: 3`, datos `version: 3`, cesta y sucursales incluidas e importación compatible con v1/v2; validación de hasta 20 MiB, códigos, fechas, referencias y límites. Restauración completa confirmada, sin fusión; conserva fechas, recalcula evaluación y elimina vinculación de cuenta. [Contrato completo](COPIAS_LOCALES.md). El nombre del formato es un identificador técnico que no se cambia por decidir un nombre comercial.
 
 Los precios públicos no se guardan en la biblioteca ni se incluyen en sus copias. Su caché actual vive en memoria cinco minutos, hasta cien páginas. Mantener el dato externo separado del contenido privado es un límite de arquitectura y de procedencia.
 
@@ -47,28 +47,30 @@ El fallo público no bloquea la biblioteca privada. El modo offline conserva las
 
 Una cesta activa con líneas referenciadas por GTIN, nombre de resumen, fecha de alta y cantidad entera de envases; límites de 100 líneas y 1–99 envases. No duplicar fichas completas dentro de cada línea ni persistir totales como autoridad: derivarlos de líneas, observaciones y filtros.
 
-La entrega introduce **esquema de datos y copia v2**, con migración desde v1 y cesta inicialmente vacía. Se conserva la clave física histórica `library:${offEnv}:v1` y las fichas; el campo interno marca versión 2. SQLite incorpora triggers contra regresión de versión; IndexedDB se abre con versión física 2, bloqueando clientes v1 y mostrando salida útil si mantienen conexiones abiertas. [Contrato, política y evidencia](CESTA_LOCAL.md).
+La iteración 9 introdujo cesta/copia v2. La iteración 10 añade sucursales y vínculos en **esquema/copia v3**, migrando v1 con cesta vacía y v2 conservando su cesta. Se conserva la clave física histórica `library:${offEnv}:v1` y las fichas; el campo interno marca versión 3. SQLite incorpora triggers contra regresión de versión; IndexedDB se abre con versión física 3, bloqueando clientes v1/v2 y mostrando salida útil si mantienen conexiones abiertas. [Contrato, política y evidencia](CESTA_LOCAL.md).
 
 Contrato de migración/recuperación implementado, con verificación técnica en [Cesta local](CESTA_LOCAL.md) y validación física pendiente:
 
 1. Validar la versión antes de escribir; no modificar datos desconocidos. No migrar repetidamente en cada arranque.
 2. Preparar transformación íntegra y confirmar en transacción. Un fallo conserva la versión anterior recuperable y muestra una salida útil.
-3. Importar copias v1 crea cesta vacía; importar/exportar v2 preserva líneas, cantidades y referencias. Rechazar versiones desconocidas sin sustituir la biblioteca.
+3. Importar v1 crea cesta vacía; v2 conserva su cesta sin sucursales; v3 conserva también identificaciones/vínculos. Exportar usa v3. Rechazar versiones desconocidas sin sustituir la biblioteca.
 4. Una app antigua debe rechazar una copia v2; verificarlo con su lector real. Definir barrera entre clientes activos y plan de recuperación/actualización hacia delante; no recomendar downgrade que borre datos nuevos.
 5. Incluir cesta en exportación, resumen de restauración y borrado completo; limpiar historial conserva lo aún referenciado por cesta/favoritos/precios según contrato de retención.
 6. Probar dos instancias/pestañas, cambio durante un diálogo y fallo de almacenamiento. Comparar la raíz serializada en la transacción de cada adaptador; la cola por instancia se mantiene, pero no es la única protección.
 
 No subir cesta a Firebase. Cancelación, límites y política de borrado pertenecen al mismo contrato que el resto de datos privados.
 
-## Identidad de establecimientos y motor de totales — TIE-01/CES-03
+## Identidad y totales implementados — TIE-01/CES-03
 
-Introducir referencias tipadas para cadena, sucursal y ámbito desconocido. Un vínculo entre ubicación pública y anotación privada necesita evidencia/confirmación, procedencia y posibilidad de deshacer. Normalizar texto sirve para buscar, no para probar identidad. No convertir una anotación de cadena en observación nacional sin fuente que lo acredite.
+La iteración 10 distingue el texto de cadena de la fuente, una referencia sin confirmar y la sucursal física local confirmada. `branches.ts` valida 50 sucursales y 20 referencias por cada una; no hay catálogo canónico de cadenas ni inferencia de ámbito nacional. Un vínculo entre ubicación pública y anotación privada necesita evidencia/confirmación, procedencia y posibilidad de deshacer. Normalizar texto sirve para buscar, no para probar identidad. No convertir una anotación de cadena en observación nacional sin fuente que lo acredite.
 
-Mantener funciones puras para: selección de observación, elegibilidad, resolución de fuentes vinculadas, cobertura por línea/cantidad y total completo/parcial. El resultado debe conservar las observaciones utilizadas y motivos de exclusión para explicar la pantalla y reproducir las pruebas.
+`basketComparison.ts` implementa funciones puras para: selección de observación, elegibilidad, resolución de fuentes vinculadas, cobertura por línea/cantidad y total completo/parcial. El resultado debe conservar las observaciones utilizadas y motivos de exclusión para explicar la pantalla y reproducir las pruebas.
 
 La discrepancia entre fuentes debe tener regla determinista documentada y visible, sin seleccionar arbitrariamente el menor precio. Calcular en enteros con límites de producto/cantidad/importe y comprobar desbordamiento. Preservar milésimas y aplicar política única de presentación; solo cestas completas participan en el ranking. Un subtotal incompleto no es un total barato.
 
-No hacer una petición por cada render, cada fila visible o cada cambio de cantidad. Consultas públicas desde cesta: acción explícita, presupuesto de productos/páginas/peticiones y concurrencia fijado antes de implementar, cancelación y 429; empezar por subconjunto acotado, sin recorrer automáticamente cien productos. Medir cobertura y límites del proveedor con DAT-01 antes de aumentar volumen.
+No hacer una petición por cada render, cada fila visible o cada cambio de cantidad. Consultas públicas desde cesta: acción explícita, máximo diez productos por acción, secuenciales y una primera página de cincuenta resultados por código; cancelación, 429 y resultados solo en memoria. No se recorre automáticamente la cesta ni se siguen páginas. Medir cobertura y límites del proveedor con DAT-01 antes de aumentar volumen.
+
+Contrato, desempates, copias v3 y evidencia en [Totales y sucursales](TOTALES_Y_SUCURSALES.md). Los vínculos guardan clave/origen, nunca una copia del precio público.
 
 ## Proveedores y crecimiento — DAT/UNI/ALT
 

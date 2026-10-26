@@ -164,6 +164,12 @@ export function BasketScreen() {
           {packages === 1 ? 'envase' : 'envases'}
         </Copy>
       ) : null}
+      <Action
+        title="Comparar total por tienda"
+        icon="pricetags-outline"
+        disabled={!ready || !data.basket.length}
+        onPress={() => router.push('/basket-comparison')}
+      />
       {!ready && !error ? <ActivityIndicator /> : null}
       {error ? (
         <>
@@ -235,7 +241,8 @@ export function BasketScreen() {
       <View style={{ gap: 12 }}>
         <Copy muted>
           Hasta 100 productos distintos y 99 envases por producto. Repetir un código suma un envase.
-          Los precios se consultan por producto; todavía no se calcula un total por supermercado.
+          Compara los totales por sucursal confirmada; los productos sin precio quedan como
+          faltantes.
         </Copy>
         <Copy muted>
           La cesta se incluye al exportar y restaurar tus datos. Vaciarla conserva favoritos,

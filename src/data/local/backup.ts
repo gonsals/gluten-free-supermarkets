@@ -2,6 +2,7 @@ import { normalizeBarcode } from '@/src/domain/barcode';
 import { isPriceObservation, type PriceObservation } from '@/src/domain/price';
 import { assessGluten, isProduct, record, type Product } from '@/src/domain/product';
 import { isBasket } from '@/src/domain/basket';
+import { isBranches } from '@/src/domain/branches';
 import type { LibraryData, ProductSummary } from './library';
 
 export const BACKUP_FORMAT = 'sin-gluten-library';
@@ -109,13 +110,17 @@ export function parseLibraryBackup(contents: string): LibraryBackup {
   }
   if (
     !record(value) ||
-    (value.version !== 1 && value.version !== 2) ||
+    (value.version !== 1 && value.version !== 2 && value.version !== 3) ||
+    (value.version !== 3 && value.branches !== undefined) ||
     !date(value.exportedAt) ||
     (value.version === 1
       ? value.basket !== undefined ||
         ((value.format !== undefined || value.backupVersion !== undefined) &&
           (value.format !== BACKUP_FORMAT || value.backupVersion !== 1))
-      : value.format !== BACKUP_FORMAT || value.backupVersion !== 2 || !isBasket(value.basket)) ||
+      : value.format !== BACKUP_FORMAT ||
+        value.backupVersion !== value.version ||
+        !isBasket(value.basket) ||
+        (value.version === 3 && !isBranches(value.branches))) ||
     !Array.isArray(value.products) ||
     value.products.length > 2500 ||
     !Array.isArray(value.history) ||
@@ -191,7 +196,7 @@ export function parseLibraryBackup(contents: string): LibraryBackup {
   });
   if (!unique(prices.map((item) => item.id))) throw invalid();
   const basket =
-    value.version === 2 && isBasket(value.basket)
+    value.version !== 1 && isBasket(value.basket)
       ? value.basket.map((line) => ({
           barcode: line.barcode,
           name: byCode.get(line.barcode)?.name ?? line.name,
@@ -202,6 +207,24 @@ export function parseLibraryBackup(contents: string): LibraryBackup {
   return {
     exportedAt: value.exportedAt,
     products,
-    data: { version: 2, revision: 0, basket, history, favorites, cache, prices, cloudOwner: null },
+    data: {
+      version: 3,
+      revision: 0,
+      basket,
+      branches:
+        value.version === 3 && isBranches(value.branches)
+          ? value.branches.map((branch) => ({
+              id: branch.id,
+              name: branch.name,
+              address: branch.address,
+              references: branch.references.map((ref) => ({ key: ref.key, source: ref.source })),
+            }))
+          : [],
+      history,
+      favorites,
+      cache,
+      prices,
+      cloudOwner: null,
+    },
   };
 }

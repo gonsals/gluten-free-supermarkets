@@ -17,20 +17,23 @@ export interface PriceQuote {
   countryCode: string | null;
   conditions?: string;
 }
-const fold = (text: string) =>
+export const fold = (text: string) =>
   text
     .normalize('NFD')
     .replace(/[\u0300-\u036f]/g, '')
     .trim()
     .toLocaleLowerCase('es')
     .replace(/\s+/g, ' ');
+export function privateReferenceKey(store: string, location: string): string {
+  return `private:${JSON.stringify([fold(store), fold(location)])}`;
+}
 export function privateQuotes(prices: PriceObservation[]): PriceQuote[] {
   return prices.map((price) => ({
     id: `private:${price.id}`,
     barcode: price.barcode,
     store: price.store,
     location: price.location,
-    branchKey: `private:${fold(price.store)}:${fold(price.location)}`,
+    branchKey: privateReferenceKey(price.store, price.location),
     amountMilli: price.amountMinor * 10,
     observedAt: price.observedAt,
     recordedAt: price.createdAt,

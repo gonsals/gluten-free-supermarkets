@@ -59,6 +59,9 @@ test('añade desde ficha y biblioteca, agrupa, edita, conserva offline y recuper
   await page
     .getByRole('button', { name: 'Guardar cantidad de Arroz para la cesta', exact: true })
     .click();
+  await expect(
+    page.getByText('Cesta guardada en este dispositivo.', { exact: true }),
+  ).toBeVisible();
   await expect(quantity).toHaveValue('4');
   await page.goto('/library');
   await page.getByRole('button', { name: 'Historial (1)', exact: true }).click();
@@ -66,8 +69,8 @@ test('añade desde ficha y biblioteca, agrupa, edita, conserva offline y recuper
   await page.getByRole('button', { name: 'Confirmar eliminación', exact: true }).click();
   const copy = await backup(page);
   expect(copy).toMatchObject({
-    version: 2,
-    backupVersion: 2,
+    version: 3,
+    backupVersion: 3,
     basket: [{ barcode: code, quantity: 4, name: 'Arroz para la cesta' }],
   });
   expect(copy.history).toEqual([]);
@@ -202,7 +205,7 @@ test('actualiza IndexedDB y esquema v1 preservando precios; el cliente antiguo y
   await page.goto('/basket');
   await expect(page.getByText(/Tu cesta está vacía/)).toBeVisible();
   const copy = await backup(page);
-  expect(copy.version).toBe(2);
+  expect(copy.version).toBe(3);
   expect(copy.prices).toHaveLength(1);
   expect(copy.prices[0].store).toBe('Tienda anterior');
   expect(

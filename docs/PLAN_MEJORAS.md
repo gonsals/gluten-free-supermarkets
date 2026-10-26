@@ -19,17 +19,19 @@ Actualizado el **26-10-2026**, conforme al enfoque acordado. La [hoja de ruta](H
 
 Evidencia CES-01/CES-02: [Cesta local](CESTA_LOCAL.md), con 164 pruebas de app, 35 de seguridad y siete recorridos web nuevos. Incluye migración, copia v2, versión anterior y conflictos entre clientes. CAL-02 mantiene la validación física pendiente.
 
-## Total por establecimiento y cobertura — siguiente entrega
+## Total por establecimiento y cobertura
 
 | ID | Prioridad / estado | Dependencias | Trabajo y aceptación |
 | --- | --- | --- | --- |
-| TIE-01 | P1 / pendiente | CMP-00 | Definir cadena, sucursal y referencia sin ámbito suficiente. Vínculo explícito entre referencias privadas/públicas, con deshacer y procedencia; no inferir identidad por nombre/localidad. Los precios sin sucursal suficiente siguen anotados pero no completan una cesta física de otra tienda. Probar homónimos, dos sucursales y vínculo erróneo corregido. |
-| CES-03 | P1 / pendiente | CES-01, CES-02, TIE-01 | Calcular total por establecimiento con cantidades y observaciones elegibles. Seleccionar la última antes de filtros, no rescatar un precio viejo al excluir una oferta nueva. Ranking solo con cobertura completa; incompletas muestran subtotal y faltantes, nunca cero. Con una sola completa no afirmar ahorro. Misma precisión y política de redondeo en dominio/UI; fuentes, antigüedad y condiciones por línea. |
+| TIE-01 | P1 / verificada técnicamente, iteración 10 | CMP-00 | Definir cadena, sucursal y referencia sin ámbito suficiente. Vínculo explícito entre referencias privadas/públicas, con deshacer y procedencia; no inferir identidad por nombre/localidad. Los precios sin sucursal suficiente siguen anotados pero no completan una cesta física de otra tienda. Probar homónimos, dos sucursales y vínculo erróneo corregido. |
+| CES-03 | P1 / verificada técnicamente, iteración 10 | CES-01, CES-02, TIE-01 | Calcular total por establecimiento con cantidades y observaciones elegibles. Seleccionar la última antes de filtros, no rescatar un precio viejo al excluir una oferta nueva. Ranking solo con cobertura completa; incompletas muestran subtotal y faltantes, nunca cero. Con una sola completa no afirmar ahorro. Misma precisión y política de redondeo en dominio/UI; fuentes, antigüedad y condiciones por línea. |
 | DAT-01 | P1 / pendiente; paralela a cesta | CMP-00 | Medir cobertura con lista y zona de prueba declaradas: N productos, fechas, referencias, observaciones elegibles, páginas consultadas y cestas completas. Consulta acotada, sin barrido de bibliotecas ni datos privados enviados. Separar ausencia de dato de fallo de proveedor. Registrar decisión de alcance o fuente antes de prometer cobertura. |
 | DAT-02 | P2 / condicionada | DAT-01 | Si la medición justifica uso público offline, diseñar caché persistente separada, acotada, con origen/fecha/caducidad/borrado. No exportarla como anotación privada ni presentar un dato viejo como actual. Probar expiración, red caída, límites y atribución. Hoy la caché pública es solo de memoria. |
 | DAT-03 | P2 / condicionada | DAT-01 | Investigar otro proveedor público que cubra una carencia medida. Documentar acceso, licencia/atribución, ámbito, formatos, frecuencia permitida y carga. Adaptador aislado con validación, cancelación, cuotas y pruebas de contrato antes de integrarlo. Sin claves de pago, scraping masivo ni backend contratado. |
 
-## Formatos, alternativas y evidencia
+Evidencia TIE-01/CES-03: [Totales y sucursales](TOTALES_Y_SUCURSALES.md), 183 pruebas de app, 35 de seguridad y 36 recorridos web. Fuentes públicas bajo acción explícita, hasta diez productos por lote, sin persistir precios públicos. DAT-01 no se considera medido por pasar esas pruebas.
+
+## Formatos, alternativas y evidencia — siguiente entrega
 
 | ID | Prioridad / estado | Dependencias | Trabajo y aceptación |
 | --- | --- | --- | --- |
@@ -78,4 +80,4 @@ Los IDs de este backlog tienen prefijos nuevos para evitar reutilizar los del [p
 
 ## Regla de cierre
 
-Registrar por tarea: responsable real, commit, criterio cumplido, comprobaciones, límites y fecha. Cambiar el estado solo tras revisar esa evidencia. La próxima entrega técnica concreta es **TIE-01 + CES-03**; DAT-01 puede investigarse en paralelo. CES-01/CES-02 se entregaron técnicamente en la iteración 9; las validaciones físicas/de uso permanecen en CAL-02/BET-01.
+Registrar por tarea: responsable real, commit, criterio cumplido, comprobaciones, límites y fecha. Cambiar el estado solo tras revisar esa evidencia. La próxima entrega técnica concreta es **UNI-01 + ALT-01**; DAT-01 puede medirse en paralelo. Cesta y totales se entregaron técnicamente en iteraciones 9–10; CAL-02/BET-01 mantienen pendientes las validaciones físicas/de uso.

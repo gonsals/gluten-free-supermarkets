@@ -18,13 +18,13 @@ Funcionamiento local sin cuenta obligatoria ni costes de backend contratado. Ope
 | Proponer supermercado desde datos explícitos o asociaciones acotadas de marca | Implementado; editable y sin deducir sucursal o disponibilidad. |
 | Guardar precios privados y consultar Open Prices | Implementado; datos públicos separados y no incluidos en copias privadas. |
 | Consultar ficha, gluten, trazas y procedencia | Implementado técnicamente; revisión experta/comprensión pendientes. |
-| Biblioteca offline, favoritos, copias y restauración | Implementado; esquema/copia v2 con cesta, compatible con importación v1. |
+| Biblioteca offline, favoritos, copias y restauración | Implementado; esquema/copia v3 con cesta y sucursales, compatible con importación v1/v2. |
 | Cesta persistente con cantidades, copias y borrado | Implementado técnicamente en iteración 9, CES-01/CES-02. [Contrato y límites](CESTA_LOCAL.md). |
-| Totales por establecimiento y cobertura completa | CES-03, pendiente tras cesta e identidad de tienda. |
+| Totales por establecimiento y cobertura completa | TIE-01/CES-03 implementadas técnicamente en iteración 10. [Contrato y pruebas](TOTALES_Y_SUCURSALES.md). |
 | Equivalencia por formato/unidad y alternativas | UNI-01/ALT-01, pendientes; no se equiparan productos por nombre. |
 | Cobertura suficiente por zona y uso durante compras reales | DAT-01/CAL-01/BET-01, pendientes de medir. |
 
-El MVP objetivo del nuevo enfoque incluye cesta, totales comparables y cobertura explícita. La app actual es su base por producto, no un comparador de cestas ya terminado. Alternativas amplían el núcleo en la fase siguiente. Mapas, publicación propia de precios, sincronización, alertas e IA quedan condicionados a demanda y viabilidad; no son requisitos para activar servicios.
+El MVP objetivo del nuevo enfoque incluye cesta, totales comparables y cobertura explícita. La app ya compara la misma cesta por sucursal confirmada; la cobertura real de fuentes y la utilidad en compras siguen pendientes de medir. Alternativas amplían el núcleo en la fase siguiente. Mapas, publicación propia de precios, sincronización, alertas e IA quedan condicionados a demanda y viabilidad; no son requisitos para activar servicios.
 
 ## Reglas de precio y de comparación
 
@@ -36,11 +36,11 @@ Seleccionar primero la observación más reciente por referencia de sucursal y o
 
 El ranking actual se limita a referencias cargadas, sin unión automática de la sucursal privada con la pública. España es filtro local sobre datos públicos; el país de una anotación privada no se inventa. Un error, dato descartado o límite de paginación debe distinguirse de «no hay precios».
 
-## Cesta disponible y totales pendientes
+## Cesta y totales disponibles
 
 Una primera cesta activa contiene productos identificados y número entero de envases. Límites implementados: hasta 100 líneas distintas y 1–99 envases por línea; peso variable y fracciones se diseñarán después con su contrato. Cambiar cantidades o filtros invalida/recalcula las estimaciones. Las líneas sin precio permanecen visibles.
 
-**Contrato objetivo de CES-03, todavía pendiente:** comparar por **establecimiento o ámbito verificado**, sin sumar el precio de una sucursal y otro de otra para crear una cesta de cadena ficticia. Una observación sin localización suficiente puede conservarse, pero no cubre silenciosamente una línea de cualquier sucursal. Los vínculos entre referencias de distinto origen requieren confirmación y pueden deshacerse.
+**Contrato de CES-03, implementado en iteración 10:** comparar por **establecimiento o ámbito verificado**, sin sumar el precio de una sucursal y otro de otra para crear una cesta de cadena ficticia. Una observación sin localización suficiente puede conservarse, pero no cubre silenciosamente una línea de cualquier sucursal. Los vínculos entre referencias de distinto origen requieren confirmación y pueden deshacerse.
 
 Para cada establecimiento:
 
@@ -60,7 +60,7 @@ Ejemplo sintético: cesta de **2 envases de leche + 1 de pasta**, mismo código 
 
 A tiene el menor total **entre las cestas completas de esta muestra**, con diferencia estimada de 0,25 € frente a C. B no puede presentarse como la compra más barata. Los ejemplos no son precios reales ni cobertura de cadenas.
 
-La implementación de CES-03 debe fijar y probar redondeo de presentación: conservar milésimas en operaciones, mostrar precisión suficiente cuando afecte al orden y redondear el total mostrado de manera consistente. No derivar un ahorro distinto por sumar importes ya redondeados. Gastos de envío/desplazamiento, fidelidad y stock solo se incorporan si hay datos y condiciones explícitos; inicialmente se excluyen del total y se explica.
+La implementación de CES-03 conserva precisión y prueba la presentación: conservar milésimas en operaciones, mostrar precisión suficiente cuando afecte al orden y redondear el total mostrado de manera consistente. No derivar un ahorro distinto por sumar importes ya redondeados. Gastos de envío/desplazamiento, fidelidad y stock solo se incorporan si hay datos y condiciones explícitos; inicialmente se excluyen del total y se explica.
 
 ## Formatos y alternativas — fase posterior
 
@@ -80,7 +80,7 @@ La declaración sin gluten puede filtrar alternativas cuando haya evidencia comp
 | Ficha | Identidad, comparar/anotar, tiendas declaradas y evidencia de gluten completa; ingredientes, alérgenos, trazas, fuente/fechas. El acceso desde comparar debe preservar todo ese contexto. |
 | Anotar precio | Proponer supermercado cuando haya base; permitir corregir o vaciar sin sobrescribir la edición al llegar metadatos. Fecha, envase, oferta, notas y localidad explícitos. |
 | Biblioteca | Productos guardados y precios privados, historial y favoritos. La iteración 9 permite añadir a cesta; limpiar historial no elimina productos aún referenciados. |
-| Mi cesta | Añadir/editar/quitar, cantidades, persistencia, códigos sin ficha/precio y acceso desde Inicio/Comparar/Biblioteca. Los totales completos/parciales vendrán con CES-03. |
+| Mi cesta | Añadir/editar/quitar, cantidades, persistencia, códigos sin ficha/precio y acceso desde Inicio/Comparar/Biblioteca. Acceso a totales completos/parciales por sucursal confirmada, con faltantes y condiciones. |
 | Ajustes | Privacidad, atribución, versión, ayuda, exportación, restauración y borrado. La incorporación de cesta amplía todos los controles de datos. |
 
 Mantener Mesa en claro/oscuro, textos comprensibles, etiquetas accesibles, fuente ampliada y acciones alcanzables. Ningún resultado depende solo del color. No añadir cuentas o detalles de implementación a una compra que no los necesita.

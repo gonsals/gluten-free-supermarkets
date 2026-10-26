@@ -1,6 +1,6 @@
 # Copias locales y recuperación
 
-> **Planificación actualizada 26-10-2026.** Contrato original y evidencia de la iteración 7, ampliados por [Cesta local](CESTA_LOCAL.md) en la iteración 9: esquema/copia v2 con cesta e importación v1. Los resultados históricos de pruebas se conservan con su fecha. [Hoja de ruta vigente](HOJA_DE_RUTA.md) · [Backlog](PLAN_MEJORAS.md).
+> **Planificación actualizada 26-10-2026.** Exportación actual v3 con cesta y sucursales; importación v1/v2. [Contrato de iteración 10](TOTALES_Y_SUCURSALES.md). Se conserva la evidencia previa con su fecha. Los resultados históricos de pruebas se conservan con su fecha. [Hoja de ruta vigente](HOJA_DE_RUTA.md) · [Backlog](PLAN_MEJORAS.md).
 
 Iteración 7 · 25 de octubre de 2026. Implementación de F-03 de la hoja de ruta para recuperar o trasladar la biblioteca sin cuenta ni backend. La nube permanece desactivada.
 
@@ -18,6 +18,8 @@ Cada entrada del historial conserva su fecha de escaneo (`scannedAt`). Su nombre
 No se hacen consultas de productos durante la restauración. Funciona sin conexión si el archivo ya está disponible en el dispositivo y, en web, se ha cargado previamente la app. Un proveedor de archivos del sistema puede necesitar conexión para descargar un documento que todavía no esté guardado localmente.
 
 ## Contrato y compatibilidad
+
+**Iteración 10:** [Totales y sucursales](TOTALES_Y_SUCURSALES.md) amplía el formato a v3, con `branches` y referencias confirmadas. Se mantienen importaciones v1/v2: la v1 recupera sin cesta/sucursales y la v2 conserva cesta pero no sucursales. Restaurar es sustitución completa y el resumen incluye el número de sucursales que se reemplazarán. Las nuevas exportaciones son v3; el contrato v2 descrito abajo corresponde a la iteración 9. Borrar todo incluye identificaciones/vínculos; vaciar cesta los conserva.
 
 Desde la iteración 9 las exportaciones usan `format: "sin-gluten-library"`, `backupVersion: 2` y datos `version: 2`, con `basket` además de `exportedAt`, `history`, `favorites`, `cache`, `prices` y `products`. La revisión local no se exporta. Se aceptan copias v1 marcadas y exportaciones completas originales sin marcadores, migrándolas a v2 con cesta vacía; sustituir con v1 deja vacía la cesta actual, visible en el resumen. Las combinaciones incoherentes, v1 con cesta y versiones futuras se rechazan. Una app v1 rechaza copias v2; usar una versión compatible para recuperarlas.
 

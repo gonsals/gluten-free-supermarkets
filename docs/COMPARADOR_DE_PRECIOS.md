@@ -14,7 +14,7 @@ Esta decisión sustituye la prioridad de consulta de gluten de la especificació
 - Filtro adicional de productos guardados con declaración sin gluten. No certifica aptitud y no oculta la necesidad de revisar trazas, evidencia y envase.
 - Sugerencia editable de supermercado en el formulario de precios; sin llamadas adicionales para obtener una ficha que ya está guardada.
 
-La iteración 8 compara **un producto cada vez**. La iteración 9 añade [cesta local](CESTA_LOCAL.md), cantidades, copias y recuperación. Los totales por establecimiento y alternativas con códigos distintos siguen pendientes.
+La iteración 8 compara **un producto cada vez**. La iteración 9 añade [cesta local](CESTA_LOCAL.md), cantidades, copias y recuperación. La iteración 10 añade [totales por sucursal confirmada](TOTALES_Y_SUCURSALES.md). Alternativas con códigos distintos siguen pendientes.
 
 ## Supermercado sugerido
 
@@ -96,7 +96,7 @@ La revisión de la iteración 8, **`638980a`**, tiene sus cinco jobs de CI corre
 Continuación según la [hoja de ruta](HOJA_DE_RUTA.md):
 
 1. **CES-01/CES-02:** cesta persistente con cantidades, migración, copias y borrado; entregada técnicamente en [iteración 9](CESTA_LOCAL.md).
-2. **TIE-01/CES-03, siguiente entrega:** identidad de establecimiento y total con cobertura completa. Incompletas con subtotal y faltantes; nunca precio cero para un producto sin dato.
+2. **TIE-01/CES-03, entregadas en iteración 10:** identidad explícita y total con cobertura completa, [contrato y pruebas](TOTALES_Y_SUCURSALES.md). Incompletas con subtotal y faltantes; nunca precio cero para un producto sin dato.
 3. **UNI-01/ALT-01:** formatos/unidades y alternativas explícitas, incluida información sobre gluten, sin equiparar productos por nombre.
 4. **CAL-01/CAL-02/GLU-01 y beta:** validación de compra, comprensión, accesibilidad, dispositivos y evidencia de gluten.
 

@@ -18,6 +18,13 @@ import {
   type BasketLine,
 } from '@/src/domain/basket';
 import { BACKUP_FORMAT, parseLibraryBackup } from './backup';
+import {
+  isBranches,
+  isBranchReference,
+  MAX_BRANCHES,
+  type StoreBranch,
+  type BranchReference,
+} from '@/src/domain/branches';
 
 export interface ProductSummary {
   barcode: string;
@@ -35,9 +42,10 @@ export interface Favorite extends ProductSummary {
   deleted: boolean;
 }
 export interface LibraryData {
-  version: 2;
+  version: 3;
   revision: number;
   basket: BasketLine[];
+  branches: StoreBranch[];
   history: HistoryEntry[];
   favorites: Record<string, Favorite>;
   cache: Record<string, string>;
@@ -50,9 +58,10 @@ export interface LibrarySnapshot {
   error: string | null;
 }
 const fresh = (): LibraryData => ({
-  version: 2,
+  version: 3,
   revision: 0,
   basket: [],
+  branches: [],
   history: [],
   favorites: {},
   cache: {},
@@ -73,7 +82,10 @@ export function operationId(): string {
 }
 function validData(
   value: unknown,
-): value is LibraryData | (Omit<LibraryData, 'version' | 'revision' | 'basket'> & { version: 1 }) {
+): value is
+  | LibraryData
+  | (Omit<LibraryData, 'version' | 'branches'> & { version: 2 })
+  | (Omit<LibraryData, 'version' | 'revision' | 'basket' | 'branches'> & { version: 1 }) {
   const validSummary = (item: unknown) =>
     record(item) &&
     typeof item.barcode === 'string' &&
@@ -86,7 +98,7 @@ function validData(
   return (
     record(value) &&
     (value.version === 1 ||
-      (value.version === 2 &&
+      ((value.version === 2 || (value.version === 3 && isBranches(value.branches))) &&
         Number.isSafeInteger(value.revision) &&
         Number(value.revision) >= 0 &&
         isBasket(value.basket))) &&
@@ -149,8 +161,14 @@ export class LibraryRepository {
     const value: unknown = raw ? JSON.parse(raw) : fresh();
     if (!validData(value)) throw new AppError('storage_error');
     let data: LibraryData;
-    if (value.version === 1) {
-      data = { ...value, version: 2, revision: 0, basket: [] };
+    if (value.version !== 3) {
+      data = {
+        ...value,
+        version: 3,
+        revision: value.version === 1 ? 0 : value.revision,
+        basket: value.version === 1 ? [] : value.basket,
+        branches: [],
+      };
       const migrated = JSON.stringify(data);
       await this.store.commit({ [this.key]: migrated }, [], { [this.key]: raw });
       raw = migrated;
@@ -372,6 +390,54 @@ export class LibraryRepository {
       data.basket = [];
     });
   }
+  saveBranch(branch: StoreBranch, expected: StoreBranch | null = null): Promise<void> {
+    if (!isBranches([branch]))
+      return Promise.reject(new Error('Revisa nombre, dirección y referencias de la sucursal.'));
+    return this.mutate((data) => {
+      const current = data.branches.find((item) => item.id === branch.id) ?? null;
+      if (JSON.stringify(current) !== JSON.stringify(expected)) throw new StorageConflict();
+      if (!current && data.branches.length >= MAX_BRANCHES)
+        throw new Error('Puedes guardar hasta 50 sucursales.');
+      const next = [...data.branches.filter((item) => item.id !== branch.id), branch];
+      if (!isBranches(next))
+        throw new Error(
+          'Una referencia ya pertenece a otra sucursal. Desvincúlala antes de crear una nueva.',
+        );
+      data.branches = next;
+    });
+  }
+  assignReference(
+    reference: BranchReference,
+    branchId: string | null,
+    expectedBranchId: string | null,
+  ): Promise<void> {
+    if (!isBranchReference(reference))
+      return Promise.reject(new Error('Referencia de tienda no válida.'));
+    return this.mutate((data) => {
+      const current =
+        data.branches.find((branch) => branch.references.some((ref) => ref.key === reference.key))
+          ?.id ?? null;
+      if (current !== expectedBranchId) throw new StorageConflict();
+      if (branchId && !data.branches.some((branch) => branch.id === branchId))
+        throw new StorageConflict();
+      data.branches.forEach((branch) => {
+        branch.references = branch.references.filter((ref) => ref.key !== reference.key);
+      });
+      if (branchId)
+        data.branches.find((branch) => branch.id === branchId)!.references.push(reference);
+      if (!isBranches(data.branches)) throw new Error('Cada sucursal admite hasta 20 referencias.');
+    });
+  }
+  deleteBranch(expected: StoreBranch): Promise<void> {
+    return this.mutate((data) => {
+      if (
+        JSON.stringify(data.branches.find((branch) => branch.id === expected.id)) !==
+        JSON.stringify(expected)
+      )
+        throw new StorageConflict();
+      data.branches = data.branches.filter((branch) => branch.id !== expected.id);
+    });
+  }
   async importFavorites(owner: string, favorites: Favorite[], products: Product[]): Promise<void> {
     const newerProducts: Product[] = [];
     return this.mutate((data) => {
@@ -418,7 +484,7 @@ export class LibraryRepository {
         const contents = JSON.stringify(
           {
             format: BACKUP_FORMAT,
-            backupVersion: 2,
+            backupVersion: 3,
             exportedAt: new Date().toISOString(),
             ...data,
             revision: undefined,

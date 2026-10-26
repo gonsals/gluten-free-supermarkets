@@ -19,14 +19,16 @@ Base de código: **`638980a`**, iteración 8, rama `gonsals/mejoras`. [CI: cinco
 
 | Disponible | Límite actual |
 | --- | --- |
-| Comparador por GTIN y envase, fuentes públicas y privadas separadas, filtros de edad/ofertas/ubicación. | Cesta local disponible en iteración 9; todavía sin totales de compra ni alternativas entre códigos distintos. |
+| Comparador por GTIN y envase, fuentes públicas y privadas separadas, filtros de edad/ofertas/ubicación. | Cesta local y totales por sucursal confirmada disponibles; alternativas entre códigos distintos pendientes. |
 | Supermercado sugerido y editable al anotar un precio. | No acredita sucursal, stock ni precio nacional. |
 | Open Prices en lectura, sin cuenta ni clave; carga acotada. | Cobertura colaborativa sin garantía por zona; caché pública solo en memoria. |
-| Biblioteca local, favoritos, historial, precios privados, exportación y restauración. | Iteración 9: esquema/copia v2 con cesta y migración desde v1. Validación física pendiente. |
+| Biblioteca local, favoritos, historial, precios privados, exportación y restauración. | Iteración 10: esquema/copia v3 con cesta, sucursales y vínculos; importación v1/v2. Validación física pendiente. |
 | Mesa, escáner, entrada manual y evidencia de gluten. | Naming, cámara física, revisión experta y accesibilidad nativa pendientes. |
 | 144 pruebas de app, 34 de seguridad, 23 recorridos web y APK Android emulada. | No equivalen a beta, iOS nativo ni validación con compras reales. |
 
 **Actualización de iteración 9:** CES-01/CES-02 implementadas técnicamente: cesta local, cantidades, migración y copias v2, borrado y protección entre clientes. 164 pruebas de app y 35 de seguridad; recorridos y límites en [Cesta local](CESTA_LOCAL.md). La CI enlazada arriba sigue acreditando solo `638980a`.
+
+**Iteración 10:** TIE-01/CES-03 entregadas técnicamente: sucursales confirmadas, totales completos/parciales, discrepancias de fuente y copias v3. 183 pruebas de app, 35 de seguridad y 36 recorridos web. [Contrato y evidencia](TOTALES_Y_SUCURSALES.md). La nueva revisión necesita su propia CI; no se atribuyen a ella resultados de commits anteriores.
 
 Detalle: [Implementación](IMPLEMENTACION.md), [contrato del comparador](COMPARADOR_DE_PRECIOS.md), [copias locales](COPIAS_LOCALES.md). La APK interna usa firma de desarrollo. La nube opcional queda fuera del alcance local.
 
@@ -40,11 +42,11 @@ Tareas **CES-01 y CES-02**, P1, entregadas en la iteración 9. [Contrato y evide
 
 La cesta forma parte de los datos personales: persistencia tras reinicio, exportación, restauración, borrado y migración desde v1 deben entregarse juntos. Mantener las fichas referenciadas por la cesta aunque se limpie el historial. No cambiar ni perder favoritos o precios existentes.
 
-**Cierre:** recorrido añadir → editar → cerrar → abrir sin red → exportar/restaurar → borrar probado en web y Android, con datos v1 y fallos de escritura. Cesta todavía sin ranking de totales hasta la fase 2. Contrato y recuperación en [Arquitectura](ARQUITECTURA.md).
+**Cierre:** recorrido añadir → editar → cerrar → abrir sin red → exportar/restaurar → borrar probado en web y Android, con datos v1 y fallos de escritura. Los totales de la fase 2 se entregan en la iteración 10. Contrato y recuperación en [Arquitectura](ARQUITECTURA.md).
 
-### Fase 2 · Comparar el total por establecimiento — siguiente iteración
+### Fase 2 · Comparar el total por establecimiento — implementada técnicamente
 
-Tareas **TIE-01 y CES-03**, P1; dependen de la cesta y sus datos seguros. Distinguir cadena, sucursal física y observación sin localización suficiente. Asociar referencias privadas y públicas solo mediante vínculo explícito verificable; no agrupar por un nombre parecido.
+Tareas **TIE-01 y CES-03**, P1, implementadas en iteración 10. [Identidad, totales y pruebas](TOTALES_Y_SUCURSALES.md). Las validaciones físicas/de uso siguen en CAL-02/BET-01. Distinguir cadena, sucursal física y observación sin localización suficiente. Asociar referencias privadas y públicas solo mediante vínculo explícito verificable; no agrupar por un nombre parecido.
 
 Calcular cantidades × precios elegibles y mostrar cobertura, fecha y condiciones por línea. Solo las cestas con todos los productos y cantidades cubiertos entran en el ranking de totales. Las incompletas muestran **subtotal y faltantes**, nunca un total bajo que parezca una compra completa. Si solo hay una cesta completa, mostrar su estimación sin afirmar ahorro frente a opciones incompletas.
 
@@ -58,7 +60,7 @@ Calcular cantidades × precios elegibles y mostrar cobertura, fecha y condicione
 
 **Cierre:** informe reproducible de cobertura y decisión de continuar, acotar zona o incorporar una fuente. Si no hay datos suficientes, ajustar la promesa y facilitar anotaciones; no simular precios. Esta línea acompaña la cesta, no espera a una fase de nube.
 
-### Fase 3 · Comparar formatos y alternativas
+### Fase 3 · Comparar formatos y alternativas — siguiente iteración
 
 **UNI-01 y ALT-01**, P1 tras la comparación de totales. Calcular €/kg, €/l o €/unidad solo con cantidades conocidas y unidades compatibles. Separar el indicador unitario del coste de comprar envases enteros para cubrir una necesidad.
 
@@ -118,4 +120,4 @@ Cada tarea del [backlog](PLAN_MEJORAS.md) tiene ID estable, prioridad, estado, d
 | 26-10-2026 | Investigar también fuentes públicas; Open Prices integrado con límites y separación de datos privados. |
 | 26-10-2026 | Nuevo orden: cesta segura → total por establecimiento → formatos/alternativas → validación → beta. Cobertura y seguridad acompañan todas las fases. |
 
-**Siguiente implementación: TIE-01 + CES-03**, identidad de establecimiento y totales completos/parciales. CES-01/CES-02 ya cuentan con implementación y pruebas técnicas en la iteración 9; validación física y de uso todavía pendiente. DAT-01 puede medirse en paralelo.
+**Siguiente implementación: UNI-01 + ALT-01**, formatos y alternativas explícitas. Cesta y totales tienen implementación técnica en iteraciones 9–10; validación física/de uso y medición de cobertura real DAT-01 siguen pendientes.

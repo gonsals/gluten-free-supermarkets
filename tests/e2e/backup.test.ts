@@ -64,7 +64,7 @@ test('exporta, cancela y restaura una copia sin red; persisten fichas, favoritos
   await writeFile(test.info().outputPath('source-backup.json'), original);
   const json = JSON.parse(original.toString());
   expect(json.format).toBe('sin-gluten-library');
-  expect(json.backupVersion).toBe(2);
+  expect(json.backupVersion).toBe(3);
   await page.getByRole('button', { name: 'Borrar todos los datos locales', exact: true }).click();
   await page.getByRole('button', { name: 'Confirmar eliminación', exact: true }).click();
   await expect(page.getByText(/Datos locales eliminados/)).toBeVisible();

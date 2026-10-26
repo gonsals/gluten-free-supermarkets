@@ -31,6 +31,12 @@ test('SQLite bloquea escrituras del cliente v1 y revierte también sus fichas', 
     );
     put.run('library:test:v1', '{"version":2,"basket":[]}');
     assert.deepEqual(JSON.parse(get.get('library:test:v1').value).basket, []);
+    put.run('library:test:v1', '{"version":3,"branches":[]}');
+    assert.throws(
+      () => put.run('library:test:v1', '{"version":2,"basket":[]}'),
+      /unsupported_library_downgrade/,
+    );
+    assert.equal(JSON.parse(get.get('library:test:v1').value).version, 3);
   } finally {
     db.close();
   }

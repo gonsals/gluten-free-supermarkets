@@ -1,5 +1,7 @@
 # Cesta local y migración de datos
 
+> **Actualización de iteración 10:** [Totales por sucursal](TOTALES_Y_SUCURSALES.md) ya disponibles y copias actuales v3 con identificaciones/vínculos. Este documento conserva la entrega y evidencia de la cesta/v2 de la iteración 9.
+
 Iteración 9 · **26-10-2026**. Entrega de **CES-01/CES-02** de la [hoja de ruta](HOJA_DE_RUTA.md). La cesta permite preparar productos y cantidades; la comparación de totales por establecimiento sigue pendiente en TIE-01/CES-03. Mesa, gluten complementario y funcionamiento sin backend contratado se conservan.
 
 ## Recorrido disponible
