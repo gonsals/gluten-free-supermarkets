@@ -44,7 +44,9 @@ try:
     build_type = 'release' if arguments.variant == 'preview' else 'debug'
     # AGP uses shared hardlinks for native libraries. Serialize Windows tasks so
     # one CMake task cannot hold a library while another replaces its output.
-    subprocess.run([str(android / 'gradlew.bat'), 'assemble' + build_type.title(), '--no-daemon', '--max-workers=1', '-PreactNativeArchitectures=' + build_architectures], cwd=android, env=environment, check=True)
+    # Scope the task to the application; the root task selector also assembles
+    # standalone AARs for every library, beyond the app's required dependencies.
+    subprocess.run([str(android / 'gradlew.bat'), ':app:assemble' + build_type.title(), '--no-daemon', '--max-workers=1', '-PreactNativeArchitectures=' + build_architectures], cwd=android, env=environment, check=True)
     source = android / 'app' / 'build' / 'outputs' / 'apk' / build_type / ('app-' + build_type + '.apk')
     artifacts = root / 'artifacts'
     artifacts.mkdir(exist_ok=True)

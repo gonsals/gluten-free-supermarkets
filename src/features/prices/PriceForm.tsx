@@ -9,6 +9,7 @@ import { useLibrary } from '@/src/features/library/useLibrary';
 import { useCachedProduct } from '@/src/features/products/useCachedProduct';
 import { storeSuggestions } from '@/src/domain/stores';
 import type { Product } from '@/src/domain/product';
+import { parseMeasure, SCALE, type InputUnit } from '@/src/domain/measure';
 
 export function PriceForm({ barcode, product }: { barcode?: string; product?: Product | null }) {
   const { repository, ready } = useLibrary();
@@ -25,7 +26,8 @@ export function PriceForm({ barcode, product }: { barcode?: string; product?: Pr
       : '';
   const [location, setLocation] = useState('');
   const [quantity, setQuantity] = useState('');
-  const [unit, setUnit] = useState<'kg' | 'l' | 'unit'>('unit');
+  const [unit, setUnit] = useState<InputUnit>('unit');
+  const [components, setComponents] = useState('1');
   const [date, setDate] = useState(() => calendarDate());
   const [offer, setOffer] = useState('');
   const [notes, setNotes] = useState('');
@@ -35,6 +37,9 @@ export function PriceForm({ barcode, product }: { barcode?: string; product?: Pr
     setBusy(true);
     setMessage('');
     try {
+      const pack = quantity.trim() ? parseMeasure(quantity, unit, components) : null;
+      if (!pack && components !== '1')
+        throw new Error('Indica la cantidad de cada componente del pack.');
       const observation: PriceObservation = {
         id: operationId(),
         barcode: normalizeBarcode(code),
@@ -44,8 +49,8 @@ export function PriceForm({ barcode, product }: { barcode?: string; product?: Pr
         location: location.trim(),
         observedAt: calendarInstant(date),
         createdAt: new Date().toISOString(),
-        quantity: quantity ? Number(quantity.replace(',', '.')) : null,
-        unit: quantity ? unit : null,
+        quantity: pack ? pack.quantity / SCALE : null,
+        unit: pack?.unit ?? null,
         offerEndsAt: offer ? calendarInstant(offer, true) : null,
         notes: notes.trim(),
       };
@@ -142,13 +147,32 @@ export function PriceForm({ barcode, product }: { barcode?: string; product?: Pr
         placeholder="Ej. 0,5"
         maxLength={10}
       />
-      <View style={{ flexDirection: 'row', gap: 8 }}>
-        {(['unit', 'kg', 'l'] as const).map((value) => (
-          <View key={value} style={{ flex: 1 }}>
+      <Field
+        label="Componentes del pack"
+        value={components}
+        onChangeText={setComponents}
+        keyboardType="number-pad"
+        maxLength={2}
+      />
+      <Copy muted>
+        Indica el contenido de cada componente y cuántos incluye el precio. Ejemplo: 6 × 330 ml. No
+        se deduce del nombre.
+      </Copy>
+      <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 8 }}>
+        {(['unit', 'kg', 'g', 'l', 'ml'] as const).map((value) => (
+          <View key={value} style={{ minWidth: 80 }}>
             <Action
               title={value === 'unit' ? 'unidad' : value}
               accessibilityLabel={
-                value === 'unit' ? 'Unidad' : value === 'kg' ? 'Kilogramos' : 'Litros'
+                value === 'unit'
+                  ? 'Unidad'
+                  : value === 'kg'
+                    ? 'Kilogramos'
+                    : value === 'g'
+                      ? 'Gramos'
+                      : value === 'ml'
+                        ? 'Mililitros'
+                        : 'Litros'
               }
               selected={unit === value}
               secondary={unit !== value}

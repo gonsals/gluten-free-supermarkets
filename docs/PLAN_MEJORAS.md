@@ -1,6 +1,6 @@
 # Backlog de ejecución · Comparador de compra
 
-Actualizado el **26-10-2026**, conforme al enfoque acordado. La [hoja de ruta](HOJA_DE_RUTA.md) es la única referencia de orden de entrega; [Producto](PRODUCTO.md) define reglas y [Calidad](CALIDAD_Y_OPERACION.md) las comprobaciones. La evidencia base es `638980a`, no una declaración de que las tareas pendientes estén implementadas.
+Actualizado el **29-10-2026**, conforme al enfoque acordado. La [hoja de ruta](HOJA_DE_RUTA.md) es la única referencia de orden de entrega; [Producto](PRODUCTO.md) define reglas y [Calidad](CALIDAD_Y_OPERACION.md) las comprobaciones. La evidencia base es `638980a`, no una declaración de que las tareas pendientes estén implementadas.
 
 ## Convenciones y responsabilidad
 
@@ -31,19 +31,21 @@ Evidencia CES-01/CES-02: [Cesta local](CESTA_LOCAL.md), con 164 pruebas de app, 
 
 Evidencia TIE-01/CES-03: [Totales y sucursales](TOTALES_Y_SUCURSALES.md), 183 pruebas de app, 35 de seguridad y 36 recorridos web. Fuentes públicas bajo acción explícita, hasta diez productos por lote, sin persistir precios públicos. DAT-01 no se considera medido por pasar esas pruebas.
 
-## Formatos, alternativas y evidencia — siguiente entrega
+## Formatos y alternativas entregados; evidencia externa pendiente
 
 | ID | Prioridad / estado | Dependencias | Trabajo y aceptación |
 | --- | --- | --- | --- |
-| UNI-01 | P1 / pendiente | CES-03 | Normalizar cantidades conocidas en masa, volumen o unidades compatibles. Probar multipacks, cantidad ausente y unidades incompatibles; conservar precisión sin dividir por cero. Mostrar precio unitario separado del coste de envases enteros, redondeo y cantidad sobrante. |
-| ALT-01 | P1 / pendiente | UNI-01 | Grupos de sustitución explícitos y revisables; confirmar cada alternativa y sus cantidades. Declaración sin gluten como criterio opcional, con acceso a trazas/fuente/fecha y exclusión de contradicciones del filtro positivo. No tratar ausencia de información o nombre parecido como equivalencia ni confirmar aptitud propia. |
+| UNI-01 | P1 / verificada técnicamente, iteración 11 | CES-03 | Normalizar cantidades conocidas en masa, volumen o unidades compatibles. Probar multipacks, cantidad ausente y unidades incompatibles; conservar precisión sin dividir por cero. Mostrar precio unitario separado del coste de envases enteros, redondeo y cantidad sobrante. |
+| ALT-01 | P1 / verificada técnicamente, iteración 11 | UNI-01 | Grupos de sustitución explícitos y revisables; confirmar cada alternativa y sus cantidades. Declaración sin gluten como criterio opcional, con acceso a trazas/fuente/fecha y exclusión de contradicciones del filtro positivo. No tratar ausencia de información o nombre parecido como equivalencia ni confirmar aptitud propia. |
 | GLU-01 | P1 / pendiente; bloqueo antes de beta dirigida | CMP-00 | Revisar con persona experta los cuatro estados, trazas, contradicciones y lenguaje; comprobar comprensión con participantes, registrar hallazgos/correcciones y versión. La preparación técnica de [Validación gluten](VALIDACION_GLUTEN.md) ya está entregada; la revisión externa no. |
+
+Evidencia UNI-01/ALT-01: [Formatos y alternativas](FORMATOS_Y_ALTERNATIVAS.md). Grupos privados de hasta 10 productos, necesidad y formatos confirmados, 20 grupos, coste de envases enteros y sobrante, filtro de declaración sin gluten y sustitución explícita. Las alternativas usan anotaciones privadas elegibles; no agregan automáticamente precios públicos ni optimizan toda la cesta entre sustitutos. Copias v4 y migración v1/v2/v3. Validación real y experta pendientes.
 
 ## Fiabilidad, beta y publicación
 
 | ID | Prioridad / estado | Dependencias | Trabajo y aceptación |
 | --- | --- | --- | --- |
-| SEG-01 | P0 / bloqueada para publicación general | CMP-00 | Resolver cadenas de Zod, node-forge y OpenTelemetry con conjunto compatible; no ampliar excepciones ni usar actualizaciones forzadas. Vencimiento actual 22-11-2026. Cierre: secretos y `audit:release` correctos, controles de runtime pertinentes y registro de resolución. [Estado](DEPENDENCIAS.md). No impide desarrollar la cesta local. |
+| SEG-01 | P0 / bloqueada para publicación general | CMP-00 | Resolver cadenas de Zod, OpenTelemetry y el nuevo aviso de deepmerge con conjunto compatible; node-forge ya no aparece tras actualizar a 1.4.2; no ampliar excepciones ni usar actualizaciones forzadas. Vencimiento actual 22-11-2026. Cierre: secretos y `audit:release` correctos, controles de runtime pertinentes y registro de resolución. [Estado](DEPENDENCIAS.md). No impide desarrollar la cesta local. |
 | CAL-01 | P1 / pendiente; incremental | CES-03, UNI-01, ALT-01, DAT-01 | Verificar el recorrido de compra integrado: códigos, cantidades, identidad de tienda, precios, filtros, cobertura y totales contra casos reproducibles y muestra real declarada. Diferenciar precio observado, estimación y ahorro comprobado. Tests de cada tarea se ejecutan antes de cerrar esa tarea; esta dependencia corresponde al cierre integral. |
 | CAL-02 | P1 / pendiente; incremental | CES-02, CES-03 | Matriz Android física: cámara/linterna, permisos, segundo plano, offline, texto ampliado, TalkBack, almacenamiento, migración y recuperación. Registrar modelo/SO/commit. Sin fallos críticos. iOS físico/VoiceOver y build nativa obligatorios si se incluye iOS en distribución. |
 | MAR-01 | P1 / pendiente de decisión | CMP-00 | Revisar nombre y textos de tienda conforme a compra/precios, conservando Mesa. Presentar propuesta concreta y registrar decisión del propietario y comprobaciones de disponibilidad antes de registro público. SinGluten continúa como nombre de trabajo. No reabrir tres direcciones visuales ya elegidas. |
@@ -80,4 +82,4 @@ Los IDs de este backlog tienen prefijos nuevos para evitar reutilizar los del [p
 
 ## Regla de cierre
 
-Registrar por tarea: responsable real, commit, criterio cumplido, comprobaciones, límites y fecha. Cambiar el estado solo tras revisar esa evidencia. La próxima entrega técnica concreta es **UNI-01 + ALT-01**; DAT-01 puede medirse en paralelo. Cesta y totales se entregaron técnicamente en iteraciones 9–10; CAL-02/BET-01 mantienen pendientes las validaciones físicas/de uso.
+Registrar por tarea: responsable real, commit, criterio cumplido, comprobaciones, límites y fecha. Cambiar el estado solo tras revisar esa evidencia. La próxima entrega concreta es **DAT-01**, medir cobertura pública por zona y documentar la decisión; después CAL-01 integra la validación del comparador. Formatos/alternativas se implementaron en iteración 11; CAL-02/BET-01 mantienen pendientes las validaciones físicas/de uso.

@@ -87,3 +87,7 @@ La decisión vigente del propietario es una versión local sin costes de backend
 - La cesta local ya está implementada (CES-01/CES-02). TIE-01/CES-03 están implementadas en iteración 10; la siguiente entrega es formatos/alternativas (UNI-01/ALT-01). Cobertura de fuentes públicas se mide en paralelo (DAT-01). Búsqueda global, mapas, alertas e integraciones oficiales requieren validar demanda y fuentes; no se simulan disponibilidad ni datos.
 
 La [hoja de ruta](HOJA_DE_RUTA.md) y el [backlog vigente](PLAN_MEJORAS.md) ordenan el comparador y su evolución a cesta. El [plan anterior](historico/README.md) queda archivado. CES-01/CES-02 tienen implementación técnica en la iteración 9; TIE-01/CES-03 se entregan técnicamente en iteración 10; la siguiente entrega es **UNI-01 + ALT-01**. Los puntos anteriores impiden dar por cerrada la publicación por tener código y pruebas locales.
+
+## Iteración 11 · Formatos y alternativas
+
+Implementación y límites en [Formatos y alternativas](FORMATOS_Y_ALTERNATIVAS.md): precio unitario, multipacks, grupos privados confirmados, necesidad/envases/sobrante, filtro de evidencia sin gluten y copias v4. El siguiente paso de datos es DAT-01. La actualización compatible Expo 58.0.21/RN 0.88.1 incluye revisión de seguridad; deepmerge mantiene bloqueado el control de dependencias, sin ampliar excepciones.

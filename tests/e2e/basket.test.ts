@@ -67,10 +67,11 @@ test('añade desde ficha y biblioteca, agrupa, edita, conserva offline y recuper
   await page.getByRole('button', { name: 'Historial (1)', exact: true }).click();
   await page.getByRole('button', { name: 'Borrar historial', exact: true }).click();
   await page.getByRole('button', { name: 'Confirmar eliminación', exact: true }).click();
+  await expect(page.getByText('Tu historial está vacío', { exact: true })).toBeVisible();
   const copy = await backup(page);
   expect(copy).toMatchObject({
-    version: 3,
-    backupVersion: 3,
+    version: 4,
+    backupVersion: 4,
     basket: [{ barcode: code, quantity: 4, name: 'Arroz para la cesta' }],
   });
   expect(copy.history).toEqual([]);
@@ -205,7 +206,7 @@ test('actualiza IndexedDB y esquema v1 preservando precios; el cliente antiguo y
   await page.goto('/basket');
   await expect(page.getByText(/Tu cesta está vacía/)).toBeVisible();
   const copy = await backup(page);
-  expect(copy.version).toBe(3);
+  expect(copy.version).toBe(4);
   expect(copy.prices).toHaveLength(1);
   expect(copy.prices[0].store).toBe('Tienda anterior');
   expect(

@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import { Text } from 'react-native';
-import { isPriceCurrent, money, unitPrice, type PriceObservation } from '@/src/domain/price';
+import { isPriceCurrent, money, type PriceObservation } from '@/src/domain/price';
+import { privateQuotes } from '@/src/domain/comparison';
+import { UnitPrice } from './UnitPrice';
 import { Action, Card, Copy, Notice } from '@/src/shared/ui';
 import { usePalette } from '@/src/shared/theme';
 import { Confirm } from '@/src/shared/Confirm';
@@ -53,11 +55,7 @@ export function PriceList({
                 ? 'Observación compartida, revisada para su publicación.'
                 : 'Anotación privada de este dispositivo.'}
             </Copy>
-            {price.quantity && price.unit ? (
-              <Copy muted>
-                {price.quantity} {price.unit} · {money(unitPrice(price)!)}/{price.unit}
-              </Copy>
-            ) : null}
+            <UnitPrice quote={privateQuotes([price])[0]} />
             {price.offerEndsAt ? (
               <Copy muted>
                 Oferta hasta {new Date(price.offerEndsAt).toLocaleDateString('es-ES')}

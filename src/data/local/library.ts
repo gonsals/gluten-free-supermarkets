@@ -19,6 +19,13 @@ import {
 } from '@/src/domain/basket';
 import { BACKUP_FORMAT, parseLibraryBackup } from './backup';
 import {
+  hasPositiveGlutenEvidence,
+  isAlternativeGroups,
+  MAX_GROUPS,
+  type AlternativeGroup,
+} from '@/src/domain/alternatives';
+import { requiredPackages } from '@/src/domain/measure';
+import {
   isBranches,
   isBranchReference,
   MAX_BRANCHES,
@@ -42,7 +49,8 @@ export interface Favorite extends ProductSummary {
   deleted: boolean;
 }
 export interface LibraryData {
-  version: 3;
+  version: 4;
+  groups: AlternativeGroup[];
   revision: number;
   basket: BasketLine[];
   branches: StoreBranch[];
@@ -58,7 +66,8 @@ export interface LibrarySnapshot {
   error: string | null;
 }
 const fresh = (): LibraryData => ({
-  version: 3,
+  version: 4,
+  groups: [],
   revision: 0,
   basket: [],
   branches: [],
@@ -80,12 +89,13 @@ export function summary(p: Product): ProductSummary {
 export function operationId(): string {
   return `${Date.now().toString(36)}-${Math.random().toString(36).slice(2, 10)}-${Math.random().toString(36).slice(2, 10)}`;
 }
-function validData(
-  value: unknown,
-): value is
+function validData(value: unknown): value is
   | LibraryData
-  | (Omit<LibraryData, 'version' | 'branches'> & { version: 2 })
-  | (Omit<LibraryData, 'version' | 'revision' | 'basket' | 'branches'> & { version: 1 }) {
+  | (Omit<LibraryData, 'version' | 'groups'> & { version: 3 })
+  | (Omit<LibraryData, 'version' | 'branches' | 'groups'> & { version: 2 })
+  | (Omit<LibraryData, 'version' | 'revision' | 'basket' | 'branches' | 'groups'> & {
+      version: 1;
+    }) {
   const validSummary = (item: unknown) =>
     record(item) &&
     typeof item.barcode === 'string' &&
@@ -98,7 +108,9 @@ function validData(
   return (
     record(value) &&
     (value.version === 1 ||
-      ((value.version === 2 || (value.version === 3 && isBranches(value.branches))) &&
+      ((value.version === 2 ||
+        ((value.version === 3 || (value.version === 4 && isAlternativeGroups(value.groups))) &&
+          isBranches(value.branches))) &&
         Number.isSafeInteger(value.revision) &&
         Number(value.revision) >= 0 &&
         isBasket(value.basket))) &&
@@ -161,13 +173,14 @@ export class LibraryRepository {
     const value: unknown = raw ? JSON.parse(raw) : fresh();
     if (!validData(value)) throw new AppError('storage_error');
     let data: LibraryData;
-    if (value.version !== 3) {
+    if (value.version !== 4) {
       data = {
         ...value,
-        version: 3,
+        version: 4,
+        groups: [],
         revision: value.version === 1 ? 0 : value.revision,
         basket: value.version === 1 ? [] : value.basket,
-        branches: [],
+        branches: value.version === 3 ? value.branches : [],
       };
       const migrated = JSON.stringify(data);
       await this.store.commit({ [this.key]: migrated }, [], { [this.key]: raw });
@@ -271,6 +284,9 @@ export class LibraryRepository {
         const retained = new Set([
           ...data.history.map((x) => x.barcode),
           ...data.basket.map((x) => x.barcode),
+          ...Object.keys(data.cache).filter((code) =>
+            data.groups.some((g) => g.members.some((m) => sameGtin(m.barcode, code))),
+          ),
           ...data.prices.map((x) => x.barcode),
           ...Object.values(data.favorites)
             .filter((x) => !x.deleted)
@@ -314,6 +330,7 @@ export class LibraryRepository {
           if (
             (!data.favorites[code] || data.favorites[code].deleted) &&
             !data.basket.some((line) => line.barcode === code) &&
+            !data.groups.some((g) => g.members.some((m) => sameGtin(m.barcode, code))) &&
             !data.prices.some((price) => price.barcode === code)
           ) {
             delete data.cache[code];
@@ -406,6 +423,60 @@ export class LibraryRepository {
       data.branches = next;
     });
   }
+  saveAlternativeGroup(group: AlternativeGroup, expected: AlternativeGroup | null): Promise<void> {
+    if (!isAlternativeGroups([group]))
+      return Promise.reject(new Error('Revisa cantidades, unidades y códigos del grupo.'));
+    return this.mutate((data) => {
+      const current = data.groups.find((g) => g.id === group.id) ?? null;
+      if (JSON.stringify(current) !== JSON.stringify(expected)) throw new StorageConflict();
+      if (!current && data.groups.length >= MAX_GROUPS)
+        throw new Error('Puedes guardar hasta 20 grupos.');
+      data.groups = [...data.groups.filter((g) => g.id !== group.id), group];
+    });
+  }
+  deleteAlternativeGroup(expected: AlternativeGroup): Promise<void> {
+    return this.mutate((data) => {
+      if (
+        JSON.stringify(data.groups.find((g) => g.id === expected.id)) !== JSON.stringify(expected)
+      )
+        throw new StorageConflict();
+      data.groups = data.groups.filter((g) => g.id !== expected.id);
+    });
+  }
+  async substituteBasket(
+    group: AlternativeGroup,
+    barcode: string,
+    expectedRevision: number,
+  ): Promise<void> {
+    const code = Object.keys(this.snapshot.data.cache).find((c) => sameGtin(c, barcode)) ?? barcode;
+    const product = await this.getProduct(code);
+    if (group.glutenFreeOnly) {
+      if (!hasPositiveGlutenEvidence(product))
+        throw new Error('La ficha no cumple el filtro de declaración sin gluten. Revisa el grupo.');
+    }
+    return this.mutate((data) => {
+      if (
+        data.revision !== expectedRevision ||
+        JSON.stringify(data.groups.find((g) => g.id === group.id)) !== JSON.stringify(group)
+      )
+        throw new StorageConflict();
+      const member = group.members.find((m) => m.barcode === barcode);
+      const base = data.basket.find((line) => sameGtin(line.barcode, group.members[0].barcode));
+      const requirement = member && requiredPackages(group.required, member.pack);
+      if (!base || !member || !requirement || !validBasketQuantity(requirement.packages))
+        throw new Error(
+          'La línea original ya no está en la cesta o la cantidad supera 99 envases.',
+        );
+      const other = data.basket.find((line) => line !== base && sameGtin(line.barcode, barcode));
+      if (other)
+        throw new Error(
+          'La alternativa ya está en tu cesta. Revisa sus cantidades antes de sustituir.',
+        );
+      base.barcode = member.barcode;
+      base.name = product?.name ?? null;
+      base.quantity = requirement.packages;
+    });
+  }
   assignReference(
     reference: BranchReference,
     branchId: string | null,
@@ -484,7 +555,7 @@ export class LibraryRepository {
         const contents = JSON.stringify(
           {
             format: BACKUP_FORMAT,
-            backupVersion: 3,
+            backupVersion: 4,
             exportedAt: new Date().toISOString(),
             ...data,
             revision: undefined,

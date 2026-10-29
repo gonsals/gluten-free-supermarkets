@@ -1,6 +1,6 @@
 # Copias locales y recuperación
 
-> **Planificación actualizada 26-10-2026.** Exportación actual v3 con cesta y sucursales; importación v1/v2. [Contrato de iteración 10](TOTALES_Y_SUCURSALES.md). Se conserva la evidencia previa con su fecha. Los resultados históricos de pruebas se conservan con su fecha. [Hoja de ruta vigente](HOJA_DE_RUTA.md) · [Backlog](PLAN_MEJORAS.md).
+> **Actualización 29-10-2026.** Exportación actual v4 con cesta, sucursales y grupos de alternativas; importación v1/v2/v3. [Contrato actual](FORMATOS_Y_ALTERNATIVAS.md). Máximo actual 3.000 fichas y 20 MiB. El contrato v2/v3 de abajo conserva su evidencia histórica. [Contrato de iteración 10](TOTALES_Y_SUCURSALES.md). Se conserva la evidencia previa con su fecha. Los resultados históricos de pruebas se conservan con su fecha. [Hoja de ruta vigente](HOJA_DE_RUTA.md) · [Backlog](PLAN_MEJORAS.md).
 
 Iteración 7 · 25 de octubre de 2026. Implementación de F-03 de la hoja de ruta para recuperar o trasladar la biblioteca sin cuenta ni backend. La nube permanece desactivada.
 

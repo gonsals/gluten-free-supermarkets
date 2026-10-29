@@ -23,7 +23,7 @@ test('la migración v1 conserva todo y no publica una versión migrada si falla 
   storage.fail = false;
   await repo.refresh();
   expect(repo.getSnapshot().data).toMatchObject({
-    version: 3,
+    version: 4,
     basket: [],
     history: old.history,
     favorites: old.favorites,
@@ -87,7 +87,7 @@ test('copia v2, restauración y borrado incluyen cesta y campos desconocidos no 
   await repo.addToBasket(BARCODE, product());
   await repo.addToBasket(OTHER_BARCODE);
   const value = JSON.parse(await repo.exportData());
-  expect(value).toMatchObject({ version: 3, backupVersion: 3 });
+  expect(value).toMatchObject({ version: 4, backupVersion: 4 });
   value.basket[0].injected = 'not saved';
   await repo.clearAll();
   await repo.restoreBackup(JSON.stringify(value), repo.getSnapshot().data);

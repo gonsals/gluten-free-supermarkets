@@ -103,3 +103,7 @@ Continuación según la [hoja de ruta](HOJA_DE_RUTA.md):
 **DAT-01**, medición de cobertura por producto/zona/antigüedad, acompaña la cesta desde el inicio; no espera al final. DAT-02/DAT-03, caché persistente y otras fuentes, se condicionan a esa medición y a contratos/permisos comprobados. No se promete integrar todas las cadenas ni realizar scraping masivo.
 
 La revisión experta de la información sobre gluten y los avisos de dependencias continúan pendientes según la hoja de ruta. El cambio de prioridad no los da por resueltos.
+
+## Iteración 11 · Formatos y alternativas
+
+Implementación y límites en [Formatos y alternativas](FORMATOS_Y_ALTERNATIVAS.md): precio unitario, multipacks, grupos privados confirmados, necesidad/envases/sobrante, filtro de evidencia sin gluten y copias v4. El siguiente paso de datos es DAT-01. La actualización compatible Expo 58.0.21/RN 0.88.1 incluye revisión de seguridad; deepmerge mantiene bloqueado el control de dependencias, sin ampliar excepciones.

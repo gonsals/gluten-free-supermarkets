@@ -22,13 +22,13 @@ test('migración v2 conserva cesta y precios; v3 preserva vínculos en copia y b
   const migrated = new LibraryRepository(storage, 'test');
   await migrated.load();
   expect(migrated.getSnapshot().data).toMatchObject({
-    version: 3,
+    version: 4,
     basket: v2.basket,
     branches: [],
   });
   await migrated.saveBranch(branch);
   const copy = await migrated.exportData();
-  expect(JSON.parse(copy)).toMatchObject({ version: 3, backupVersion: 3 });
+  expect(JSON.parse(copy)).toMatchObject({ version: 4, backupVersion: 4 });
   await migrated.clearAll();
   await migrated.restoreBackup(copy, migrated.getSnapshot().data);
   expect(migrated.getSnapshot().data.branches).toEqual([branch]);

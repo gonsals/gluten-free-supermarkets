@@ -2,9 +2,9 @@
 
 App de compra en **Expo 58, React 19 y React Native 0.88**, enfocada en comparar precios por producto y tienda con aportaciones públicas de Open Prices y anotaciones privadas. Conserva información sobre gluten como función adicional, escaneo y biblioteca sin conexión.
 
-**Prioridad elegida el 26-10-2026: comprar de forma más económica.** La comparación actual es por código y envase; la cesta local ya guarda cantidades. Los totales por establecimiento ya están disponibles; formatos y alternativas por cantidad son los siguientes pasos. [Alcance y fuentes](docs/COMPARADOR_DE_PRECIOS.md).
+**Prioridad elegida el 26-10-2026: comprar de forma más económica.** La comparación actual es por código y envase; la cesta local ya guarda cantidades. Los totales por establecimiento y los grupos explícitos de formatos/alternativas ya están disponibles. El siguiente paso es medir cobertura real de precios. [Alcance y fuentes](docs/COMPARADOR_DE_PRECIOS.md).
 
-**Estado: comparador por producto y totales de cesta implementados.** Mi cesta guarda productos y cantidades; Comparar total por tienda separa cestas completas y subtotales por sucursal confirmada. Copias v3 conservan identificaciones y vínculos. Siguiente: formatos y alternativas explícitas. [Orden y criterios vigentes](docs/HOJA_DE_RUTA.md). No se ha publicado en tiendas. Firebase permanece como ampliación opcional desactivada, fuera del núcleo; [estado remoto](docs/FIREBASE_REAL.md).
+**Estado: comparador, cesta y alternativas implementados técnicamente.** Mi cesta guarda productos y cantidades; Comparar total por tienda separa cestas completas y subtotales por sucursal confirmada. Mi cesta → Formatos y alternativas permite confirmar sustitutos, comparar desembolso y sobrante. Copias v4 conservan grupos, identificaciones y vínculos. Siguiente: cobertura real DAT-01 y validación integrada. [Orden y criterios vigentes](docs/HOJA_DE_RUTA.md). No se ha publicado en tiendas. Firebase permanece como ampliación opcional desactivada, fuera del núcleo; [estado remoto](docs/FIREBASE_REAL.md).
 
 ## Funcionalidades
 
@@ -85,6 +85,7 @@ La [hoja de ruta vigente](docs/HOJA_DE_RUTA.md) organiza los siguientes pasos y 
 | [Accesibilidad y datos](docs/ACCESIBILIDAD_Y_DATOS.md) | Iteración 5: confirmaciones desplazables, texto ampliado, teclado, estados accesibles y conservación de datos al actualizar. |
 | [Escáner y permisos](docs/ESCANER_Y_PERMISOS.md) | Iteración 6: errores y respuestas tardías de permisos, alternativa manual y ciclo de cámara/linterna. |
 | [Copias locales y recuperación](docs/COPIAS_LOCALES.md) | Iteración 7: formato versionado, validación de archivos, resumen y restauración sin nube ni cuenta. |
+| [Formatos y alternativas](docs/FORMATOS_Y_ALTERNATIVAS.md) | Iteración 11: cantidades, multipacks, grupos privados revisables, sustituciones confirmadas y copias v4. |
 | [Totales y sucursales](docs/TOTALES_Y_SUCURSALES.md) | Iteración 10: identidad explícita, ranking de cestas completas, subtotales, consultas acotadas y copias v3. |
 | [Cesta local](docs/CESTA_LOCAL.md) | Iteración 9: cantidades, esquema y copias v2, migración y protección entre clientes. |
 | [Comparador de precios](docs/COMPARADOR_DE_PRECIOS.md) | Iteración 8: nueva prioridad, supermercados sugeridos, fuente pública integrada, comparación y cesta futura. |

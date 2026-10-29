@@ -170,6 +170,11 @@ export function BasketScreen() {
         disabled={!ready || !data.basket.length}
         onPress={() => router.push('/basket-comparison')}
       />
+      <Action
+        title="Formatos y alternativas"
+        secondary
+        onPress={() => router.push('/alternatives')}
+      />
       {!ready && !error ? <ActivityIndicator /> : null}
       {error ? (
         <>

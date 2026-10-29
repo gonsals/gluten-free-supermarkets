@@ -100,7 +100,7 @@ export function LibraryDataPanel() {
   const count = (value: LibraryData) => {
     const favorites = Object.values(value.favorites).filter((item) => !item.deleted).length;
     const packages = value.basket.reduce((total, line) => total + line.quantity, 0);
-    return `${value.history.length} ${value.history.length === 1 ? 'consulta' : 'consultas'}, ${favorites} ${favorites === 1 ? 'favorito' : 'favoritos'} y ${value.prices.length} ${value.prices.length === 1 ? 'precio privado' : 'precios privados'}; cesta: ${value.basket.length} ${value.basket.length === 1 ? 'producto' : 'productos'} y ${packages} ${packages === 1 ? 'envase' : 'envases'}; ${value.branches.length} sucursales identificadas`;
+    return `${value.history.length} ${value.history.length === 1 ? 'consulta' : 'consultas'}, ${favorites} ${favorites === 1 ? 'favorito' : 'favoritos'} y ${value.prices.length} ${value.prices.length === 1 ? 'precio privado' : 'precios privados'}; cesta: ${value.basket.length} ${value.basket.length === 1 ? 'producto' : 'productos'} y ${packages} ${packages === 1 ? 'envase' : 'envases'}; ${value.branches.length} sucursales identificadas; ${value.groups.length} grupos de alternativas`;
   };
   return (
     <>
@@ -119,9 +119,9 @@ export function LibraryDataPanel() {
         <Copy muted>
           Exporta una copia para conservarlos o trasladarlos. Restaurar una copia sustituye toda la
           biblioteca local. Aceptamos archivos JSON de SinGluten de hasta 20 MB; revisa el resumen
-          antes de confirmar. Las copias v3 incluyen cesta y sucursales identificadas. Las v2
-          recuperan la cesta sin sucursales; las v1, sin cesta ni sucursales. Una app antigua no
-          abre copias v3. Las copias no están cifradas.
+          antes de confirmar. Las copias v4 incluyen cesta, sucursales y grupos de alternativas. Las
+          v3 recuperan cesta y sucursales sin grupos; las v2, cesta sin sucursales; las v1, sin
+          cesta ni sucursales. Una app antigua no abre copias v4. Las copias no están cifradas.
         </Copy>
         <Action
           title="Exportar mis datos"

@@ -6,13 +6,13 @@ Verificación: **2026-10-25**. Se ha reemplazado el conjunto de dependencias de 
 
 | Área | Antes | Ahora |
 | --- | --- | --- |
-| Expo | 52.0.18 | 58.0.19 |
+| Expo | 52.0.18 | 58.0.21 |
 | React / React DOM | 18.3.1 | 19.3.0, pareja del SDK |
-| React Native | 0.76.5 | 0.88.0 |
-| Expo Router | 4.0.11 | 58.0.26 |
-| Cámara | expo-camera 16 + react-native-camera sin uso | expo-camera 58.0.12; cámara antigua retirada |
+| React Native | 0.76.5 | 0.88.1 |
+| Expo Router | 4.0.11 | 58.0.28 |
+| Cámara | expo-camera 16 + react-native-camera sin uso | expo-camera 58.0.14; cámara antigua retirada |
 | Firebase cliente | 11.0.1 en el lockfile inicial | 13.1.0 |
-| Pruebas | Jest 29 / jest-expo 51 incompatibles | Jest 30.5.2, jest-expo 58.0.12, testing-library 14.1.0 |
+| Pruebas | Jest 29 / jest-expo 51 incompatibles | Jest 30.5.2, jest-expo 58.0.13, testing-library 14.1.0 |
 | TypeScript | 5.3 | 6.0.3 |
 | Calidad | Sin configuración de lint | ESLint 9.39.5, eslint-config-expo 58.0.4, Prettier 3.9.10 |
 | Servidor nuevo | No existía | firebase-admin 14.5.0, firebase-functions 7.4.0, Node 24 |
@@ -31,12 +31,21 @@ La navegación y los hooks proceden ahora de `expo-router`, incluida su capa de 
 | Informe npm | Críticas | Altas | Moderadas | Bajas | Total de entradas afectadas |
 | --- | --- | --- | --- | --- | --- |
 | Prototipo inicial | 6 | 77 | 22 | 5 | 110 |
-| App actual, incluyendo herramientas | 0 | 5 | 3 | 0 | 8 |
+| App 26-10-2026, incluyendo herramientas | 0 | 5 | 3 | 0 | 8 |
+| App 29-10-2026, incluyendo herramientas | 0 | 3 | 3 | 13 | 19 |
 | Servidor `functions/` actual | 0 | 0 | 0 | 0 | 0 |
 
-Estas cifras incluyen propagación de avisos por los paquetes que dependen de ellos. Las ocho entradas actuales proceden de **tres avisos originales**, no de ocho fallos independientes demostrados en el móvil. El informe del 23 de octubre contenía 34 entradas. La base de avisos de npm ha cambiado: `braces` ya no figura en el informe actual y aparece un aviso de Zod revisado el 23 de octubre. Esta variación no demuestra que se hayan reparado 26 fallos mediante cambios de código.
+Estas cifras incluyen propagación de avisos por los paquetes que dependen de ellos. Las ocho entradas del 26-10 procedían de **tres avisos originales**, no de ocho fallos independientes demostrados en el móvil. El informe del 23 de octubre contenía 34 entradas. La base de avisos de npm ha cambiado: `braces` ya no figura en el informe actual y aparece un aviso de Zod revisado el 23 de octubre. Esta variación no demuestra que se hayan reparado 26 fallos mediante cambios de código.
 
-## Avisos residuales y exposición
+## Estado vigente · 29-10-2026
+
+Parches compatibles instalados con Expo CLI: Expo 58.0.21, CLI 58.1.17, Router 58.0.28, React Native y preset 0.88.1, cámara 58.0.14, jest-expo 58.0.13. `expo install --check` pasa. La primera instalación detectó el peer del preset; se alineó sin `--force` ni `--legacy-peer-deps`. [Procedimiento oficial](https://docs.expo.dev/more/expo-cli/).
+
+El lockfile instala node-forge **1.4.2**, cuyo aviso anterior ya no aparece en la auditoría. La consulta actual tiene **19 entradas: 13 bajas, 3 moderadas y 3 altas**; functions sigue en cero. Los avisos originales actuales son Zod, OpenTelemetry y [deepmerge GHSA-gcqx-w48m-w2h4](https://github.com/advisories/GHSA-gcqx-w48m-w2h4), revisado el 27-10, sin parche publicado. deepmerge 4.3.1 llega por `@expo/config` y Jest; no lo importa el código funcional de la app. Se revisa la exposición en herramientas de configuración/pruebas locales y se conserva la restricción de no procesar proyectos/configuraciones no confiables. El desarrollo local de formatos continúa; esto no acredita seguridad de una publicación.
+
+**`audit:security` devuelve 1 por el nuevo aviso no exceptuado; `audit:release` y el job de dependencias quedan bloqueados.** No se amplían excepciones ni se degradan Expo/Jest para ocultar el informe. Se mantiene el plazo 22-11-2026 de las excepciones previas, sin renovación automática. SEG-01 debe resolver este aviso junto con los residuales antes de publicar. Las revisiones históricas siguientes conservan su fecha y no son el estado actual.
+
+## Avisos residuales y exposición · revisión anterior
 
 | Paquete y aviso | Situación y tratamiento |
 | --- | --- |

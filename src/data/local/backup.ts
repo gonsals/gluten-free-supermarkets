@@ -3,6 +3,7 @@ import { isPriceObservation, type PriceObservation } from '@/src/domain/price';
 import { assessGluten, isProduct, record, type Product } from '@/src/domain/product';
 import { isBasket } from '@/src/domain/basket';
 import { isBranches } from '@/src/domain/branches';
+import { isAlternativeGroups } from '@/src/domain/alternatives';
 import type { LibraryData, ProductSummary } from './library';
 
 export const BACKUP_FORMAT = 'sin-gluten-library';
@@ -110,8 +111,9 @@ export function parseLibraryBackup(contents: string): LibraryBackup {
   }
   if (
     !record(value) ||
-    (value.version !== 1 && value.version !== 2 && value.version !== 3) ||
-    (value.version !== 3 && value.branches !== undefined) ||
+    (value.version !== 1 && value.version !== 2 && value.version !== 3 && value.version !== 4) ||
+    (value.version !== 3 && value.version !== 4 && value.branches !== undefined) ||
+    (value.version !== 4 && value.groups !== undefined) ||
     !date(value.exportedAt) ||
     (value.version === 1
       ? value.basket !== undefined ||
@@ -120,9 +122,10 @@ export function parseLibraryBackup(contents: string): LibraryBackup {
       : value.format !== BACKUP_FORMAT ||
         value.backupVersion !== value.version ||
         !isBasket(value.basket) ||
-        (value.version === 3 && !isBranches(value.branches))) ||
+        ((value.version === 3 || value.version === 4) && !isBranches(value.branches)) ||
+        (value.version === 4 && !isAlternativeGroups(value.groups))) ||
     !Array.isArray(value.products) ||
-    value.products.length > 2500 ||
+    value.products.length > 3000 ||
     !Array.isArray(value.history) ||
     value.history.length > 1000 ||
     !Array.isArray(value.prices) ||
@@ -130,7 +133,7 @@ export function parseLibraryBackup(contents: string): LibraryBackup {
     !record(value.favorites) ||
     Object.keys(value.favorites).length > 10000 ||
     !record(value.cache) ||
-    Object.keys(value.cache).length > 2500
+    Object.keys(value.cache).length > 3000
   )
     throw invalid();
   const products = value.products.map(restoredProduct);
@@ -208,11 +211,24 @@ export function parseLibraryBackup(contents: string): LibraryBackup {
     exportedAt: value.exportedAt,
     products,
     data: {
-      version: 3,
+      version: 4,
+      groups:
+        value.version === 4 && isAlternativeGroups(value.groups)
+          ? value.groups.map((g) => ({
+              id: g.id,
+              name: g.name,
+              glutenFreeOnly: g.glutenFreeOnly,
+              required: { quantity: g.required.quantity, unit: g.required.unit },
+              members: g.members.map((m) => ({
+                barcode: m.barcode,
+                pack: { quantity: m.pack.quantity, unit: m.pack.unit },
+              })),
+            }))
+          : [],
       revision: 0,
       basket,
       branches:
-        value.version === 3 && isBranches(value.branches)
+        (value.version === 3 || value.version === 4) && isBranches(value.branches)
           ? value.branches.map((branch) => ({
               id: branch.id,
               name: branch.name,

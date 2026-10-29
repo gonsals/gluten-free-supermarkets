@@ -128,7 +128,7 @@ test('identifica sucursales y compara completas sin presentar el subtotal B como
     page.getByText(/Sin precio para esta sucursal.*No se asigna precio cero/),
   ).toBeVisible();
   const exported = await copy(page);
-  expect(exported.version).toBe(3);
+  expect(exported.version).toBe(4);
   expect(exported.branches).toHaveLength(3);
   expect(exported).not.toHaveProperty('publicPrices');
   await page.goto('/basket-comparison');

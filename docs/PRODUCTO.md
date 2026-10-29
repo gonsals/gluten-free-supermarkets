@@ -18,13 +18,13 @@ Funcionamiento local sin cuenta obligatoria ni costes de backend contratado. Ope
 | Proponer supermercado desde datos explícitos o asociaciones acotadas de marca | Implementado; editable y sin deducir sucursal o disponibilidad. |
 | Guardar precios privados y consultar Open Prices | Implementado; datos públicos separados y no incluidos en copias privadas. |
 | Consultar ficha, gluten, trazas y procedencia | Implementado técnicamente; revisión experta/comprensión pendientes. |
-| Biblioteca offline, favoritos, copias y restauración | Implementado; esquema/copia v3 con cesta y sucursales, compatible con importación v1/v2. |
+| Biblioteca offline, favoritos, copias y restauración | Implementado; esquema/copia v4 con cesta, sucursales y grupos, compatible con importación v1/v2/v3. |
 | Cesta persistente con cantidades, copias y borrado | Implementado técnicamente en iteración 9, CES-01/CES-02. [Contrato y límites](CESTA_LOCAL.md). |
 | Totales por establecimiento y cobertura completa | TIE-01/CES-03 implementadas técnicamente en iteración 10. [Contrato y pruebas](TOTALES_Y_SUCURSALES.md). |
-| Equivalencia por formato/unidad y alternativas | UNI-01/ALT-01, pendientes; no se equiparan productos por nombre. |
+| Equivalencia por formato/unidad y alternativas | UNI-01/ALT-01 implementadas técnicamente en iteración 11 con anotaciones privadas. [Contrato](FORMATOS_Y_ALTERNATIVAS.md). No se equiparan productos por nombre. |
 | Cobertura suficiente por zona y uso durante compras reales | DAT-01/CAL-01/BET-01, pendientes de medir. |
 
-El MVP objetivo del nuevo enfoque incluye cesta, totales comparables y cobertura explícita. La app ya compara la misma cesta por sucursal confirmada; la cobertura real de fuentes y la utilidad en compras siguen pendientes de medir. Alternativas amplían el núcleo en la fase siguiente. Mapas, publicación propia de precios, sincronización, alertas e IA quedan condicionados a demanda y viabilidad; no son requisitos para activar servicios.
+El MVP objetivo del nuevo enfoque incluye cesta, totales comparables y cobertura explícita. La app ya compara la misma cesta por sucursal confirmada; la cobertura real de fuentes y la utilidad en compras siguen pendientes de medir. Las alternativas explícitas amplían el núcleo desde la iteración 11; el coste por envases y la información sobre gluten se revisan por separado. Mapas, publicación propia de precios, sincronización, alertas e IA quedan condicionados a demanda y viabilidad; no son requisitos para activar servicios.
 
 ## Reglas de precio y de comparación
 

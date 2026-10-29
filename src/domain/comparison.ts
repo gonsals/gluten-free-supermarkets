@@ -1,5 +1,6 @@
 import { sameGtin } from './barcode';
 import type { PriceObservation } from './price';
+import { SCALE, isMeasure, type Measure } from './measure';
 
 export interface PriceQuote {
   id: string;
@@ -16,6 +17,8 @@ export interface PriceQuote {
   sourceUrl: string | null;
   countryCode: string | null;
   conditions?: string;
+  pack?: Measure;
+  packInvalid?: boolean;
 }
 export const fold = (text: string) =>
   text
@@ -43,6 +46,15 @@ export function privateQuotes(prices: PriceObservation[]): PriceQuote[] {
     sourceUrl: null,
     countryCode: null,
     conditions: price.notes.trim(),
+    packInvalid:
+      price.quantity !== null &&
+      (Number(price.quantity.toFixed(6)) !== price.quantity ||
+        !isMeasure({ quantity: Math.round(price.quantity * SCALE), unit: price.unit })),
+    ...(price.quantity !== null &&
+    price.unit &&
+    isMeasure({ quantity: Math.round(price.quantity * SCALE), unit: price.unit })
+      ? { pack: { quantity: Math.round(price.quantity * SCALE), unit: price.unit } }
+      : {}),
   }));
 }
 export function quoteMoney(amountMilli: number): string {

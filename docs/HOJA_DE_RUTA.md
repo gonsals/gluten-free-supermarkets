@@ -1,6 +1,6 @@
 # Hoja de ruta · Comparar precios y planificar la compra
 
-Actualizada el **26-10-2026**. Este documento fija el orden de entrega vigente. El [backlog](PLAN_MEJORAS.md) contiene las tareas y sus criterios; [Producto](PRODUCTO.md) define el comportamiento esperado. El [plan anterior](historico/README.md) se conserva como histórico y deja de ordenar el trabajo.
+Actualizada el **29-10-2026**. Este documento fija el orden de entrega vigente. El [backlog](PLAN_MEJORAS.md) contiene las tareas y sus criterios; [Producto](PRODUCTO.md) define el comportamiento esperado. El [plan anterior](historico/README.md) se conserva como histórico y deja de ordenar el trabajo.
 
 ## Enfoque acordado
 
@@ -19,10 +19,10 @@ Base de código: **`638980a`**, iteración 8, rama `gonsals/mejoras`. [CI: cinco
 
 | Disponible | Límite actual |
 | --- | --- |
-| Comparador por GTIN y envase, fuentes públicas y privadas separadas, filtros de edad/ofertas/ubicación. | Cesta local y totales por sucursal confirmada disponibles; alternativas entre códigos distintos pendientes. |
+| Comparador por GTIN y envase, fuentes públicas y privadas separadas, filtros de edad/ofertas/ubicación. | Cesta, totales por sucursal y alternativas explícitas disponibles; medir cobertura y utilidad en compras reales sigue pendiente. |
 | Supermercado sugerido y editable al anotar un precio. | No acredita sucursal, stock ni precio nacional. |
 | Open Prices en lectura, sin cuenta ni clave; carga acotada. | Cobertura colaborativa sin garantía por zona; caché pública solo en memoria. |
-| Biblioteca local, favoritos, historial, precios privados, exportación y restauración. | Iteración 10: esquema/copia v3 con cesta, sucursales y vínculos; importación v1/v2. Validación física pendiente. |
+| Biblioteca local, favoritos, historial, precios privados, exportación y restauración. | Iteración 11: esquema/copia v4 con cesta, sucursales, vínculos y grupos; importación v1/v2/v3. Validación física pendiente. |
 | Mesa, escáner, entrada manual y evidencia de gluten. | Naming, cámara física, revisión experta y accesibilidad nativa pendientes. |
 | 144 pruebas de app, 34 de seguridad, 23 recorridos web y APK Android emulada. | No equivalen a beta, iOS nativo ni validación con compras reales. |
 
@@ -60,9 +60,9 @@ Calcular cantidades × precios elegibles y mostrar cobertura, fecha y condicione
 
 **Cierre:** informe reproducible de cobertura y decisión de continuar, acotar zona o incorporar una fuente. Si no hay datos suficientes, ajustar la promesa y facilitar anotaciones; no simular precios. Esta línea acompaña la cesta, no espera a una fase de nube.
 
-### Fase 3 · Comparar formatos y alternativas — siguiente iteración
+### Fase 3 · Comparar formatos y alternativas — implementada técnicamente
 
-**UNI-01 y ALT-01**, P1 tras la comparación de totales. Calcular €/kg, €/l o €/unidad solo con cantidades conocidas y unidades compatibles. Separar el indicador unitario del coste de comprar envases enteros para cubrir una necesidad.
+**UNI-01 y ALT-01**, P1 implementadas técnicamente en iteración 11. [Contrato, evidencia y límites](FORMATOS_Y_ALTERNATIVAS.md). Comparación de alternativas con anotaciones privadas elegibles; no es optimización automática de la cesta completa. Calcular €/kg, €/l o €/unidad solo con cantidades conocidas y unidades compatibles. Separar el indicador unitario del coste de comprar envases enteros para cubrir una necesidad.
 
 Definir grupos de alternativas explícitos, revisables por la persona; nombres similares no prueban equivalencia. Incluir la consulta y filtro por declaración sin gluten, conservando trazas, contradicciones y datos insuficientes. No sustituir automáticamente un producto por otro por ser más barato.
 
@@ -86,7 +86,7 @@ Propuesta de beta: 5–10 personas con consentimiento, versiones identificables 
 
 ## Seguridad y mantenimiento durante todas las fases
 
-**SEG-01 es P0 antes de publicación general.** Persisten tres avisos de origen en cadenas de desarrollo (Zod, node-forge y OpenTelemetry), con ocho entradas afectadas de app y cero en `functions/` en la evidencia registrada. Excepciones exactas con vencimiento **22-11-2026**; no se renuevan automáticamente. `audit:security` admite esas excepciones, mientras `audit:release` sigue bloqueado. [Dependencias](DEPENDENCIAS.md).
+**SEG-01 es P0 antes de publicación general.** El 29-10 la auditoría registra tres avisos de origen actuales (Zod, OpenTelemetry y deepmerge), 19 entradas afectadas de app y cero en `functions/`. node-forge 1.4.2 elimina su aviso anterior. deepmerge es nuevo y no está exceptuado: `audit:security` y el job de dependencias quedan bloqueados; el desarrollo local sigue sujeto a revisión de exposición documentada. Excepciones exactas con vencimiento **22-11-2026**; no se renuevan automáticamente. Las excepciones anteriores permanecen exactas y sin ampliación; ambos controles de auditoría quedan bloqueados por los avisos que correspondan. [Dependencias](DEPENDENCIAS.md).
 
 | Momento | Control |
 | --- | --- |
@@ -120,4 +120,4 @@ Cada tarea del [backlog](PLAN_MEJORAS.md) tiene ID estable, prioridad, estado, d
 | 26-10-2026 | Investigar también fuentes públicas; Open Prices integrado con límites y separación de datos privados. |
 | 26-10-2026 | Nuevo orden: cesta segura → total por establecimiento → formatos/alternativas → validación → beta. Cobertura y seguridad acompañan todas las fases. |
 
-**Siguiente implementación: UNI-01 + ALT-01**, formatos y alternativas explícitas. Cesta y totales tienen implementación técnica en iteraciones 9–10; validación física/de uso y medición de cobertura real DAT-01 siguen pendientes.
+**Siguiente iteración: DAT-01**, medición reproducible de cobertura pública por zona, y preparación de CAL-01 con el recorrido integrado. UNI-01/ALT-01 entregadas técnicamente en iteración 11. Validación física, experta y de uso siguen pendientes. SEG-01 mantiene el bloqueo de publicación y ahora también el control de dependencias por deepmerge.

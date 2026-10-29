@@ -28,5 +28,7 @@ export function useCachedProduct(input?: string): Product | null {
       active = false;
     };
   }, [code, fetchedAt, ready, repository]);
-  return code && cached?.code === code ? cached.product : null;
+  return code && ready && cached?.code === code && cached.product?.source.fetchedAt === fetchedAt
+    ? cached.product
+    : null;
 }

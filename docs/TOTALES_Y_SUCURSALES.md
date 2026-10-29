@@ -1,5 +1,7 @@
 # Totales de cesta por sucursal
 
+> Estado actual: iteración 11 usa esquema/copia v4 con grupos de alternativas. [Contrato vigente](FORMATOS_Y_ALTERNATIVAS.md). Este documento conserva resultados y versiones de su entrega.
+
 Iteración 10 · **26-10-2026**. Entrega técnica de **TIE-01 y CES-03** de la [hoja de ruta](HOJA_DE_RUTA.md): identificar establecimientos y comparar el coste estimado de la misma cesta. Continúan Mesa, gluten complementario, anotaciones privadas y nube desactivada.
 
 ## Uso y alcance

@@ -20,6 +20,8 @@ Base **`638980a`**, iteración 8. [CI con cinco controles correctos](https://git
 
 Cámara física, TalkBack, revisión experta, iOS nativo, beta, cobertura real de fuentes para cesta y métricas de uso siguen pendientes. Una exportación de JavaScript iOS no equivale a build/dispositivo nativo. El escaneo del ZIP y Gitleaks reducen riesgo de exposición, sin ser prueba universal de ausencia de cualquier secreto.
 
+**Iteración 11:** formatos, sustituciones, copias v4 y actualización compatible del runtime, con límites y seguridad en [Formatos y alternativas](FORMATOS_Y_ALTERNATIVAS.md). La auditoría detecta deepmerge sin excepción ni parche publicado: el job de dependencias no está aprobado. Las pruebas funcionales no levantan este bloqueo.
+
 **Iteración 10:** identidad, totales y formato v3 descritos en [Totales y sucursales](TOTALES_Y_SUCURSALES.md). Las matrices siguientes sirven también como regresión; no dan por realizadas las validaciones físicas, expertas o de beta.
 
 ## Estrategia de verificación
@@ -83,9 +85,9 @@ Pruebas de reglas/servidor con `demo-sin-gluten`, sin credenciales de producció
 
 ## Seguridad y bloqueos de distribución
 
-SEG-01 sigue abierto: tres avisos de origen transitivo en herramientas de desarrollo (Zod, node-forge, OpenTelemetry), ocho entradas afectadas de app y cero en servidor en el informe registrado. Excepciones exactas temporales hasta **22-11-2026**; [Dependencias](DEPENDENCIAS.md) detalla exposición y versiones.
+SEG-01 sigue abierto: a 29-10-2026 quedan Zod, OpenTelemetry y el nuevo deepmerge en herramientas de desarrollo; 19 entradas afectadas de app y cero en servidor. node-forge 1.4.2 ya no aparece. deepmerge no tiene excepción y bloquea también `audit:security`. Las excepciones anteriores siguen exactas y vencen el **22-11-2026**; [Dependencias](DEPENDENCIAS.md) detalla exposición y versiones.
 
-`audit:security` permite esa excepción controlada; **`audit:release` sigue bloqueado** y debe pasar para publicación general. No ampliar excepciones para simular limpieza, ocultar avisos ni aplicar `audit fix --force`. Un aviso nuevo se evalúa por alcance y puede bloquear antes. Revisar seguridad antes de beta y de cada distribución.
+`audit:security` reconoce solo las excepciones anteriores, pero ahora falla por deepmerge; **`audit:release` sigue bloqueado** y debe pasar para publicación general. No ampliar excepciones para simular limpieza, ocultar avisos ni aplicar `audit fix --force`. Un aviso nuevo se evalúa por alcance y puede bloquear antes. Revisar seguridad antes de beta y de cada distribución.
 
 Clave histórica revocada, archivos de entorno excluidos y escaneo de archivos/historial con excepción exacta documentada. No registrar códigos de autorización, tokens ni valores de `.env` en evidencia. Sin secretos administrativos en variables públicas. [Credenciales](SEGURIDAD_CREDENCIALES.md).
 

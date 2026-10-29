@@ -6,7 +6,6 @@
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "scheme": "singluten",
-
     "userInterfaceStyle": "automatic",
     "ios": {
       "supportsTablet": true,
@@ -40,7 +39,10 @@
           "image": "./assets/images/splash.png",
           "imageWidth": 96,
           "backgroundColor": "#FCF8F0",
-          "dark": { "image": "./assets/images/splash.png", "backgroundColor": "#251E1A" }
+          "dark": {
+            "image": "./assets/images/splash.png",
+            "backgroundColor": "#251E1A"
+          }
         }
       ],
       [
@@ -50,7 +52,9 @@
           "microphonePermission": false,
           "recordAudioAndroid": false
         }
-      ]
+      ],
+      "expo-sharing",
+      "expo-web-browser"
     ],
     "experiments": {
       "typedRoutes": true

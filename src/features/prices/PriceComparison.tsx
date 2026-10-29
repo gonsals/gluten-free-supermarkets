@@ -4,6 +4,7 @@ import { compareQuotes, privateQuotes, quoteMoney } from '@/src/domain/compariso
 import type { PriceObservation } from '@/src/domain/price';
 import { Action, Card, Copy, Field, Heading, Notice } from '@/src/shared/ui';
 import { usePublicPrices } from './usePublicPrices';
+import { UnitPrice } from './UnitPrice';
 
 export function PriceComparison({
   barcode,
@@ -120,6 +121,7 @@ export function PriceComparison({
       {comparison.slice(0, limit).map((quote) => (
         <Card key={quote.id}>
           <Copy>{quoteMoney(quote.amountMilli)} por envase</Copy>
+          <UnitPrice quote={quote} />
           <Copy>
             {quote.store} · {quote.location}
           </Copy>

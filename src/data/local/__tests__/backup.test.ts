@@ -18,7 +18,7 @@ const price: PriceObservation = {
   offerEndsAt: '2020-01-02T00:00:00.000Z',
   notes: 'Observación antigua',
 };
-function fixture(): Omit<LibraryData, 'version' | 'revision' | 'basket' | 'branches'> & {
+function fixture(): Omit<LibraryData, 'version' | 'revision' | 'basket' | 'branches' | 'groups'> & {
   version: 1;
   format: string;
   backupVersion: number;
