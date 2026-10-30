@@ -1,8 +1,10 @@
 const { defineConfig } = require('eslint/config');
+const { fixupConfigRules } = require('@eslint/compat');
 const expo = require('eslint-config-expo/flat');
 
 module.exports = defineConfig([
-  expo,
+  // Keep Expo's plugin rules working with the APIs removed in ESLint 10.
+  ...fixupConfigRules(expo),
   {
     ignores: [
       'dist/**',
