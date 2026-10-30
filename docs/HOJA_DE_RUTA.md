@@ -1,6 +1,6 @@
 # Hoja de ruta · Comparar precios y planificar la compra
 
-Actualizada el **29-10-2026**. Este documento fija el orden de entrega vigente. El [backlog](PLAN_MEJORAS.md) contiene las tareas y sus criterios; [Producto](PRODUCTO.md) define el comportamiento esperado. El [plan anterior](historico/README.md) se conserva como histórico y deja de ordenar el trabajo.
+Actualizada el **30-10-2026**. Este documento fija el orden de entrega vigente. El [backlog](PLAN_MEJORAS.md) contiene las tareas y sus criterios; [Producto](PRODUCTO.md) define el comportamiento esperado. El [plan anterior](historico/README.md) se conserva como histórico y deja de ordenar el trabajo.
 
 ## Enfoque acordado
 
@@ -19,7 +19,7 @@ Base de código: **`638980a`**, iteración 8, rama `gonsals/mejoras`. [CI: cinco
 
 | Disponible | Límite actual |
 | --- | --- |
-| Comparador por GTIN y envase, fuentes públicas y privadas separadas, filtros de edad/ofertas/ubicación. | Cesta, totales por sucursal y alternativas explícitas disponibles; medir cobertura y utilidad en compras reales sigue pendiente. |
+| Comparador por GTIN y envase, fuentes públicas y privadas separadas, filtros de edad/ofertas/ubicación. | Cesta, totales por sucursal y alternativas explícitas disponibles; medición inicial entregada y sin cobertura suficiente en la muestra; utilidad en compras reales pendiente. |
 | Supermercado sugerido y editable al anotar un precio. | No acredita sucursal, stock ni precio nacional. |
 | Open Prices en lectura, sin cuenta ni clave; carga acotada. | Cobertura colaborativa sin garantía por zona; caché pública solo en memoria. |
 | Biblioteca local, favoritos, historial, precios privados, exportación y restauración. | Iteración 11: esquema/copia v4 con cesta, sucursales, vínculos y grupos; importación v1/v2/v3. Validación física pendiente. |
@@ -54,9 +54,9 @@ Calcular cantidades × precios elegibles y mostrar cobertura, fecha y condicione
 
 ### Línea paralela desde la fase 1 · Cobertura útil de precios
 
-**DAT-01**, P1. Medir con una muestra pequeña y declarada de productos, zona y fechas: observaciones utilizables, antigüedad, sucursales identificables y proporción de cestas completas. No confundir una petición correcta con cobertura suficiente en España.
+**DAT-01**, P1, medición inicial entregada en iteración 12. [Informe reproducible](COBERTURA_PRECIOS_PUBLICOS.md): diez GTIN, Madrid, 33 observaciones compatibles y ninguna elegible; ninguna cesta completa. La tarea de medir se cierra, no el objetivo de cobertura suficiente. Para ampliar la muestra, declarar de nuevo productos, zona y fechas: observaciones utilizables, antigüedad, sucursales identificables y proporción de cestas completas. No confundir una petición correcta con cobertura suficiente en España.
 
-**DAT-02/DAT-03**, P2 condicionadas al resultado: evaluar caché pública persistente y otras fuentes públicas si resuelven una carencia observada. La app mantiene las anotaciones privadas útiles cuando falla el proveedor. No barrer catálogos, subir bibliotecas ni montar un backend para llenar huecos.
+**DAT-02** sigue P2 condicionada: persistir la caché no soluciona los huecos medidos. **DAT-03** pasa a P1: investigar fuentes públicas que cubran una carencia observada y permitan el acceso/reutilización requeridos antes de proponer un piloto. La app mantiene las anotaciones privadas útiles cuando falla el proveedor. No barrer catálogos, subir bibliotecas ni montar un backend para llenar huecos.
 
 **Cierre:** informe reproducible de cobertura y decisión de continuar, acotar zona o incorporar una fuente. Si no hay datos suficientes, ajustar la promesa y facilitar anotaciones; no simular precios. Esta línea acompaña la cesta, no espera a una fase de nube.
 
@@ -120,4 +120,4 @@ Cada tarea del [backlog](PLAN_MEJORAS.md) tiene ID estable, prioridad, estado, d
 | 26-10-2026 | Investigar también fuentes públicas; Open Prices integrado con límites y separación de datos privados. |
 | 26-10-2026 | Nuevo orden: cesta segura → total por establecimiento → formatos/alternativas → validación → beta. Cobertura y seguridad acompañan todas las fases. |
 
-**Siguiente iteración: DAT-01**, medición reproducible de cobertura pública por zona, y preparación de CAL-01 con el recorrido integrado. UNI-01/ALT-01 entregadas técnicamente en iteración 11. Validación física, experta y de uso siguen pendientes. SEG-01 mantiene el bloqueo de publicación y ahora también el control de dependencias por deepmerge.
+**Siguiente iteración: DAT-03**, viabilidad y selección de otra fuente pública; CAL-01 puede avanzar con datos anotados. DAT-01 ya entrega la medición de Madrid, cuyo resultado no acredita cobertura suficiente. UNI-01/ALT-01 entregadas técnicamente en iteración 11. Validación física, experta y de uso siguen pendientes. SEG-01 mantiene el bloqueo de publicación y ahora también el control de dependencias por deepmerge.

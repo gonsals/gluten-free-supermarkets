@@ -79,3 +79,7 @@ El control también rechaza procesos fallidos o interrumpidos, respuestas trunca
 `npm run test:security` ejecuta **34 pruebas**, incluidas cinco de integración del CLI en carpetas temporales con informes simulados, sin consultar npm ni cambiar los archivos de la app. Forma parte de `npm run check` y, por tanto, del job de app en CI. La consulta real con `audit:security` pasa bajo las excepciones existentes; la consulta real con `audit:release` devuelve **1**, el bloqueo esperado. La [matriz de esta iteración](PRUEBAS_ITERACION_4.md) distingue comprobaciones correctas, bloqueos y pruebas físicas pendientes.
 
 Dependabot revisa semanalmente los paquetes de app/servidor y agrupa módulos que deben actualizarse juntos. Las acciones de GitHub se han actualizado a sus versiones actuales consultadas y fijado por SHA completo. Cada actualización necesita compatibilidad Expo, tipos, lint, tests, exportación y verificación nativa cuando cambie el runtime.
+
+## Revisión 30-10-2026 · Iteración 12
+
+Sin cambios de dependencias o lockfiles. La consulta real `audit:security` vuelve a devolver 1 por deepmerge no exceptuado: 19 entradas en app (13 bajas, 3 moderadas, 3 altas), cero en functions. No se amplían excepciones ni su vencimiento. El nuevo script de medición usa TypeScript ya instalado y no forma parte del código importado por las pantallas. Las comprobaciones de seguridad aumentan a 42 con pruebas del colector; pasarlas no equivale a resolver los avisos de terceros.

@@ -1,5 +1,7 @@
 # Formatos y alternativas · Iteración 11
 
+> Continuación, 30-10-2026: [DAT-01 medida en iteración 12](COBERTURA_PRECIOS_PUBLICOS.md), sin cobertura suficiente en la muestra de Madrid. La siguiente investigación es DAT-03. Este documento conserva la evidencia de la entrega de formatos.
+
 Contrato de **UNI-01 + ALT-01**, 29-10-2026. Se conserva Mesa y el funcionamiento local sin cuenta ni servicios de pago. Acceso: **Mi cesta → Formatos y alternativas**.
 
 ## Cantidades y precio

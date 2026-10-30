@@ -14,7 +14,7 @@ Esta decisión sustituye la prioridad de consulta de gluten de la especificació
 - Filtro adicional de productos guardados con declaración sin gluten. No certifica aptitud y no oculta la necesidad de revisar trazas, evidencia y envase.
 - Sugerencia editable de supermercado en el formulario de precios; sin llamadas adicionales para obtener una ficha que ya está guardada.
 
-La iteración 8 compara **un producto cada vez**. La iteración 9 añade [cesta local](CESTA_LOCAL.md), cantidades, copias y recuperación. La iteración 10 añade [totales por sucursal confirmada](TOTALES_Y_SUCURSALES.md). Alternativas con códigos distintos siguen pendientes.
+La iteración 8 compara **un producto cada vez**. La iteración 9 añade [cesta local](CESTA_LOCAL.md), cantidades, copias y recuperación. La iteración 10 añade [totales por sucursal confirmada](TOTALES_Y_SUCURSALES.md). Las alternativas explícitas con anotaciones privadas se entregan en la [iteración 11](FORMATOS_Y_ALTERNATIVAS.md).
 
 ## Supermercado sugerido
 
@@ -97,7 +97,7 @@ Continuación según la [hoja de ruta](HOJA_DE_RUTA.md):
 
 1. **CES-01/CES-02:** cesta persistente con cantidades, migración, copias y borrado; entregada técnicamente en [iteración 9](CESTA_LOCAL.md).
 2. **TIE-01/CES-03, entregadas en iteración 10:** identidad explícita y total con cobertura completa, [contrato y pruebas](TOTALES_Y_SUCURSALES.md). Incompletas con subtotal y faltantes; nunca precio cero para un producto sin dato.
-3. **UNI-01/ALT-01:** formatos/unidades y alternativas explícitas, incluida información sobre gluten, sin equiparar productos por nombre.
+3. **UNI-01/ALT-01, entregadas en iteración 11:** formatos/unidades y alternativas explícitas con anotaciones privadas, incluida información sobre gluten, sin equiparar productos por nombre.
 4. **CAL-01/CAL-02/GLU-01 y beta:** validación de compra, comprensión, accesibilidad, dispositivos y evidencia de gluten.
 
 **DAT-01**, medición de cobertura por producto/zona/antigüedad, acompaña la cesta desde el inicio; no espera al final. DAT-02/DAT-03, caché persistente y otras fuentes, se condicionan a esa medición y a contratos/permisos comprobados. No se promete integrar todas las cadenas ni realizar scraping masivo.
@@ -107,3 +107,9 @@ La revisión experta de la información sobre gluten y los avisos de dependencia
 ## Iteración 11 · Formatos y alternativas
 
 Implementación y límites en [Formatos y alternativas](FORMATOS_Y_ALTERNATIVAS.md): precio unitario, multipacks, grupos privados confirmados, necesidad/envases/sobrante, filtro de evidencia sin gluten y copias v4. El siguiente paso de datos es DAT-01. La actualización compatible Expo 58.0.21/RN 0.88.1 incluye revisión de seguridad; deepmerge mantiene bloqueado el control de dependencias, sin ampliar excepciones.
+
+## Iteración 12 · Medición pública DAT-01
+
+[Informe, muestra y decisión](COBERTURA_PRECIOS_PUBLICOS.md): diez GTIN fijados antes de consultar, 20 GET de precios a producción más uno de preproducción. 33 observaciones compatibles y cero elegibles para la muestra Madrid; sin cestas completas ni errores de proveedor. Plan, instantánea pública y resumen ODbL separados de la biblioteca y de la caché de la app. Reproducción offline con `npm run coverage:prices -- --replay`; nuevas consultas acotadas con `--collect`, sin subir anotaciones ni activar servicios.
+
+Comprobaciones: 220 pruebas de app, 42 de seguridad, tipos, lint y compatibilidad Expo. Las pruebas del colector simulan red, presupuesto, 429 y preproducción; no repiten la consulta pública. No se cambia el contrato v4. DAT-03 pasa a P1 para evaluar una fuente adecuada antes de integrarla; DAT-02 sigue condicionada. El control de dependencias sigue bloqueado por deepmerge, sin ampliar excepciones.

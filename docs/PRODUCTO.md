@@ -22,9 +22,9 @@ Funcionamiento local sin cuenta obligatoria ni costes de backend contratado. Ope
 | Cesta persistente con cantidades, copias y borrado | Implementado técnicamente en iteración 9, CES-01/CES-02. [Contrato y límites](CESTA_LOCAL.md). |
 | Totales por establecimiento y cobertura completa | TIE-01/CES-03 implementadas técnicamente en iteración 10. [Contrato y pruebas](TOTALES_Y_SUCURSALES.md). |
 | Equivalencia por formato/unidad y alternativas | UNI-01/ALT-01 implementadas técnicamente en iteración 11 con anotaciones privadas. [Contrato](FORMATOS_Y_ALTERNATIVAS.md). No se equiparan productos por nombre. |
-| Cobertura suficiente por zona y uso durante compras reales | DAT-01/CAL-01/BET-01, pendientes de medir. |
+| Cobertura suficiente por zona y uso durante compras reales | DAT-01 medida en iteración 12: muestra insuficiente (0/10 elegibles en Madrid). DAT-03, CAL-01 y BET-01 pendientes. [Evidencia](COBERTURA_PRECIOS_PUBLICOS.md). |
 
-El MVP objetivo del nuevo enfoque incluye cesta, totales comparables y cobertura explícita. La app ya compara la misma cesta por sucursal confirmada; la cobertura real de fuentes y la utilidad en compras siguen pendientes de medir. Las alternativas explícitas amplían el núcleo desde la iteración 11; el coste por envases y la información sobre gluten se revisan por separado. Mapas, publicación propia de precios, sincronización, alertas e IA quedan condicionados a demanda y viabilidad; no son requisitos para activar servicios.
+El MVP objetivo del nuevo enfoque incluye cesta, totales comparables y cobertura explícita. La app ya compara la misma cesta por sucursal confirmada; la medición inicial de cobertura no basta para comparar la muestra de Madrid y la utilidad en compras reales sigue pendiente de validar. Las alternativas explícitas amplían el núcleo desde la iteración 11; el coste por envases y la información sobre gluten se revisan por separado. Mapas, publicación propia de precios, sincronización, alertas e IA quedan condicionados a demanda y viabilidad; no son requisitos para activar servicios.
 
 ## Reglas de precio y de comparación
 

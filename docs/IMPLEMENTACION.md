@@ -91,3 +91,9 @@ La [hoja de ruta](HOJA_DE_RUTA.md) y el [backlog vigente](PLAN_MEJORAS.md) orden
 ## Iteración 11 · Formatos y alternativas
 
 Implementación y límites en [Formatos y alternativas](FORMATOS_Y_ALTERNATIVAS.md): precio unitario, multipacks, grupos privados confirmados, necesidad/envases/sobrante, filtro de evidencia sin gluten y copias v4. El siguiente paso de datos es DAT-01. La actualización compatible Expo 58.0.21/RN 0.88.1 incluye revisión de seguridad; deepmerge mantiene bloqueado el control de dependencias, sin ampliar excepciones.
+
+## Iteración 12 · Medición pública DAT-01
+
+[Informe, muestra y decisión](COBERTURA_PRECIOS_PUBLICOS.md): diez GTIN fijados antes de consultar, 20 GET de precios a producción más uno de preproducción. 33 observaciones compatibles y cero elegibles para la muestra Madrid; sin cestas completas ni errores de proveedor. Plan, instantánea pública y resumen ODbL separados de la biblioteca y de la caché de la app. Reproducción offline con `npm run coverage:prices -- --replay`; nuevas consultas acotadas con `--collect`, sin subir anotaciones ni activar servicios.
+
+Comprobaciones: 220 pruebas de app, 42 de seguridad, tipos, lint y compatibilidad Expo. Las pruebas del colector simulan red, presupuesto, 429 y preproducción; no repiten la consulta pública. No se cambia el contrato v4. DAT-03 pasa a P1 para evaluar una fuente adecuada antes de integrarla; DAT-02 sigue condicionada. El control de dependencias sigue bloqueado por deepmerge, sin ampliar excepciones.

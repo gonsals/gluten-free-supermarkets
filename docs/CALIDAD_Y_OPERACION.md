@@ -124,3 +124,9 @@ Antes de publicación general REL-02:
 - Distribución gradual y mecanismo para detenerla/corregirla; no reinstalar ni retroceder sin compatibilidad de datos comprobada.
 
 No contratar cuentas de tienda o backend por cerrar documentación. La APK actual tiene firma de desarrollo y no acredita publicación. Mantener nube desactivada en todos los perfiles, revisión semanal de dependencias y excepciones antes del 22-11-2026. Registrar responsable, versión, evidencia y límites de cada entrega; la app profesional exige ese mantenimiento además de nuevas funciones.
+
+## Iteración 12 · Medición pública DAT-01
+
+[Informe, muestra y decisión](COBERTURA_PRECIOS_PUBLICOS.md): diez GTIN fijados antes de consultar, 20 GET de precios a producción más uno de preproducción. 33 observaciones compatibles y cero elegibles para la muestra Madrid; sin cestas completas ni errores de proveedor. Plan, instantánea pública y resumen ODbL separados de la biblioteca y de la caché de la app. Reproducción offline con `npm run coverage:prices -- --replay`; nuevas consultas acotadas con `--collect`, sin subir anotaciones ni activar servicios.
+
+Comprobaciones: 220 pruebas de app, 42 de seguridad, tipos, lint y compatibilidad Expo. Las pruebas del colector simulan red, presupuesto, 429 y preproducción; no repiten la consulta pública. No se cambia el contrato v4. DAT-03 pasa a P1 para evaluar una fuente adecuada antes de integrarla; DAT-02 sigue condicionada. El control de dependencias sigue bloqueado por deepmerge, sin ampliar excepciones.

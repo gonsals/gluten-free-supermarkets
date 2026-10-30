@@ -1,0 +1,21 @@
+{
+  "schemaVersion": 1,
+  "id": "madrid-2026-10-30",
+  "zone": { "countryCode": "ES", "text": "Madrid", "label": "Comunidad de Madrid según texto de ubicación OSM; sin geocodificación" },
+  "selection": "Muestra de conveniencia fijada antes de consultar Open Prices: siete referencias de despensa y tres comercializadas como sin gluten. No es una muestra estadística ni acredita disponibilidad en Madrid.",
+  "limits": { "products": 10, "pagesPerProduct": 3, "pageSize": 50, "productionRequests": 40, "delayMs": 2000, "timeoutMs": 8000 },
+  "profiles": ["basket_page_1", "product_up_to_3_pages", "nearby_recent_page_1"],
+  "diagnostic": { "label": "Diagnóstico separado: radio de 25 km desde Puerta del Sol, Madrid", "lat": 40.4168, "lon": -3.7038, "radiusKm": 25, "recentDays": 7, "page": 1, "note": "Capacidad geográfica declarada en /api/schema; no está integrada en la app. El círculo no equivale a toda la Comunidad de Madrid." },
+  "basket": [
+    { "barcode": "8410128010096", "name": "Leche entera Pascual 1 l", "quantity": 1, "segment": "general", "identitySource": "https://www.elcorteingles.es/supermarket/B001020912100110-pascual-whole-uht-milk-carton-1-l/" },
+    { "barcode": "8410830001016", "name": "Arroz clásico SOS 1 kg", "quantity": 1, "segment": "general", "identitySource": "https://www.tutrebol.es/arroz-1-kg/309-arroz-clasico-sos-1-kg.html" },
+    { "barcode": "8076800195057", "name": "Spaghetti Barilla n.5 500 g", "quantity": 1, "segment": "general", "identitySource": "https://www.imaspa.com/prodotti/pasta/spaghetti-n-5/" },
+    { "barcode": "8410066000074", "name": "Tomate frito Orlando 350 g", "quantity": 1, "segment": "general", "identitySource": "https://tienda.supermercadocarolina.es/" },
+    { "barcode": "8410660101016", "name": "Aceite de oliva suave La Española 1 l", "quantity": 1, "segment": "general", "identitySource": "https://tienda.supermercadocarolina.es/" },
+    { "barcode": "8410505548624", "name": "Garbanzos cocidos ecológicos Luengo 570 g / escurrido 400 g", "quantity": 1, "segment": "general", "identitySource": "https://www.elcorteingles.es/supermercado/B001018007200092-luengo-garbanzos-cocidos-ecologicos-frasco-400-g-neto-escurrido/" },
+    { "barcode": "8410091055056", "name": "Café molido natural Marcilla intensidad 8 500 g", "quantity": 1, "segment": "general", "identitySource": "https://www.elcorteingles.es/supermercado/B001020603902428-marcilla-cafe-molido-natural-intensidad-8-paquete-500-g/" },
+    { "barcode": "8410069018540", "name": "Espaguetis Gallo comercializados sin gluten 450 g", "quantity": 1, "segment": "marketed_gluten_free", "identitySource": "https://www.hipercor.es/supermercado/B001018003501774-gallo-espaguetis-sin-gluten-envase-450-g/" },
+    { "barcode": "8056774002797", "name": "Penne rigate Farabella comercializados sin gluten 400 g", "quantity": 1, "segment": "marketed_gluten_free", "identitySource": "https://www.elcorteingles.es/supermercado/B001020745403244-farabella-plus-penne-rigate-de-arroz-integral-sin-gluten-bolsa-400-g/" },
+    { "barcode": "8480000291301", "name": "Harina de arroz Hacendado 500 g, referencia comercializada sin gluten", "quantity": 1, "segment": "marketed_gluten_free", "identitySource": "https://world.openfoodfacts.org/product/8480000291301" }
+  ]
+}
