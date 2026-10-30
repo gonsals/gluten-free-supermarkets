@@ -6,6 +6,6 @@
   "engines": { "node": "24" },
   "scripts": { "build": "tsc --noEmit && esbuild src/index.ts --bundle --platform=node --target=node24 --outfile=lib/index.cjs --packages=external" },
   "dependencies": { "firebase-admin": "^14.5.0", "firebase-functions": "^7.4.0" },
-  "devDependencies": { "typescript": "~6.0.3", "esbuild": "^0.28.2", "@types/node": "^26.6.5" },
+  "devDependencies": { "typescript": "~7.0.2", "esbuild": "^0.28.2", "@types/node": "^26.6.5" },
   "overrides": { "@grpc/grpc-js": "^1.14.6" }
 }
