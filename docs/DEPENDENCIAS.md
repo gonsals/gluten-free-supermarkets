@@ -83,3 +83,7 @@ Dependabot revisa semanalmente los paquetes de app/servidor y agrupa módulos qu
 ## Revisión 30-10-2026 · Iteración 12
 
 Sin cambios de dependencias o lockfiles. La consulta real `audit:security` vuelve a devolver 1 por deepmerge no exceptuado: 19 entradas en app (13 bajas, 3 moderadas, 3 altas), cero en functions. No se amplían excepciones ni su vencimiento. El nuevo script de medición usa TypeScript ya instalado y no forma parte del código importado por las pantallas. Las comprobaciones de seguridad aumentan a 42 con pruebas del colector; pasarlas no equivale a resolver los avisos de terceros.
+
+## Revisión 30-10-2026 · Iteración 13
+
+Investigación DAT-03 y corrección de una prueba web, sin cambios de paquetes o lockfiles ni ampliación de excepciones. `audit:security` consultado de nuevo: salida 1 por deepmerge no exceptuado, 19 entradas de app (13 bajas, 3 moderadas, 3 altas) y cero de functions. SEG-01 sigue abierto; no se considera corregido por cerrar la investigación de fuentes. No hay cambio de exposición del runtime por esta entrega.

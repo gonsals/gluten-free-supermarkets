@@ -84,7 +84,7 @@ La decisión vigente del propietario es una versión local sin costes de backend
 - Validar VoiceOver/TalkBack, tipografías ampliadas y comprensión de los resultados con personas usuarias y revisión experta del dominio.
 - Registrar identidad definitiva, firma, cuentas de tiendas, soporte, presupuesto y responsables operativos.
 - Medir latencia, estabilidad, coste y carga en una beta controlada. Los objetivos del documento de producto siguen siendo metas, no métricas ya conseguidas.
-- La cesta local ya está implementada (CES-01/CES-02). TIE-01/CES-03 están implementadas en iteración 10; la siguiente entrega es formatos/alternativas (UNI-01/ALT-01). Cobertura de fuentes públicas se mide en paralelo (DAT-01). Búsqueda global, mapas, alertas e integraciones oficiales requieren validar demanda y fuentes; no se simulan disponibilidad ni datos.
+- La cesta local ya está implementada (CES-01/CES-02). TIE-01/CES-03 están implementadas en iteración 10; formatos/alternativas (UNI-01/ALT-01) se entregaron en iteración 11. DAT-01 se midió en iteración 12 y DAT-03 se investigó en iteración 13, sin nueva integración aprobada. La siguiente entrega es la validación técnica integrada (CAL-01). Búsqueda global, mapas, alertas e integraciones oficiales requieren validar demanda y fuentes; no se simulan disponibilidad ni datos.
 
 La [hoja de ruta](HOJA_DE_RUTA.md) y el [backlog vigente](PLAN_MEJORAS.md) ordenan el comparador y su evolución a cesta. El [plan anterior](historico/README.md) queda archivado. CES-01/CES-02 tienen implementación técnica en la iteración 9; TIE-01/CES-03 se entregan técnicamente en iteración 10; la siguiente entrega es **UNI-01 + ALT-01**. Los puntos anteriores impiden dar por cerrada la publicación por tener código y pruebas locales.
 
@@ -97,3 +97,9 @@ Implementación y límites en [Formatos y alternativas](FORMATOS_Y_ALTERNATIVAS.
 [Informe, muestra y decisión](COBERTURA_PRECIOS_PUBLICOS.md): diez GTIN fijados antes de consultar, 20 GET de precios a producción más uno de preproducción. 33 observaciones compatibles y cero elegibles para la muestra Madrid; sin cestas completas ni errores de proveedor. Plan, instantánea pública y resumen ODbL separados de la biblioteca y de la caché de la app. Reproducción offline con `npm run coverage:prices -- --replay`; nuevas consultas acotadas con `--collect`, sin subir anotaciones ni activar servicios.
 
 Comprobaciones: 220 pruebas de app, 42 de seguridad, tipos, lint y compatibilidad Expo. Las pruebas del colector simulan red, presupuesto, 429 y preproducción; no repiten la consulta pública. No se cambia el contrato v4. DAT-03 pasa a P1 para evaluar una fuente adecuada antes de integrarla; DAT-02 sigue condicionada. El control de dependencias sigue bloqueado por deepmerge, sin ampliar excepciones.
+
+## Iteración 13 · Viabilidad de otras fuentes
+
+[DAT-03 investigada](FUENTES_PUBLICAS.md): Carrefour, FACUA y el conjunto MAPA de origen/mayorista. La evidencia no permite aprobar otro proveedor; permisos/contrato no acreditados o ámbito incompatible. No se descargan catálogos, incorporan precios ni crean adaptadores internos sin contrato. Integración condicionada; siguiente entrega CAL-01 técnica con anotaciones sintéticas declaradas. No acredita compra física, accesibilidad nativa ni revisión experta.
+
+Entrega de documentación y corrección del selector ambiguo de avisos en la prueba web de alternativas, sin cambios de runtime, dependencias, almacenamiento v4 o nube. Se validan enlaces, tareas, históricos y secretos; se repiten tipos, lint, compatibilidad Expo, 220 pruebas de app, 42 de seguridad y 42 recorridos web. La auditoría actual mantiene el bloqueo por deepmerge, sin ampliar excepciones.

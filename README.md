@@ -2,9 +2,9 @@
 
 App de compra en **Expo 58, React 19 y React Native 0.88**, enfocada en comparar precios por producto y tienda con aportaciones públicas de Open Prices y anotaciones privadas. Conserva información sobre gluten como función adicional, escaneo y biblioteca sin conexión.
 
-**Prioridad elegida el 26-10-2026: comprar de forma más económica.** La comparación actual es por código y envase; la cesta local ya guarda cantidades. Los totales por establecimiento y los grupos explícitos de formatos/alternativas ya están disponibles. La medición inicial de Madrid no da cobertura suficiente; el siguiente paso es investigar otra fuente de precios. [Alcance y fuentes](docs/COMPARADOR_DE_PRECIOS.md).
+**Prioridad elegida el 26-10-2026: comprar de forma más económica.** La comparación actual es por código y envase; la cesta local ya guarda cantidades. Los totales por establecimiento y los grupos explícitos de formatos/alternativas ya están disponibles. La medición inicial de Madrid no da cobertura suficiente; la revisión de tres fuentes no permite aprobar otra integración. El siguiente paso es validar el recorrido completo con anotaciones de prueba declaradas. [Alcance y fuentes](docs/COMPARADOR_DE_PRECIOS.md).
 
-**Estado: comparador, cesta y alternativas implementados técnicamente.** Mi cesta guarda productos y cantidades; Comparar total por tienda separa cestas completas y subtotales por sucursal confirmada. Mi cesta → Formatos y alternativas permite confirmar sustitutos, comparar desembolso y sobrante. Copias v4 conservan grupos, identificaciones y vínculos. DAT-01 medida: 0/10 productos con precio elegible en la muestra de Madrid. Siguiente: DAT-03, viabilidad de otra fuente, y validación integrada. [Orden y criterios vigentes](docs/HOJA_DE_RUTA.md). No se ha publicado en tiendas. Firebase permanece como ampliación opcional desactivada, fuera del núcleo; [estado remoto](docs/FIREBASE_REAL.md).
+**Estado: comparador, cesta y alternativas implementados técnicamente.** Mi cesta guarda productos y cantidades; Comparar total por tienda separa cestas completas y subtotales por sucursal confirmada. Mi cesta → Formatos y alternativas permite confirmar sustitutos, comparar desembolso y sobrante. Copias v4 conservan grupos, identificaciones y vínculos. DAT-01 medida: 0/10 productos con precio elegible en la muestra de Madrid. DAT-03 investigada: integración adicional condicionada a una fuente adecuada. Siguiente: CAL-01, validación técnica integrada. [Orden y criterios vigentes](docs/HOJA_DE_RUTA.md). No se ha publicado en tiendas. Firebase permanece como ampliación opcional desactivada, fuera del núcleo; [estado remoto](docs/FIREBASE_REAL.md).
 
 ## Funcionalidades
 
@@ -76,6 +76,7 @@ La [hoja de ruta vigente](docs/HOJA_DE_RUTA.md) organiza los siguientes pasos y 
 
 | Documento | Uso |
 | --- | --- |
+| [Viabilidad de fuentes públicas](docs/FUENTES_PUBLICAS.md) | Iteración 13: Carrefour, FACUA y MAPA; decisión, límites y requisitos de un posible piloto. |
 | [Hoja de ruta vigente](docs/HOJA_DE_RUTA.md) | Cesta → totales por establecimiento → formatos/alternativas → validación → beta; cobertura y seguridad en paralelo. |
 | [Revisión de branding](docs/BRANDING.md) | Brief, tres direcciones de diseño y comparativa visual navegable en claro/oscuro. |
 | [Branding Mesa](docs/BRANDING_MESA.md) | Dirección elegida, sistema visual aplicado, recursos regenerables y comprobaciones de la app real. |

@@ -1,5 +1,7 @@
 # Cobertura pública · Medición DAT-01
 
+> Seguimiento: [DAT-03, iteración 13](FUENTES_PUBLICAS.md), investigación de tres fuentes sin nueva integración aprobada. Este informe conserva la medición DAT-01 y su decisión original.
+
 **Resultado: la muestra consultada no permite comparar una compra en Madrid con precios públicos recientes.** Se cierra la medición DAT-01 de la iteración 12; no se considera alcanzada cobertura suficiente para una beta que prometa comparación automática de la compra.
 
 Consulta: **30-10-2026, 00:10:01–00:10:42 CET**; la instantánea conserva los tiempos precisos en UTC, desde `2026-10-29T23:10:01.931Z`. Responsable técnico: Codex, sobre el cliente y motor de la base `86d133b`. [Plan, datos y atribución](datos/README.md), publicados para reproducir el análisis.

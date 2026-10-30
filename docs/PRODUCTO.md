@@ -1,6 +1,6 @@
 # Producto · Comparar precios para decidir la compra
 
-Especificación vigente del **26-10-2026**. Sustituye el enfoque inicial centrado en consulta de gluten. [Hoja de ruta](HOJA_DE_RUTA.md) para orden de entrega; [backlog](PLAN_MEJORAS.md) para estados; [comparador actual](COMPARADOR_DE_PRECIOS.md) para el contrato implementado.
+Especificación actualizada el **30-10-2026**. Sustituye el enfoque inicial centrado en consulta de gluten. [Hoja de ruta](HOJA_DE_RUTA.md) para orden de entrega; [backlog](PLAN_MEJORAS.md) para estados; [comparador actual](COMPARADOR_DE_PRECIOS.md) para el contrato implementado.
 
 ## Propuesta y público inicial
 
@@ -12,7 +12,7 @@ Funcionamiento local sin cuenta obligatoria ni costes de backend contratado. Ope
 
 ## Alcance real y siguiente objetivo
 
-| Capacidad | Estado al 26-10-2026 |
+| Capacidad | Estado al 30-10-2026 |
 | --- | --- |
 | Comparar mismo GTIN/envase con fuentes, fechas, tienda y filtros | Implementado, iteración 8. |
 | Proponer supermercado desde datos explícitos o asociaciones acotadas de marca | Implementado; editable y sin deducir sucursal o disponibilidad. |
@@ -22,7 +22,7 @@ Funcionamiento local sin cuenta obligatoria ni costes de backend contratado. Ope
 | Cesta persistente con cantidades, copias y borrado | Implementado técnicamente en iteración 9, CES-01/CES-02. [Contrato y límites](CESTA_LOCAL.md). |
 | Totales por establecimiento y cobertura completa | TIE-01/CES-03 implementadas técnicamente en iteración 10. [Contrato y pruebas](TOTALES_Y_SUCURSALES.md). |
 | Equivalencia por formato/unidad y alternativas | UNI-01/ALT-01 implementadas técnicamente en iteración 11 con anotaciones privadas. [Contrato](FORMATOS_Y_ALTERNATIVAS.md). No se equiparan productos por nombre. |
-| Cobertura suficiente por zona y uso durante compras reales | DAT-01 medida en iteración 12: muestra insuficiente (0/10 elegibles en Madrid). DAT-03, CAL-01 y BET-01 pendientes. [Evidencia](COBERTURA_PRECIOS_PUBLICOS.md). |
+| Cobertura suficiente por zona y uso durante compras reales | DAT-01 medida en iteración 12: muestra insuficiente (0/10 elegibles en Madrid). DAT-03 investigada, sin otra fuente aprobada; CAL-01 y BET-01 pendientes. [Viabilidad](FUENTES_PUBLICAS.md). [Evidencia](COBERTURA_PRECIOS_PUBLICOS.md). |
 
 El MVP objetivo del nuevo enfoque incluye cesta, totales comparables y cobertura explícita. La app ya compara la misma cesta por sucursal confirmada; la medición inicial de cobertura no basta para comparar la muestra de Madrid y la utilidad en compras reales sigue pendiente de validar. Las alternativas explícitas amplían el núcleo desde la iteración 11; el coste por envases y la información sobre gluten se revisan por separado. Mapas, publicación propia de precios, sincronización, alertas e IA quedan condicionados a demanda y viabilidad; no son requisitos para activar servicios.
 

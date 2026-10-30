@@ -155,15 +155,21 @@ test('el filtro sin gluten expone trazas y fuente; excluye contradicciones sin c
   page,
 }) => {
   await seed(page, { group: true, gluten: true });
-  await expect(page.getByText(/Fuera del filtro: falta una declaración/)).toBeVisible();
+  await expect(page.getByText('Datos contradictorios', { exact: true })).toBeVisible();
+  await expect(
+    page.getByRole('button', { name: `Elegir ${code} en Sucursal A`, exact: true }),
+  ).toBeEnabled();
+  const exclusions = page.getByText(/Fuera del filtro: falta una declaración/);
+  await expect(exclusions).toHaveCount(1);
+  await expect(exclusions).toBeVisible();
   await expect(page.getByText(/Trazas declaradas: en:milk/).first()).toBeVisible();
   await expect(page.getByText(/Fuente: Open Food Facts.*consultada/).first()).toBeVisible();
   await expect(
     page.getByRole('button', { name: `Elegir ${other} en Sucursal B`, exact: true }),
   ).toHaveCount(0);
   await expect(
-    page.getByRole('button', { name: `Elegir ${code} en Sucursal A`, exact: true }),
-  ).toBeEnabled();
+    page.getByRole('button', { name: `Elegir ${other} en Sucursal A`, exact: true }),
+  ).toHaveCount(0);
 });
 test('un formato contradictorio queda excluido y editar/eliminar grupo no cambia la cesta', async ({
   page,

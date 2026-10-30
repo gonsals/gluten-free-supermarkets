@@ -56,7 +56,7 @@ Calcular cantidades × precios elegibles y mostrar cobertura, fecha y condicione
 
 **DAT-01**, P1, medición inicial entregada en iteración 12. [Informe reproducible](COBERTURA_PRECIOS_PUBLICOS.md): diez GTIN, Madrid, 33 observaciones compatibles y ninguna elegible; ninguna cesta completa. La tarea de medir se cierra, no el objetivo de cobertura suficiente. Para ampliar la muestra, declarar de nuevo productos, zona y fechas: observaciones utilizables, antigüedad, sucursales identificables y proporción de cestas completas. No confundir una petición correcta con cobertura suficiente en España.
 
-**DAT-02** sigue P2 condicionada: persistir la caché no soluciona los huecos medidos. **DAT-03** pasa a P1: investigar fuentes públicas que cubran una carencia observada y permitan el acceso/reutilización requeridos antes de proponer un piloto. La app mantiene las anotaciones privadas útiles cuando falla el proveedor. No barrer catálogos, subir bibliotecas ni montar un backend para llenar huecos.
+**DAT-02** sigue P2 condicionada: persistir la caché no soluciona los huecos medidos. **DAT-03**, investigación de iteración 13 entregada: [tres candidatos revisados](FUENTES_PUBLICAS.md), sin fuente nueva aprobada. La integración sigue condicionada a acceso/reutilización y datos adecuados; no hay piloto iniciado. La app mantiene las anotaciones privadas útiles cuando falla el proveedor. No barrer catálogos, subir bibliotecas ni montar un backend para llenar huecos.
 
 **Cierre:** informe reproducible de cobertura y decisión de continuar, acotar zona o incorporar una fuente. Si no hay datos suficientes, ajustar la promesa y facilitar anotaciones; no simular precios. Esta línea acompaña la cesta, no espera a una fase de nube.
 
@@ -118,6 +118,7 @@ Cada tarea del [backlog](PLAN_MEJORAS.md) tiene ID estable, prioridad, estado, d
 | 25-10-2026 | B · Mesa elegida y aplicada; sustituye el desacuerdo con la identidad inicial. |
 | 26-10-2026 | Precio y compra económica como núcleo, gluten complementario y supermercado sugerido editable. |
 | 26-10-2026 | Investigar también fuentes públicas; Open Prices integrado con límites y separación de datos privados. |
+| 30-10-2026 | DAT-03 revisa Carrefour, FACUA y MAPA sin aprobar un nuevo proveedor; continuar con CAL-01 técnica y mantener la integración condicionada. |
 | 26-10-2026 | Nuevo orden: cesta segura → total por establecimiento → formatos/alternativas → validación → beta. Cobertura y seguridad acompañan todas las fases. |
 
-**Siguiente iteración: DAT-03**, viabilidad y selección de otra fuente pública; CAL-01 puede avanzar con datos anotados. DAT-01 ya entrega la medición de Madrid, cuyo resultado no acredita cobertura suficiente. UNI-01/ALT-01 entregadas técnicamente en iteración 11. Validación física, experta y de uso siguen pendientes. SEG-01 mantiene el bloqueo de publicación y ahora también el control de dependencias por deepmerge.
+**Siguiente iteración: CAL-01**, validación técnica del recorrido integrado con anotaciones sintéticas declaradas y resultados calculados independientemente. DAT-03 entrega la investigación de tres fuentes; no se aprueba otra integración. Compra física y sesiones reales siguen pendientes. DAT-01 ya entrega la medición de Madrid, cuyo resultado no acredita cobertura suficiente. UNI-01/ALT-01 entregadas técnicamente en iteración 11. Validación física, experta y de uso siguen pendientes. SEG-01 mantiene el bloqueo de publicación y ahora también el control de dependencias por deepmerge.
