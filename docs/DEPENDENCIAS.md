@@ -1,5 +1,14 @@
 # Dependencias y seguridad
 
+## Revisión de PR del 30 de octubre de 2026
+
+- Se aplican los parches recomendados de Expo 58.0.21, módulos del SDK, React Native 0.88.1 y el preset de Jest 0.88.1, sin cambiar de SDK.
+- La comprobación de tipos de la app usa TypeScript 7.0.2 mediante el alias `@typescript/native` y una ruta explícita al compilador. `typescript` permanece en 6.0.3 para la API que consumen ESLint y otras herramientas. La ruta explícita evita depender de cuál de los dos paquetes instale el enlace `tsc`. El analizador de importaciones de ESLint se declara directamente para que no dependa del hoisting de npm.
+- Las PR [#4](https://github.com/gonsals/gluten-free-supermarkets/pull/4), [#6](https://github.com/gonsals/gluten-free-supermarkets/pull/6) y [#7](https://github.com/gonsals/gluten-free-supermarkets/pull/7) permanecen pendientes por decisión del propietario: React 19.3.1/gesture-handler 3.4, Babel 8 y AsyncStorage 3 quedan fuera del conjunto admitido por el SDK. Sus descripciones recogen el bloqueo y los requisitos para retomarlas.
+- El aviso de `deepmerge` [GHSA-gcqx-w48m-w2h4](https://github.com/advisories/GHSA-gcqx-w48m-w2h4), actualizado el 27 de octubre, afecta a la última versión publicada, 4.3.1, y no tiene parche publicado. Las copias inspeccionadas proceden de `@expo/config` y `jest-config`, para configuración del repositorio. Se añade una excepción temporal y concreta de severidad baja hasta el 22 de noviembre; las herramientas solo deben ejecutarse con configuración de confianza. El control de release continúa siendo estricto. Esto es una revisión de exposición, no una corrección de la dependencia.
+
+Los apartados siguientes conservan la fotografía de la migración del 24 de octubre; las versiones resueltas y los recuentos actuales se consultan en los lockfiles y en la salida de `npm run audit:security`.
+
 Verificación: **2026-10-24**. Se ha reemplazado el conjunto de dependencias de 2024 por versiones compatibles con Expo SDK 58 y se han regenerado los lockfiles de app y servidor sin `--force` ni `--legacy-peer-deps`.
 
 ## Versiones principales
