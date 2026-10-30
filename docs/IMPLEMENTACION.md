@@ -1,6 +1,6 @@
 # Implementación y verificación
 
-Fecha: **2026-10-26**. Este documento refleja el trabajo posterior a la auditoría del commit `3044a18`. El propietario centra ahora el producto en comparación de precios, manteniendo gluten como función adicional. El MVP conserva arquitectura por responsabilidades, dependencias actualizadas y pruebas. No equivale todavía a una publicación validada en tiendas.
+Actualización: **2026-10-30**. Este documento refleja el trabajo posterior a la auditoría del commit `3044a18`. El propietario centra ahora el producto en comparación de precios, manteniendo gluten como función adicional. El MVP conserva arquitectura por responsabilidades, dependencias actualizadas y pruebas. No equivale todavía a una publicación validada en tiendas.
 
 ## Cambios aplicados
 
@@ -84,7 +84,7 @@ La decisión vigente del propietario es una versión local sin costes de backend
 - Validar VoiceOver/TalkBack, tipografías ampliadas y comprensión de los resultados con personas usuarias y revisión experta del dominio.
 - Registrar identidad definitiva, firma, cuentas de tiendas, soporte, presupuesto y responsables operativos.
 - Medir latencia, estabilidad, coste y carga en una beta controlada. Los objetivos del documento de producto siguen siendo metas, no métricas ya conseguidas.
-- La cesta local ya está implementada (CES-01/CES-02). TIE-01/CES-03 están implementadas en iteración 10; formatos/alternativas (UNI-01/ALT-01) se entregaron en iteración 11. DAT-01 se midió en iteración 12 y DAT-03 se investigó en iteración 13, sin nueva integración aprobada. La siguiente entrega es la validación técnica integrada (CAL-01). Búsqueda global, mapas, alertas e integraciones oficiales requieren validar demanda y fuentes; no se simulan disponibilidad ni datos.
+- La cesta local ya está implementada (CES-01/CES-02). TIE-01/CES-03 están implementadas en iteración 10; formatos/alternativas (UNI-01/ALT-01) se entregaron en iteración 11. DAT-01 se midió en iteración 12 y DAT-03 se investigó en iteración 13, sin nueva integración aprobada. CAL-01 técnica se verifica en iteración 14; sigue la verificación Android emulada y preparación física (CAL-02). Búsqueda global, mapas, alertas e integraciones oficiales requieren validar demanda y fuentes; no se simulan disponibilidad ni datos.
 
 La [hoja de ruta](HOJA_DE_RUTA.md) y el [backlog vigente](PLAN_MEJORAS.md) ordenan el comparador y su evolución a cesta. El [plan anterior](historico/README.md) queda archivado. CES-01/CES-02 tienen implementación técnica en la iteración 9; TIE-01/CES-03 se entregan técnicamente en iteración 10; la siguiente entrega es **UNI-01 + ALT-01**. Los puntos anteriores impiden dar por cerrada la publicación por tener código y pruebas locales.
 
@@ -103,3 +103,9 @@ Comprobaciones: 220 pruebas de app, 42 de seguridad, tipos, lint y compatibilida
 [DAT-03 investigada](FUENTES_PUBLICAS.md): Carrefour, FACUA y el conjunto MAPA de origen/mayorista. La evidencia no permite aprobar otro proveedor; permisos/contrato no acreditados o ámbito incompatible. No se descargan catálogos, incorporan precios ni crean adaptadores internos sin contrato. Integración condicionada; siguiente entrega CAL-01 técnica con anotaciones sintéticas declaradas. No acredita compra física, accesibilidad nativa ni revisión experta.
 
 Entrega de documentación y corrección del selector ambiguo de avisos en la prueba web de alternativas, sin cambios de runtime, dependencias, almacenamiento v4 o nube. Se validan enlaces, tareas, históricos y secretos; se repiten tipos, lint, compatibilidad Expo, 220 pruebas de app, 42 de seguridad y 42 recorridos web. La auditoría actual mantiene el bloqueo por deepmerge, sin ampliar excepciones.
+
+## Iteración 14 · Recorrido de compra integrado
+
+[CAL-01 técnica verificada](VALIDACION_COMPRA.md): consulta y anotación por UI, sucursales confirmadas, totales completos/parciales, sustitución con cantidades y recuperación de copia v4 offline. Oráculo de importes independiente, discrepancia público/privado, milésimas, ofertas, país y 429. Cuatro pruebas web nuevas. «Editar mi cesta» navega expresamente a la cesta desde un acceso directo; no depende de volver en el historial. No cambia el esquema ni el runtime nativo. Compra real, validación física, beta y revisión experta siguen pendientes; próxima entrega CAL-02 emulada y preparación física.
+
+Comprobaciones finales de iteración 14: **220 pruebas de app, 42 de seguridad y 46 recorridos web**, tipos, lint y compatibilidad Expo correctos; secretos sin hallazgos nuevos no aceptados. La auditoría de dependencias sigue fallando por deepmerge; no se presenta como una publicación aprobada.

@@ -1,6 +1,6 @@
 # Calidad y operación · Comparador de compra
 
-Actualizado el **26-10-2026**. Criterios para el enfoque de [Producto](PRODUCTO.md) y las fases de la [hoja de ruta](HOJA_DE_RUTA.md). Los fallos del prototipo inicial se conservan en el [documento histórico](historico/CALIDAD_Y_OPERACION_ANTES_DEL_COMPARADOR.md); no describen el estado actual.
+Actualizado el **30-10-2026**. Criterios para el enfoque de [Producto](PRODUCTO.md) y las fases de la [hoja de ruta](HOJA_DE_RUTA.md). Los fallos del prototipo inicial se conservan en el [documento histórico](historico/CALIDAD_Y_OPERACION_ANTES_DEL_COMPARADOR.md); no describen el estado actual.
 
 ## Evidencia disponible y límites
 
@@ -136,3 +136,9 @@ Comprobaciones: 220 pruebas de app, 42 de seguridad, tipos, lint y compatibilida
 [DAT-03 investigada](FUENTES_PUBLICAS.md): Carrefour, FACUA y el conjunto MAPA de origen/mayorista. La evidencia no permite aprobar otro proveedor; permisos/contrato no acreditados o ámbito incompatible. No se descargan catálogos, incorporan precios ni crean adaptadores internos sin contrato. Integración condicionada; siguiente entrega CAL-01 técnica con anotaciones sintéticas declaradas. No acredita compra física, accesibilidad nativa ni revisión experta.
 
 Entrega de documentación y corrección del selector ambiguo de avisos en la prueba web de alternativas, sin cambios de runtime, dependencias, almacenamiento v4 o nube. Se validan enlaces, tareas, históricos y secretos; se repiten tipos, lint, compatibilidad Expo, 220 pruebas de app, 42 de seguridad y 42 recorridos web. La auditoría actual mantiene el bloqueo por deepmerge, sin ampliar excepciones.
+
+## Iteración 14 · Recorrido de compra integrado
+
+[CAL-01 técnica verificada](VALIDACION_COMPRA.md): consulta y anotación por UI, sucursales confirmadas, totales completos/parciales, sustitución con cantidades y recuperación de copia v4 offline. Oráculo de importes independiente, discrepancia público/privado, milésimas, ofertas, país y 429. Cuatro pruebas web nuevas. «Editar mi cesta» navega expresamente a la cesta desde un acceso directo; no depende de volver en el historial. No cambia el esquema ni el runtime nativo. Compra real, validación física, beta y revisión experta siguen pendientes; próxima entrega CAL-02 emulada y preparación física.
+
+Comprobaciones finales de iteración 14: **220 pruebas de app, 42 de seguridad y 46 recorridos web**, tipos, lint y compatibilidad Expo correctos; secretos sin hallazgos nuevos no aceptados. La auditoría de dependencias sigue fallando por deepmerge; no se presenta como una publicación aprobada.

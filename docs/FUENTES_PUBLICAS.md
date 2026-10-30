@@ -1,5 +1,7 @@
 # Viabilidad de fuentes públicas · DAT-03
 
+> Seguimiento: [CAL-01 técnica, iteración 14](VALIDACION_COMPRA.md), con muestra sintética. Este informe conserva la investigación DAT-03 y su decisión original.
+
 **Iteración 13, 30-10-2026: investigación terminada, sin fuente nueva aprobada para integración.** Responsable técnico: Codex; base de app `057bf6d`. Se revisan tres alternativas al resultado de [DAT-01](COBERTURA_PRECIOS_PUBLICOS.md), que no cubrió la cesta de diez GTIN en Madrid. La investigación no demuestra que no exista otra fuente válida en España.
 
 La entrega es una decisión de alcance y un contrato para un posible piloto. No añade un proveedor a la app. DAT-03 queda con investigación verificada e integración condicionada a una fuente adecuada; el siguiente trabajo ejecutable es **CAL-01**, validación técnica del recorrido integrado con anotaciones de prueba declaradas. La compra física y la revisión experta conservan su estado pendiente.

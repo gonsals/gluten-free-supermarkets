@@ -87,3 +87,7 @@ Sin cambios de dependencias o lockfiles. La consulta real `audit:security` vuelv
 ## Revisión 30-10-2026 · Iteración 13
 
 Investigación DAT-03 y corrección de una prueba web, sin cambios de paquetes o lockfiles ni ampliación de excepciones. `audit:security` consultado de nuevo: salida 1 por deepmerge no exceptuado, 19 entradas de app (13 bajas, 3 moderadas, 3 altas) y cero de functions. SEG-01 sigue abierto; no se considera corregido por cerrar la investigación de fuentes. No hay cambio de exposición del runtime por esta entrega.
+
+## Revisión 30-10-2026 · Iteración 14
+
+Sin cambios de paquetes o lockfiles. La consulta real de `audit:security` devuelve 1 por deepmerge no exceptuado: 19 entradas de app (13 bajas, 3 moderadas, 3 altas), cero de functions. No se amplían excepciones ni su vencimiento. La entrega modifica navegación y añade aceptación web; no cambia la exposición nativa o habilita servicios. SEG-01 conserva su bloqueo.

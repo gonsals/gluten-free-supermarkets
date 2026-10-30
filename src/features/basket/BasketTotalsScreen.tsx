@@ -187,7 +187,7 @@ function BasketTotals() {
         Estimaciones por sucursal confirmada, con cantidades y precios observados. Solo comparamos
         totales con todos los productos cubiertos; no garantizan stock ni precio de caja.
       </Copy>
-      <Action title="Editar mi cesta" secondary onPress={() => router.back()} />
+      <Action title="Editar mi cesta" secondary onPress={() => router.navigate('/basket')} />
       {error ? (
         <>
           <Notice error>{error}</Notice>

@@ -106,3 +106,7 @@ Comprobaciones: 220 pruebas de app, 42 de seguridad, tipos, lint y compatibilida
 [DAT-03 investigada](FUENTES_PUBLICAS.md): Carrefour, FACUA y el conjunto MAPA de origen/mayorista. La evidencia no permite aprobar otro proveedor; permisos/contrato no acreditados o ámbito incompatible. No se descargan catálogos, incorporan precios ni crean adaptadores internos sin contrato. Integración condicionada; siguiente entrega CAL-01 técnica con anotaciones sintéticas declaradas. No acredita compra física, accesibilidad nativa ni revisión experta.
 
 Entrega de documentación y corrección del selector ambiguo de avisos en la prueba web de alternativas, sin cambios de runtime, dependencias, almacenamiento v4 o nube. Se validan enlaces, tareas, históricos y secretos; se repiten tipos, lint, compatibilidad Expo, 220 pruebas de app, 42 de seguridad y 42 recorridos web. La auditoría actual mantiene el bloqueo por deepmerge, sin ampliar excepciones.
+
+## Iteración 14 · Aceptación entre funcionalidades
+
+La [validación integrada CAL-01](VALIDACION_COMPRA.md) recorre UI, IndexedDB, cálculo y copia/restauración sin inyectar directamente el almacenamiento. Las fixtures y los importes esperados no importan calculadores ni normalizadores de app. Solo se corrige navegación explícita desde totales a cesta; almacenamiento/copia v4, proveedores y modelo monetario permanecen iguales. Las pruebas web usan respuestas HTTP controladas y el shell offline real; no acreditan Android físico.

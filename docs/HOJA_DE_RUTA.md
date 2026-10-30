@@ -70,7 +70,7 @@ Definir grupos de alternativas explícitos, revisables por la persona; nombres s
 
 ### Fase 4 · Validar el comparador en una compra real
 
-**CAL-01, CAL-02 y GLU-01**, P1. Las pruebas se añaden durante cada fase; aquí se cierra el recorrido integrado y la matriz física. Contrastar cesta, tickets o precios observados, faltantes, filtros y utilidad con muestra y versión registradas. No atribuir diferencias a ahorro real si no se ha hecho una compra equivalente.
+**CAL-01, CAL-02 y GLU-01**, P1. CAL-01 técnica está verificada en iteración 14 con [muestra sintética y recuperación integrada](VALIDACION_COMPRA.md); la compra real sigue pendiente. Las pruebas se añaden durante cada fase; aquí se cierra el recorrido integrado y la matriz física. Contrastar cesta, tickets o precios observados, faltantes, filtros y utilidad con muestra y versión registradas. No atribuir diferencias a ahorro real si no se ha hecho una compra equivalente.
 
 Probar Android físico, cámara, permisos, red lenta/sin red, accesibilidad con TalkBack, fuente ampliada, restauración y actualización. iOS exige compilación y dispositivo con VoiceOver antes de declararlo soportado. La revisión experta sobre gluten y las sesiones de comprensión siguen pendientes.
 
@@ -118,7 +118,8 @@ Cada tarea del [backlog](PLAN_MEJORAS.md) tiene ID estable, prioridad, estado, d
 | 25-10-2026 | B · Mesa elegida y aplicada; sustituye el desacuerdo con la identidad inicial. |
 | 26-10-2026 | Precio y compra económica como núcleo, gluten complementario y supermercado sugerido editable. |
 | 26-10-2026 | Investigar también fuentes públicas; Open Prices integrado con límites y separación de datos privados. |
+| 30-10-2026 | CAL-01 técnica verificada con muestra sintética; corregir acceso a editar cesta desde enlace directo y continuar CAL-02 emulada/preparación física. |
 | 30-10-2026 | DAT-03 revisa Carrefour, FACUA y MAPA sin aprobar un nuevo proveedor; continuar con CAL-01 técnica y mantener la integración condicionada. |
 | 26-10-2026 | Nuevo orden: cesta segura → total por establecimiento → formatos/alternativas → validación → beta. Cobertura y seguridad acompañan todas las fases. |
 
-**Siguiente iteración: CAL-01**, validación técnica del recorrido integrado con anotaciones sintéticas declaradas y resultados calculados independientemente. DAT-03 entrega la investigación de tres fuentes; no se aprueba otra integración. Compra física y sesiones reales siguen pendientes. DAT-01 ya entrega la medición de Madrid, cuyo resultado no acredita cobertura suficiente. UNI-01/ALT-01 entregadas técnicamente en iteración 11. Validación física, experta y de uso siguen pendientes. SEG-01 mantiene el bloqueo de publicación y ahora también el control de dependencias por deepmerge.
+**Siguiente iteración: CAL-02**, verificación Android emulada y preparación de la matriz física de la versión vigente. [CAL-01 técnica verificada en iteración 14](VALIDACION_COMPRA.md): cuatro casos integrados y resultados independientes; la compra real sigue pendiente y no se cierra con datos sintéticos. DAT-03 entrega la investigación de tres fuentes; no se aprueba otra integración. Compra física y sesiones reales siguen pendientes. DAT-01 ya entrega la medición de Madrid, cuyo resultado no acredita cobertura suficiente. UNI-01/ALT-01 entregadas técnicamente en iteración 11. Validación física, experta y de uso siguen pendientes. SEG-01 mantiene el bloqueo de publicación y ahora también el control de dependencias por deepmerge.
