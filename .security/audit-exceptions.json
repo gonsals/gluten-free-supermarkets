@@ -2,6 +2,12 @@
   "reviewBy": "2026-11-22",
   "exceptions": [
     {
+      "name": "deepmerge",
+      "url": "https://github.com/advisories/GHSA-gcqx-w48m-w2h4",
+      "severity": "low",
+      "reason": "Revisado 2026-10-30: aviso actualizado el 27 de octubre, sin versión corregida publicada (última 4.3.1). Entra por @expo/config y jest-config, que combinan configuración del repositorio; la app no importa deepmerge ni le pasa respuestas de Open Food Facts o datos de usuario. Ejecutar las herramientas solo con proyectos/configuración de confianza. Excepción temporal de herramientas hasta la revisión común del 22 de noviembre; no autoriza una release ni sustituir por una versión antigua."
+    },
+    {
       "name": "zod",
       "url": "https://github.com/advisories/GHSA-mrhx-c7xc-m3w5",
       "severity": "high",
