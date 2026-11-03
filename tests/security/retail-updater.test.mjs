@@ -100,17 +100,18 @@ async function run({ fail = [], invalidLidl = false } = {}) {
       let body;
       if (retailer === 'mercadona') {
         const id = Number(url.pathname.split('/').at(-2));
+        const sku = (id === 72 ? 77 : id) + 10000;
         body = JSON.stringify({
           id,
           categories: [
             {
               products: [
                 {
-                  id: String(id + 10000),
+                  id: String(sku),
                   display_name: 'Producto de ensayo',
                   published: true,
                   status: null,
-                  share_url: `https://tienda.mercadona.es/product/${id + 10000}/ensayo`,
+                  share_url: `https://tienda.mercadona.es/product/${sku}/ensayo`,
                   price_instructions: {
                     unit_price: '1.995',
                     selling_method: 0,
@@ -141,7 +142,8 @@ test('actualizador completo: 19 lecturas fijas sin sesiones y escritura atómica
   assert.equal(result.writes.length, 1);
   assert.equal(result.moves.length, 1);
   assert.equal(result.exitCode, 0);
-  assert.equal(result.writes[0].data.entries.length, 19);
+  assert.equal(result.writes[0].data.entries.length, 18);
+  assert.equal(result.writes[0].data.entries.filter((p) => p.id === 'mercadona:10077').length, 1);
   assert.ok(result.writes[0].file.endsWith('retail-prices.es.json.tmp'));
   assert.ok(result.moves[0].to.endsWith('retail-prices.es.json'));
   for (const { options } of result.calls) assert.equal(options.credentials, 'omit');

@@ -113,7 +113,10 @@ export function createLiveRetailClient(transport: typeof fetch = fetch) {
           if (rows.some((row) => row.group !== job.group)) throw new Error('unexpected_category');
           // An empty/changed source is uncertain, never evidence to erase the last known catalog.
           if (!rows.length) throw new Error('empty_catalog');
-          const valid = parseRetailCatalog({ ...base, entries: rows }).entries;
+          const valid = parseRetailCatalog({
+            ...base,
+            entries: [...new Map(rows.map((row) => [row.id, row])).values()],
+          }).entries;
           cache.set(key, { at: Date.now(), rows: valid });
           return { ...job, rows: valid };
         } catch {

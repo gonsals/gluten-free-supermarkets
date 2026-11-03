@@ -70,7 +70,7 @@ async function main() {
       rows = parseRetailCatalog({
         version: 1,
         generatedAt: checkedAt,
-        entries: rows,
+        entries: [...new Map(rows.map((row) => [row.id, row])).values()],
         sources: ['mercadona', 'aldi', 'lidl'].map((r) => ({
           retailer: r,
           status: 'ok',

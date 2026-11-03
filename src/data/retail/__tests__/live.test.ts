@@ -37,7 +37,8 @@ test('resuelve categorías localmente con un máximo de tres y sin enviar térmi
   expect(mercadonaCategories('huevo leche mantequilla arroz pollo')).toHaveLength(3);
 });
 test('actualiza solo la categoría consultada, retira filas antiguas y cachea sin cambiar la fecha', async () => {
-  const fetcher = jest.fn().mockResolvedValue(reply(payload));
+  const duplicated = { ...payload, categories: [payload.categories[0], payload.categories[0]] };
+  const fetcher = jest.fn().mockResolvedValue(reply(duplicated));
   const client = createLiveRetailClient(fetcher),
     signal = new AbortController().signal;
   const { catalog, failed } = await client(base, 'Huevos', 'Mercadona', signal);
