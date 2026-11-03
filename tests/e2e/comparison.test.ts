@@ -158,11 +158,13 @@ test('el inicio prioriza comparar y conserva el filtro adicional sobre gluten', 
   await page.goto('/');
   await page.getByRole('button', { name: 'Comparar precios', exact: true }).click();
   await expect(page.getByRole('heading', { name: 'Comparar precios', exact: true })).toBeVisible();
+  await expandSection(page, 'Mis productos guardados');
   await expandSection(page, 'Filtrar productos guardados');
   await page
     .getByRole('button', { name: 'Solo productos con declaración sin gluten', exact: true })
     .click();
   await expect(page.getByText(/No hay productos guardados que cumplan este filtro/)).toBeVisible();
+  await expandSection(page, 'Buscar por código o escanear');
   await page.getByRole('textbox', { name: 'Código para comparar precios', exact: true }).fill(code);
   await page.getByRole('button', { name: 'Comparar este código', exact: true }).click();
   await expect(page.getByRole('heading', { name: 'Dónde sale mejor', exact: true })).toBeVisible();

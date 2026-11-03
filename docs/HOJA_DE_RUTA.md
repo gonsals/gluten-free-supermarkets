@@ -116,6 +116,7 @@ Cada tarea del [backlog](PLAN_MEJORAS.md) tiene ID estable, prioridad, estado, d
 
 | Fecha | Decisión vigente |
 | --- | --- |
+| 03-11-2026 | Petición de buscar nombres como «huevos», tiendas y ofertas: BUS-01 implementa catálogo/precios públicos acotados y consulta privada; enlaces oficiales separados. La prueba real no ofrece precios recientes de huevos, por lo que no se promete cobertura suficiente. [Contrato](BUSCADOR_DE_PRECIOS.md). |
 | 03-11-2026 | Iteración 17 continúa la simplificación: envases con un toque, ficha más corta y resultado del comparador primero; conservar cálculos, avisos y recuperación. |
 | 03-11-2026 | Petición de simplificar: iteración 16 reduce información inicial y agrupa opciones secundarias; contrastar facilidad de uso antes de ampliar funciones. [Guía](USO_SENCILLO.md). |
 | 24-10-2026 | Versión local sin costes de backend; cuentas y nube fuera del alcance obligatorio. |

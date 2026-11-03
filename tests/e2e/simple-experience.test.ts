@@ -43,6 +43,7 @@ test('muestra primero la comparación y conserva los filtros al cerrar sus opcio
   await expect(
     page.getByRole('button', { name: 'Solo productos con declaración sin gluten', exact: true }),
   ).toHaveCount(0);
+  await expandSection(page, 'Buscar por código o escanear');
   await page.getByRole('textbox', { name: 'Código para comparar precios', exact: true }).fill(code);
   await page.getByRole('button', { name: 'Comparar este código', exact: true }).click();
   const result = page.getByText(/^Menor precio entre los datos comparables:/);

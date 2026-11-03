@@ -9,6 +9,10 @@ const messages: Record<string, string> = {
   invalid_response: 'Open Prices ha devuelto datos que no podemos interpretar con seguridad.',
   provider_error: 'Open Prices no está disponible en este momento.',
 };
+export function publicPriceError(error: unknown): string {
+  const key = error instanceof Error ? error.message : String(error);
+  return Object.hasOwn(messages, key) ? messages[key] : messages.provider_error;
+}
 export function usePublicPrices(barcode: string) {
   const [result, setResult] = useState<PublicPricePage | null>(null);
   const [loading, setLoading] = useState(false);
@@ -48,9 +52,7 @@ export function usePublicPrices(barcode: string) {
           token === generation.current &&
           !(error instanceof Error && error.message === 'cancelled')
         )
-          setError(
-            messages[error instanceof Error ? error.message : ''] ?? messages.provider_error,
-          );
+          setError(publicPriceError(error));
       } finally {
         if (token === generation.current) {
           pending.current = false;

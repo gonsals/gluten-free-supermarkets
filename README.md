@@ -8,6 +8,8 @@ App de compra en **Expo 58, React 19 y React Native 0.88**, enfocada en comparar
 
 ## Funcionalidades
 
+**Buscar por nombre, iteración 18:** en Comparar escribe «huevos», filtra por tienda/localidad y consulta precios y ofertas observadas. Orden por envase, con formato, fecha y condiciones; fuentes públicas de cobertura limitada y anotaciones privadas separadas. Enlaces oficiales de ofertas disponibles. [Funcionamiento y prueba real](docs/BUSCADOR_DE_PRECIOS.md).
+
 **Uso más sencillo, iteraciones 16–17:** inicio más corto, datos esenciales primero y opciones secundarias desplegables. La cesta permite cambiar envases con «−» y «+», con guardado inmediato. En la ficha, ingredientes y detalles de la fuente se despliegan; estado sobre gluten, trazas y fecha siguen visibles. Los filtros conservan un resumen visible y cerrar opciones no borra el borrador. [Guía de uso en tres pasos](docs/USO_SENCILLO.md).
 
 - Inicio propio, navegación en español, iconos de marca y tema claro/oscuro.

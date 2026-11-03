@@ -12,6 +12,7 @@ export interface PriceQuote {
   observedAt: string;
   recordedAt: string;
   conditional: boolean;
+  isOffer?: boolean;
   offerEndsAt: string | null;
   source: 'private' | 'open_prices';
   sourceUrl: string | null;
@@ -41,6 +42,7 @@ export function privateQuotes(prices: PriceObservation[]): PriceQuote[] {
     observedAt: price.observedAt,
     recordedAt: price.createdAt,
     conditional: Boolean(price.offerEndsAt || price.notes.trim()),
+    isOffer: Boolean(price.offerEndsAt),
     offerEndsAt: price.offerEndsAt,
     source: 'private',
     sourceUrl: null,

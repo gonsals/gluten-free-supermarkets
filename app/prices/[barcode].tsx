@@ -11,10 +11,11 @@ import { AddToBasket } from '@/src/features/basket/AddToBasket';
 import { Disclosure } from '@/src/shared/Disclosure';
 
 export default function ProductPricesScreen() {
-  const { barcode } = useLocalSearchParams<{ barcode: string }>();
-  return <ProductPrices key={barcode} barcode={barcode} />;
+  const { barcode, name } = useLocalSearchParams<{ barcode: string; name?: string }>();
+  const resultName = typeof name === 'string' ? name.slice(0, 300).trim() : '';
+  return <ProductPrices key={barcode} barcode={barcode} resultName={resultName} />;
 }
-function ProductPrices({ barcode }: { barcode: string }) {
+function ProductPrices({ barcode, resultName }: { barcode: string; resultName: string }) {
   const router = useRouter();
   const { data, repository } = useLibrary();
   const product = useCachedProduct(barcode);
@@ -27,7 +28,7 @@ function ProductPrices({ barcode }: { barcode: string }) {
   const prices = data.prices.filter((price) => valid && sameGtin(price.barcode, barcode));
   return (
     <Screen>
-      <Heading>{product?.name ?? 'Comparar este producto'}</Heading>
+      <Heading>{product?.name ?? (resultName || 'Comparar este producto')}</Heading>
       <Copy muted>
         Código {barcode}. Mismo producto y envase; los precios pueden cambiar y no confirman
         disponibilidad.
