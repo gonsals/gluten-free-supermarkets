@@ -11,11 +11,34 @@ import { AddToBasket } from '@/src/features/basket/AddToBasket';
 import { Disclosure } from '@/src/shared/Disclosure';
 
 export default function ProductPricesScreen() {
-  const { barcode, name } = useLocalSearchParams<{ barcode: string; name?: string }>();
+  const { barcode, name, offers, older } = useLocalSearchParams<{
+    barcode: string;
+    name?: string;
+    offers?: string;
+    older?: string;
+  }>();
   const resultName = typeof name === 'string' ? name.slice(0, 300).trim() : '';
-  return <ProductPrices key={barcode} barcode={barcode} resultName={resultName} />;
+  return (
+    <ProductPrices
+      key={`${barcode}:${offers === '1'}:${older === '1'}`}
+      barcode={barcode}
+      resultName={resultName}
+      offers={offers === '1'}
+      older={older === '1'}
+    />
+  );
 }
-function ProductPrices({ barcode, resultName }: { barcode: string; resultName: string }) {
+function ProductPrices({
+  barcode,
+  resultName,
+  offers,
+  older,
+}: {
+  barcode: string;
+  resultName: string;
+  offers: boolean;
+  older: boolean;
+}) {
   const router = useRouter();
   const { data, repository } = useLibrary();
   const product = useCachedProduct(barcode);
@@ -35,7 +58,12 @@ function ProductPrices({ barcode, resultName }: { barcode: string; resultName: s
       </Copy>
       {valid ? (
         <>
-          <PriceComparison barcode={barcode} prices={prices} />
+          <PriceComparison
+            barcode={barcode}
+            prices={prices}
+            initialOffers={offers}
+            initialRecentOnly={!older}
+          />
           <AddToBasket barcode={barcode} product={product ?? undefined} />
           <Action
             title={`Mi cesta (${data.basket.length})`}

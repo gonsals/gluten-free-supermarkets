@@ -110,6 +110,14 @@ test('buscar huevos ordena los envases, recupera ofertas con condiciones y filtr
   await page.getByRole('button', { name: 'Solo ofertas', exact: true }).click();
   await expect(results).toHaveCount(1);
   expect(urls).toHaveLength(2);
+  await page
+    .getByRole('button', { name: 'Comparar Huevos grandes de ensayo', exact: true })
+    .click();
+  await expect(page.getByText(/^Menor precio entre los datos comparables:/)).toContainText('1,50');
+  await expect(page.getByText(/Has ampliado la comparación/)).toBeVisible();
+  await page.goBack();
+  await expect(results).toHaveCount(1);
+  await expandSection(page, 'Filtrar precios y ofertas');
   await page.getByRole('button', { name: 'Solo ofertas', exact: true }).click();
   await search(page, 'huevos', 'Tienda A');
   await expect(results).toHaveCount(1);
@@ -186,6 +194,9 @@ test('precios antiguos se abren expresamente y las ofertas oficiales son enlaces
     page.getByRole('button', { name: 'Ofertas oficiales de Lidl', exact: true }),
   ).toBeVisible();
   await expect(page.getByText(/no se incorporan automáticamente al ranking/)).toBeVisible();
+  await page.getByRole('button', { name: 'Comparar Huevos de ensayo', exact: true }).click();
+  await expect(page.getByText(/^Menor precio entre los datos comparables:/)).toContainText('2,28');
+  await expect(page.getByText(/Todas las fechas/)).toBeVisible();
 });
 
 test('cancelar una búsqueda descarta su respuesta tardía al buscar otro producto', async ({

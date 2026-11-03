@@ -10,14 +10,18 @@ import { Disclosure } from '@/src/shared/Disclosure';
 export function PriceComparison({
   barcode,
   prices,
+  initialOffers = false,
+  initialRecentOnly = true,
 }: {
   barcode: string;
   prices: PriceObservation[];
+  initialOffers?: boolean;
+  initialRecentOnly?: boolean;
 }) {
   const remote = usePublicPrices(barcode);
   const [location, setLocation] = useState('');
-  const [recentOnly, setRecentOnly] = useState(true);
-  const [offers, setOffers] = useState(false);
+  const [recentOnly, setRecentOnly] = useState(initialRecentOnly);
+  const [offers, setOffers] = useState(initialOffers);
   const [spainOnly, setSpainOnly] = useState(true);
   const [message, setMessage] = useState('');
   const [limit, setLimit] = useState(20);

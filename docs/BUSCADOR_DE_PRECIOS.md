@@ -12,7 +12,7 @@ Por defecto, precios públicos de España y observaciones de los últimos siete 
 
 El filtro de tienda/localidad actúa sobre los resultados cargados. No permite garantizar el menor precio de todas las sucursales ni cobertura completa de una cadena. Se combinan precios públicos y privados identificables por el mismo GTIN, conservando referencias y procedencia separadas. Para el mismo producto/referencia se selecciona la observación más reciente **antes** de filtrar ofertas o antigüedad: no reaparece una promoción anterior sustituida por un precio normal.
 
-Los códigos y el escáner permanecen en «Buscar por código o escanear»; la biblioteca y anotaciones completas, en sus desplegables. Comparar un resultado abre el comparador existente del mismo código y conserva el nombre como contexto visual, sin fabricar una ficha o una evaluación de gluten.
+Los códigos y el escáner permanecen en «Buscar por código o escanear»; la biblioteca y anotaciones completas, en sus desplegables. Comparar un resultado abre el comparador existente del mismo código y conserva el nombre como contexto visual, sin fabricar una ficha o una evaluación de gluten. Al abrir una oferta o un precio anterior mantiene los filtros necesarios para consultar ese resultado; sus avisos siguen visibles. El acceso directo por código conserva los valores predeterminados anteriores.
 
 ## Fuente y contrato comprobado
 
@@ -43,3 +43,5 @@ No cambian esquema/copia v4, reglas de gluten, cuentas, permisos o dependencias.
 231 pruebas de app en 22 suites, 43 controles de seguridad y suite completa de 57 recorridos web correctos. Se añaden once pruebas de cliente/dominio y seis recorridos de catálogo: orden/envase, ofertas y condiciones, privacidad/fallo público, precios antiguos, cancelación/respuesta tardía, paginación y retorno desde otra pestaña. Los seis casos del catálogo se repiten después de los ajustes finales. Tipos y lint correctos; Gitleaks sin hallazgos no aceptados.
 
 Además de las respuestas sintéticas, navegador Chromium con tamaño móvil y cliente real: «huevos» carga cuatro productos con dos GET, no muestra precios recientes y permite abrir explícitamente tres precios históricos en orden por envase. Informe local `artifacts/iteration-18/real-browser.json`. Se revisa la captura del buscador; este ensayo de navegador no acredita dispositivo físico o inventario de supermercados.
+
+El ajuste final de navegación se verifica repitiendo diez recorridos de catálogo/comparador: abrir una oferta mantiene su inclusión y abrir un precio antiguo mantiene todas las fechas, sin cambiar los filtros predeterminados de los accesos anteriores.

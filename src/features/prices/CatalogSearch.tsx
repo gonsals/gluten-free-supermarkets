@@ -165,7 +165,12 @@ export function CatalogSearch() {
             onPress={() =>
               router.push({
                 pathname: '/prices/[barcode]',
-                params: { barcode: product.barcode, name: product.name },
+                params: {
+                  barcode: product.barcode,
+                  name: product.name,
+                  offers: quote.conditional ? '1' : undefined,
+                  older: includeOlder ? '1' : undefined,
+                },
               })
             }
           />
