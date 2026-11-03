@@ -50,6 +50,18 @@ function catalog() {
         isOffer: true,
         conditions: 'Requiere Lidl Plus',
       },
+      {
+        retailer: 'mercadona',
+        sku: '4',
+        group: 'category:120',
+        name: 'Pasta con patatas de ensayo',
+        quantity: '250 g',
+        amountMilli: 900,
+        scope: 'Online · almacén vlc1 (Valencia)',
+        sourceUrl: 'https://tienda.mercadona.es/product/4/pasta',
+        isOffer: false,
+        conditions: '',
+      },
     ].map((row) => ({
       ...row,
       id: `${row.retailer}:${row.sku}`,

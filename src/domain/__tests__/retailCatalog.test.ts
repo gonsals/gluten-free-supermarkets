@@ -63,6 +63,22 @@ test('encuentra singular al buscar patatas y entiende la variante de escritura L
   const catalog = feed([{ ...row, name: 'Patata granel', retailer: 'lidl' }]);
   expect(retailPrices(catalog, { ...options, store: 'Lidel' })).toHaveLength(1);
 });
+test('buscar huevos de Mercadona usa su categoría, sin colar pasta al huevo como huevos baratos', () => {
+  const catalog = feed([
+    { ...row, retailer: 'mercadona', group: 'category:77', name: 'Huevos grandes L' },
+    {
+      ...row,
+      id: 'pasta',
+      retailer: 'mercadona',
+      group: 'category:120',
+      name: 'Pasta al huevo',
+      amountMilli: 900,
+    },
+  ]);
+  expect(retailPrices(catalog, { ...options, text: 'huevos' }).map((p) => p.name)).toEqual([
+    'Huevos grandes L',
+  ]);
+});
 test('datos conservados en fallo no recuperan frescura por la fecha global', () => {
   const old = { ...row, checkedAt: '2026-10-25T10:00:00.000Z' };
   expect(retailPrices(feed([old]), options)).toEqual([]);

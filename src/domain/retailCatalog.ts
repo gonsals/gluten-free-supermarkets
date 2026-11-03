@@ -34,6 +34,32 @@ const hosts: Record<Retailer, string> = {
   aldi: 'www.aldi.es',
   lidl: 'www.lidl.es',
 };
+const categoryWords: [RegExp, number[]][] = [
+  [/huevo|clara/, [77]],
+  [/leche|bebida vegetal|avena|soja/, [72]],
+  [/mantequilla|margarina/, [75]],
+  [/arroz/, [118]],
+  [/pasta|macarron|espagueti|spaghetti|fideo/, [120]],
+  [/legumbre|lenteja|garbanzo|alubia/, [121]],
+  [/aceite|vinagre|\bsal\b/, [112]],
+  [/fruta|manzana|platano|naranja|mandarina|pera|kiwi|aguacate|limon|uva/, [27]],
+  [/verdura|patata|tomate|cebolla|zanahoria|calabac|brocoli|champinon|berenjena|coliflor/, [29]],
+  [/pollo|pavo/, [38]],
+  [/\bpan\b/, [59, 60]],
+  [/queso/, [54]],
+  [/atun|sardina|mejillon|conserva/, [122]],
+  [/tomate|tomate frito/, [126]],
+  [/cereal/, [78]],
+  [/galleta/, [80]],
+];
+export function mercadonaCategories(query: string): number[] {
+  return [
+    ...new Set(
+      categoryWords.filter(([pattern]) => pattern.test(fold(query))).flatMap(([, ids]) => ids),
+    ),
+  ].slice(0, 3);
+}
+
 export const RETAIL_MAX_AGE = 3 * 24 * 60 * 60 * 1000;
 export const retailStore = (value: string): string => fold(value).replace(/\blidel\b/g, 'lidl');
 function record(value: unknown): Record<string, unknown> {
@@ -158,6 +184,7 @@ export function retailPrices(
   },
 ): RetailPrice[] {
   const now = options.now ?? Date.now();
+  const groups = mercadonaCategories(options.text).map((id) => `category:${id}`);
   const words = fold(options.text)
     .split(' ')
     .filter(Boolean)
@@ -167,6 +194,7 @@ export function retailPrices(
     .filter((p) => {
       const age = now - Date.parse(p.checkedAt);
       return (
+        (p.retailer !== 'mercadona' || !groups.length || groups.includes(p.group)) &&
         words.every((word) => fold(p.name).includes(word)) &&
         retailStore(`${retailerNames[p.retailer]} ${p.scope}`).includes(
           retailStore(options.store),

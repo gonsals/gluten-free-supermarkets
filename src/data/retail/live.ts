@@ -1,11 +1,13 @@
-import { fold } from '@/src/domain/comparison';
 import {
   parseRetailCatalog,
+  mercadonaCategories,
   retailStore,
   type RetailCatalog,
   type RetailPrice,
   type Retailer,
 } from '@/src/domain/retailCatalog';
+
+export { mercadonaCategories } from '@/src/domain/retailCatalog';
 
 // The CLI and the mobile app execute exactly the same pure parsers; no fs/Node dependencies.
 // eslint-disable-next-line @typescript-eslint/no-require-imports
@@ -13,31 +15,6 @@ const parsers = require('../../../scripts/lib/retail-parsers.cjs') as Record<
   Retailer,
   (payload: unknown, checkedAt: string) => RetailPrice[]
 >;
-const categoryWords: [RegExp, number[]][] = [
-  [/huevo|clara/, [77]],
-  [/leche|bebida vegetal|avena|soja/, [72]],
-  [/mantequilla|margarina/, [75]],
-  [/arroz/, [118]],
-  [/pasta|macarron|espagueti|spaghetti|fideo/, [120]],
-  [/legumbre|lenteja|garbanzo|alubia/, [121]],
-  [/aceite|vinagre|\bsal\b/, [112]],
-  [/fruta|manzana|platano|naranja|mandarina|pera|kiwi|aguacate|limon|uva/, [27]],
-  [/verdura|patata|tomate|cebolla|zanahoria|calabac|brocoli|champinon|berenjena|coliflor/, [29]],
-  [/pollo|pavo/, [38]],
-  [/\bpan\b/, [59, 60]],
-  [/queso/, [54]],
-  [/atun|sardina|mejillon|conserva/, [122]],
-  [/tomate|tomate frito/, [126]],
-  [/cereal/, [78]],
-  [/galleta/, [80]],
-];
-export function mercadonaCategories(query: string): number[] {
-  return [
-    ...new Set(
-      categoryWords.filter(([pattern]) => pattern.test(fold(query))).flatMap(([, ids]) => ids),
-    ),
-  ].slice(0, 3);
-}
 async function page(url: string, transport: typeof fetch, parent: AbortSignal): Promise<string> {
   if (parent.aborted) throw new Error('cancelled');
   const controller = new AbortController(),

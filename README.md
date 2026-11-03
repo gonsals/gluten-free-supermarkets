@@ -10,7 +10,7 @@ App de compra en **Expo 58, React 19 y React Native 0.88**, enfocada en comparar
 
 **Buscar por nombre, iteración 18:** en Comparar escribe «huevos», filtra por tienda/localidad y consulta precios y ofertas observadas. Orden por envase, con formato, fecha y condiciones; fuentes públicas de cobertura limitada y anotaciones privadas separadas. Enlaces oficiales de ofertas disponibles. [Funcionamiento y prueba real](docs/BUSCADOR_DE_PRECIOS.md).
 
-**Supermercados españoles, iteración 19:** precios web de Mercadona y ofertas de Aldi y Lidl en el buscador. En móvil se consultan las fuentes al buscar; web y uso offline disponen de una copia pública descargable. Fecha, formato, zona y Lidl Plus visibles; caducadas excluidas. Catálogo inicial de 896 referencias; no representa todo el surtido ni todas las zonas. [Fuentes, actualización y límites](docs/PRECIOS_SUPERMERCADOS.md).
+**Supermercados españoles, iteración 19:** precios web de Mercadona y ofertas de Aldi y Lidl en el buscador. En móvil se consultan las fuentes al buscar; web y uso offline disponen de una copia pública descargable. Fecha, formato, zona y Lidl Plus visibles; caducadas excluidas. Catálogo acotado que cambia al renovar ofertas; no representa todo el surtido ni todas las zonas. [Fuentes, actualización y límites](docs/PRECIOS_SUPERMERCADOS.md).
 
 **Uso más sencillo, iteraciones 16–17:** inicio más corto, datos esenciales primero y opciones secundarias desplegables. La cesta permite cambiar envases con «−» y «+», con guardado inmediato. En la ficha, ingredientes y detalles de la fuente se despliegan; estado sobre gluten, trazas y fecha siguen visibles. Los filtros conservan un resumen visible y cerrar opciones no borra el borrador. [Guía de uso en tres pasos](docs/USO_SENCILLO.md).
 
