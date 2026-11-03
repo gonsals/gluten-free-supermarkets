@@ -53,7 +53,7 @@ Evidencia UNI-01/ALT-01: [Formatos y alternativas](FORMATOS_Y_ALTERNATIVAS.md). 
 | BET-01 | P1 / pendiente | CAL-01, CAL-02, GLU-01, REL-01 | Beta controlada propuesta de 5–10 personas; consentimiento, preguntas, muestra, versión y métricas definidos. Observar preparación de cesta, comparación y anotación. Registrar cobertura y comprensión sin recoger historiales identificables por defecto. Corregir bloqueos antes de ampliar. No es evidencia de estabilidad porcentual por sí sola. |
 | REL-02 | P1 / pendiente | BET-01, SEG-01 | Publicación controlada: criterios de Calidad cumplidos, controles sobre revisión final, recuperación ensayada y soporte asignado. Revisar protección de rama y flujo de integración. La nube opcional permanece desactivada; no publicar por el simple hecho de hacer push. |
 
-SEG-01 debe revisarse en cada entrega: un hallazgo nuevo que afecte al funcionamiento local puede bloquear también una beta. Su estado actual no autoriza a ignorar un fallo nuevo. Antes de BET-01, registrar esta revisión además de las dependencias de la tabla.
+SEG-01 debe revisarse en cada entrega: un hallazgo nuevo que afecte al funcionamiento local puede bloquear también una beta. Su estado actual no autoriza a ignorar un fallo nuevo. Antes de BET-01, registrar esta revisión además de las dependencias de la tabla. La siguiente ejecución incluye alinear los cinco parches recomendados por el catálogo Expo del 03-11 y repetir los controles afectados; CI de app pasa 220/43 pruebas pero falla después en compatibilidad. [Versiones y evidencia](DEPENDENCIAS.md).
 
 ## Evolución condicionada
 

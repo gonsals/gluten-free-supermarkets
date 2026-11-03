@@ -68,13 +68,15 @@ El [receptor de ensayo](../tests/native/README.md) se compila aparte, no tiene p
 
 ## Comprobaciones y seguridad al cierre
 
-- `npm run check`: 220 pruebas de app en 20 suites, 43 pruebas Node de seguridad, tipos, lint y compatibilidad Expo correctos. Los diez casos Python están incluidos dentro de una de esas 43 pruebas; no se suman como pruebas Node adicionales.
+- `npm run check` del 31-10: 220 pruebas de app en 20 suites, 43 pruebas Node de seguridad, tipos, lint y compatibilidad Expo correctos. Los diez casos Python están incluidos dentro de una de esas 43 pruebas; no se suman como pruebas Node adicionales.
 - Inspección repetida sobre la APK congelada y diez casos del inspector correctos el 03-11. Sintaxis YAML del workflow y Python de su paso de inspección comprobadas.
-- Gitleaks sobre archivos publicables e historial: cero hallazgos no aceptados el 03-11, conservando únicamente la excepción histórica exacta de la clave revocada. Documentación: 35 archivos Markdown, 299 enlaces locales, 23 tareas sin ciclos y cinco documentos históricos intactos.
+- Gitleaks sobre archivos publicables e historial: cero hallazgos no aceptados el 03-11, conservando únicamente la excepción histórica exacta de la clave revocada. Documentación: 35 archivos Markdown, 301 enlaces locales, 23 tareas sin ciclos y cinco documentos históricos intactos.
 - Los 46 recorridos web son evidencia de CI de la base `c43bb24`; no se han vuelto a ejecutar localmente en esta iteración, que no modifica componentes ni JavaScript de la app.
 - Auditoría npm del 03-11: **60 entradas afectadas en app** (1 baja, 57 moderadas, 2 altas), **6 moderadas en functions**. Son entradas del informe, no 66 vulnerabilidades independientes ni evidencia de explotación. También se rechazan cadenas incompletas del informe. `audit:security` devuelve 1; no se amplían excepciones, cuyo vencimiento sigue siendo 22-11-2026. [Detalle y siguiente trabajo SEG-01](DEPENDENCIAS.md).
 
-No se modifican paquetes/lockfiles, se activan servicios de pago o se publica en tiendas. El push de la iteración disparará los controles remotos; la aprobación local funcional no convierte el job de dependencias en correcto.
+No se modifican paquetes/lockfiles, se activan servicios de pago o se publica en tiendas. En [CI de `6eb647e`](https://github.com/gonsals/gluten-free-supermarkets/actions/runs/41613962094), el 03-11 pasan secretos y Firebase; el job app vuelve a aprobar tipos, lint, 220 pruebas de app y 43 de seguridad, pero falla después en `expo install --check`: ahora recomienda cinco parches compatibles (`@expo/metro-runtime` 58.0.16, Expo 58.0.22, Router 58.0.29, SQLite 58.0.15 y screens 4.30.1). Es una diferencia respecto al catálogo de compatibilidad consultado el 31-10, no una aprobación completa de `check` el 03-11. No se alcanza Playwright en esa ejecución. Esos parches deben alinearse y validarse en SEG-01 antes de dar por verde el job; la APK nativa congelada conserva las versiones realmente probadas. El job de dependencias también falla por los avisos anteriores; la aprobación funcional no levanta ese bloqueo.
+
+Expo Go restaurado el 03-11 por LAN en `exp://192.168.1.200:8081`: estado `packager-status:running`, manifiesto Android HTTP 200 y bundle de 6.472.165 bytes HTTP 200, con nube desactivada. Esto comprueba la entrega del código desde este equipo; no sustituye una prueba en el teléfono. La nueva compilación Android remota sigue en curso al registrar este cierre; el paso nuevo de inspección en Linux no se declara aprobado hasta que termine, aunque la herramienta y la APK universal local ya estén verificadas.
 
 ## Matriz física preparada, pendiente de ejecución
 
