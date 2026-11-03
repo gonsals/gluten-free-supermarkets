@@ -1,5 +1,7 @@
 # Viabilidad de fuentes públicas · DAT-03
 
+> **Iteración 19:** se incorpora un piloto distinto con Mercadona, Aldi y Lidl, solicitado expresamente por el propietario. [Fuentes, contratos y límites actuales](PRECIOS_SUPERMERCADOS.md). La investigación de Carrefour/FACUA/MAPA y su decisión original se conservan debajo; no implican que el nuevo piloto esté integrado por GTIN/sucursal ni que su revisión de derechos para explotación comercial esté cerrada.
+
 > Seguimiento: [CAL-01 técnica, iteración 14](VALIDACION_COMPRA.md), con muestra sintética. Este informe conserva la investigación DAT-03 y su decisión original.
 
 **Iteración 13, 30-10-2026: investigación terminada, sin fuente nueva aprobada para integración.** Responsable técnico: Codex; base de app `057bf6d`. Se revisan tres alternativas al resultado de [DAT-01](COBERTURA_PRECIOS_PUBLICOS.md), que no cubrió la cesta de diez GTIN en Madrid. La investigación no demuestra que no exista otra fuente válida en España.

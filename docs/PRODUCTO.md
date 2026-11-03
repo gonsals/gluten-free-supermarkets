@@ -10,6 +10,8 @@ Contexto inicial: compra cotidiana en España, EUR y español. El público prior
 
 Funcionamiento local sin cuenta obligatoria ni costes de backend contratado. Open Food Facts aporta fichas; Open Prices, observaciones públicas; la persona puede anotar precios privados. Ninguna de esas fuentes acredita existencias actuales ni acceso oficial a todos los supermercados.
 
+**Iteración 19:** [precios de Mercadona y ofertas de Aldi/Lidl](PRECIOS_SUPERMERCADOS.md) amplían la búsqueda con referencias propias de cada cadena. Se consultan directamente desde móvil y se incluye copia pública para web/offline. SKU, ámbito y fechas separados del modelo GTIN/sucursal de la cesta; sin evaluar gluten por nombre o tienda. La cobertura sigue siendo una muestra.
+
 ## Alcance real y siguiente objetivo
 
 | Capacidad | Estado al 03-11-2026 |
@@ -23,7 +25,7 @@ Funcionamiento local sin cuenta obligatoria ni costes de backend contratado. Ope
 | Totales por establecimiento y cobertura completa | TIE-01/CES-03 implementadas técnicamente en iteración 10. [Contrato y pruebas](TOTALES_Y_SUCURSALES.md). |
 | Equivalencia por formato/unidad y alternativas | UNI-01/ALT-01 implementadas técnicamente en iteración 11 con anotaciones privadas. [Contrato](FORMATOS_Y_ALTERNATIVAS.md). No se equiparan productos por nombre. |
 | Ejecución nativa y recuperación | CAL-02 emulada verificada en iteración 15: permisos, copia v4, sustituciones y arranque offline. [Evidencia y matriz física pendiente](VALIDACION_ANDROID.md). iOS nativo y TalkBack no comprobados. |
-| Cobertura suficiente por zona y uso durante compras reales | DAT-01 medida en iteración 12: muestra insuficiente (0/10 elegibles en Madrid). DAT-03 investigada, sin otra fuente aprobada; CAL-01 técnica verificada con muestra sintética; compra real y BET-01 pendientes. [Validación](VALIDACION_COMPRA.md). [Viabilidad](FUENTES_PUBLICAS.md). [Evidencia](COBERTURA_PRECIOS_PUBLICOS.md). |
+| Cobertura suficiente por zona y uso durante compras reales | DAT-01 medida en iteración 12: muestra insuficiente (0/10 elegibles en Madrid). DAT-03 investigada; SUP-01 incorpora una muestra web de tres cadenas, sin acreditar cobertura por GTIN/sucursal; CAL-01 técnica verificada con muestra sintética; compra real y BET-01 pendientes. [Validación](VALIDACION_COMPRA.md). [Viabilidad](FUENTES_PUBLICAS.md). [Evidencia](COBERTURA_PRECIOS_PUBLICOS.md). |
 
 El MVP objetivo del nuevo enfoque incluye cesta, totales comparables y cobertura explícita. La app ya compara la misma cesta por sucursal confirmada; la medición inicial de cobertura no basta para comparar la muestra de Madrid y la utilidad en compras reales sigue pendiente de validar. Las alternativas explícitas amplían el núcleo desde la iteración 11; el coste por envases y la información sobre gluten se revisan por separado. Mapas, publicación propia de precios, sincronización, alertas e IA quedan condicionados a demanda y viabilidad; no son requisitos para activar servicios.
 

@@ -1,5 +1,7 @@
 # Buscar productos, tiendas y ofertas
 
+> **Actualización, iteración 19:** el buscador también incorpora precios web de Mercadona y ofertas de Aldi/Lidl mediante adaptadores independientes. [Contrato actual de supermercados](PRECIOS_SUPERMERCADOS.md). Este documento conserva el contrato de las aportaciones Open Prices de la iteración 18; la limitación original de huevos antiguos corresponde a esa fuente, no al catálogo nuevo.
+
 **Iteración 18 · 03-11-2026.** Petición del propietario: escribir «huevos», encontrar precios por tienda y consultar ofertas sin necesitar el código. El buscador ocupa ahora la entrada principal de Comparar. [Guía breve](USO_SENCILLO.md).
 
 ## Uso y alcance
@@ -26,7 +28,7 @@ El cliente comparte transporte y espera de 429 con la consulta por código: time
 
 Un error del catálogo o de precios se distingue de un resultado vacío. Los precios privados siguen funcionando. Si falla la consulta de precios tras obtener productos, se conserva esa información como resultado parcial y se permite reintentar. Cancelar, cambiar de búsqueda o abandonar la pestaña invalida respuestas tardías; volver de una consulta interrumpida no afirma que no existan precios.
 
-## Ofertas oficiales
+## Ofertas oficiales en la iteración 18
 
 Hay enlaces explícitos a las [ofertas semanales de Lidl](https://www.lidl.es/c/store/ofertas-semanales/a10089449) y a las [ofertas de alimentación Carrefour](https://www.carrefour.es/supermercado/c/cat20009/c), comprobados el 03-11. Abren la web oficial; sus precios **no se importan automáticamente** al ranking y no se mezclan con Open Prices. Pueden exigir elegir tienda/código postal o revisar fidelidad, cantidades y fechas. No se ha programado extracción masiva ni se presume acceso a todos los catálogos comerciales. Las demás integraciones siguen sujetas al contrato de [Fuentes públicas](FUENTES_PUBLICAS.md).
 

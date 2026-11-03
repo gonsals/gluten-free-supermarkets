@@ -1,5 +1,11 @@
 # Calidad y operación · Comparador de compra
 
+## Iteración 19 · Precios de supermercados
+
+[Contrato y límites SUP-01](PRECIOS_SUPERMERCADOS.md). 254 pruebas de app/25 suites, 53 controles de seguridad y 60 recorridos web correctos. Tras el ajuste final de texto y estado de consulta se repiten los nueve recorridos de catálogo/supermercados, todos correctos. Tipos y lint correctos. Se contrastan moneda/SKU/URL, grupos renovados, ofertas futuras/caducadas, copia antigua sin fecha renovada por error, caché, cancelación, Lidl Plus, descarte de descuentos de segunda unidad/compra múltiple, orden, tienda y datos privados excluidos de la copia pública. Cuatro casos adicionales ejecutan el actualizador completo sin red: éxito, fallo parcial, fallo total sin escritura y fuente con contrato normalizado inválido. Los primeros fallos web fueron una expectativa antigua sobre enlaces y una fixture futura con fin anterior al inicio; se corrigieron las expectativas/fechas sin relajar la validación.
+
+Consulta real con el cliente implementado: HTTP 200 de Mercadona, Aldi y Lidl, tres lecturas y dieciséis coincidencias. Se revisan capturas de tamaño móvil; las fixtures visuales no son ofertas reales. Sin nueva prueba física, APK, auditoría de dependencias resuelta ni activación de nube. El refresco diario web está preparado y no activo en esta rama; la consulta móvil no depende de ese horario. SEG-01 sigue pendiente.
+
 Actualizado el **03-11-2026**. Criterios para el enfoque de [Producto](PRODUCTO.md) y las fases de la [hoja de ruta](HOJA_DE_RUTA.md). Los fallos del prototipo inicial se conservan en el [documento histórico](historico/CALIDAD_Y_OPERACION_ANTES_DEL_COMPARADOR.md); no describen el estado actual.
 
 ## Evidencia disponible y límites

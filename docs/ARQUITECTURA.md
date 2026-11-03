@@ -1,5 +1,9 @@
 # Arquitectura · Comparador local y evolución a cesta
 
+## Iteración 19 · Adaptadores de supermercados
+
+[SUP-01](PRECIOS_SUPERMERCADOS.md) mantiene `RetailPrice` separado de `PriceQuote`: SKU/grupo y ámbito web, sin GTIN o sucursal fabricados. `retailCatalog` valida lista blanca, fuentes, dinero y fechas; `retailPrices` aplica vigencia y filtros. `src/data/retail/live.ts` selecciona categorías localmente y consulta fuentes en móvil; reutiliza los parsers puros del actualizador. Caché por fuente/categoría, cancelación, fallos con fechas intactas y sustitución de grupos completos. `client.ts` valida la descarga estática de GitHub para web; el JSON incluido permite búsqueda offline. `useCatalogSearch` combina operaciones independientes en paralelo sin persistir el catálogo en biblioteca/copias. `RetailResults` presenta estos datos antes de las aportaciones por GTIN. El cron web solo se activará en la rama predeterminada; revisar conjuntamente la referencia remota al promover. Sin nuevo backend, dependencias o esquema.
+
 Actualizada el **03-11-2026**. Distingue la base implementada en `638980a` del diseño pendiente para la [hoja de ruta](HOJA_DE_RUTA.md). El [diseño inicial](historico/ARQUITECTURA_ANTES_DEL_COMPARADOR.md) queda como histórico.
 
 ## Base implementada

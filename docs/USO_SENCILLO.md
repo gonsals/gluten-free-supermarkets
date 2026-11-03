@@ -8,6 +8,8 @@ La app se centra en tres pasos:
 
 Los precios disponibles pueden cambiar. Una tienda sin datos no se considera más barata.
 
+En «Supermercados» aparecen precios web de Mercadona y ofertas de Aldi y Lidl. Puedes escribir el nombre de la cadena en el filtro de tienda. Revisa formato, zona y fecha; Lidl Plus se indica cuando hace falta. En móvil la consulta se renueva al buscar, con caché breve; sin conexión se conserva una copia con su fecha. [Cobertura y actualización](PRECIOS_SUPERMERCADOS.md).
+
 «Solo ofertas» filtra descuentos observados; comprueba condiciones y fecha. Si no hay precios recientes, puedes abrir los anteriores con su aviso o consultar los enlaces de ofertas oficiales. Los formatos pueden ser distintos: compara también el contenido del envase. [Alcance del buscador](BUSCADOR_DE_PRECIOS.md).
 
 Los filtros, formatos, ofertas y notas siguen disponibles al abrir sus opciones. Cerrarlas conserva lo que estabas escribiendo. El resumen de filtros permanece visible para que sepas qué estás comparando. La información sobre gluten se puede consultar en la ficha del producto.

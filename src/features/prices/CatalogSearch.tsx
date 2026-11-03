@@ -7,6 +7,7 @@ import { privateQuotes, quoteMoney } from '@/src/domain/comparison';
 import { Action, Card, Copy, Field, Heading, Notice } from '@/src/shared/ui';
 import { Disclosure } from '@/src/shared/Disclosure';
 import { useCatalogSearch } from './useCatalogSearch';
+import { RetailResults } from './RetailResults';
 
 export function CatalogSearch() {
   const router = useRouter();
@@ -75,8 +76,8 @@ export function CatalogSearch() {
         />
         <Action title="Buscar precios" icon="search" onPress={search} busy={remote.loading} />
         <Copy muted>
-          La consulta pública envía el nombre a Open Prices. El filtro de tienda se aplica aquí; tus
-          anotaciones no se envían.
+          Consulta precios web de Mercadona y ofertas de Aldi y Lidl. Open Prices recibe el nombre
+          para buscar otras aportaciones. Tus anotaciones y el filtro de tienda no se envían.
         </Copy>
         {remote.loading ? (
           <Action title="Cancelar búsqueda de precios" secondary onPress={remote.cancel} />
@@ -87,16 +88,14 @@ export function CatalogSearch() {
           <Heading>Precios para «{remote.submitted.text}»</Heading>
           <Copy muted>
             España (datos públicos) · {remote.submitted.store || 'Todas las tiendas'} ·{' '}
-            {includeOlder ? 'Incluye precios anteriores' : 'Últimos 7 días'} ·{' '}
-            {onlyOffers ? 'Solo ofertas observadas' : 'Precios y ofertas'}
+            {includeOlder
+              ? 'Incluye precios anteriores'
+              : 'Catálogo web: 3 días · aportaciones: 7 días'}{' '}
+            · {onlyOffers ? 'Solo ofertas' : 'Precios y ofertas'}
           </Copy>
           {dirty ? (
             <Copy muted>Pulsa «Buscar precios» para aplicar los cambios del buscador.</Copy>
           ) : null}
-          <Copy muted>
-            De menor a mayor por envase entre los datos cargados. Revisa el formato: los productos
-            pueden ser distintos.
-          </Copy>
         </>
       ) : (
         <Copy muted>
@@ -132,6 +131,19 @@ export function CatalogSearch() {
           la fuente.
         </Notice>
       ) : null}
+      {remote.submitted ? (
+        <RetailResults
+          key={`${remote.submitted.text}:${remote.submitted.store}`}
+          catalog={remote.retailCatalog}
+          {...remote.submitted}
+          onlyOffers={onlyOffers}
+          includeOlder={includeOlder}
+          offline={remote.retailOffline}
+          now={remote.now}
+          loading={remote.loading}
+        />
+      ) : null}
+      {remote.submitted ? <Heading>Otros precios</Heading> : null}
       {hits.slice(0, limit).map(({ product, quote }) => (
         <Card key={`${product.barcode}:${quote.id}`}>
           <Copy>{product.name}</Copy>
@@ -250,8 +262,21 @@ export function CatalogSearch() {
       <Disclosure title="Ver ofertas oficiales de supermercados">
         <Copy muted>
           Abre la web del supermercado para consultar promociones vigentes. Puede pedirte una tienda
-          o un código postal; sus precios no se incorporan automáticamente al ranking.
+          o un código postal. Mercadona, Aldi y Lidl tienen una muestra importada arriba; Carrefour
+          se consulta en su web.
         </Copy>
+        <Action
+          title="Tienda oficial de Mercadona"
+          secondary
+          icon="open-outline"
+          onPress={() => void open('https://tienda.mercadona.es/')}
+        />
+        <Action
+          title="Ofertas oficiales de Aldi"
+          secondary
+          icon="open-outline"
+          onPress={() => void open('https://www.aldi.es/ofertas.html')}
+        />
         <Action
           title="Ofertas oficiales de Lidl"
           secondary
@@ -267,8 +292,9 @@ export function CatalogSearch() {
       </Disclosure>
       {linkError ? <Notice error>{linkError}</Notice> : null}
       <Copy muted>
-        Catálogo y precios: Open Prices/ODbL · ubicaciones: © OpenStreetMap contributors/ODbL. Son
-        aportaciones públicas; no un catálogo completo ni precios garantizados de cada supermercado.
+        Aportaciones públicas: Open Prices/ODbL · ubicaciones: © OpenStreetMap contributors/ODbL.
+        Son aportaciones públicas; no un catálogo completo ni precios garantizados de cada
+        supermercado.
       </Copy>
     </>
   );
