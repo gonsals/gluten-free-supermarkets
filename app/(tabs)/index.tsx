@@ -1,4 +1,3 @@
-import Ionicons from '@expo/vector-icons/Ionicons';
 import { useRouter } from 'expo-router';
 import { Text, View } from 'react-native';
 import { useLibrary } from '@/src/features/library/useLibrary';
@@ -14,30 +13,11 @@ export default function HomeScreen() {
   return (
     <Screen>
       <Brand />
-      <Heading eyebrow="Compara antes de comprar" hero>
-        Tu compra,{'\n'}mejor de precio.
-      </Heading>
+      <Heading eyebrow="Compara antes de comprar">Tu compra, mejor de precio.</Heading>
       <Copy muted>
-        Compara precios del mismo producto por tienda y fecha. La información sobre gluten te ayuda
-        a elegir también según tus necesidades.
+        Busca un producto y compara su precio. O prepara tu cesta para comparar la compra.
       </Copy>
       <View style={{ gap: 12 }}>
-        <View
-          accessible={false}
-          importantForAccessibility="no-hide-descendants"
-          style={{
-            backgroundColor: c.soft,
-            borderTopLeftRadius: 72,
-            borderTopRightRadius: 72,
-            borderBottomLeftRadius: 8,
-            borderBottomRightRadius: 8,
-            height: 120,
-            alignItems: 'center',
-            justifyContent: 'center',
-          }}
-        >
-          <Ionicons name="pricetags-outline" size={82} color={c.accent} />
-        </View>
         <Action
           title="Comparar precios"
           icon="pricetags-outline"
@@ -72,22 +52,17 @@ export default function HomeScreen() {
         </View>
         {data.history.length ? (
           data.history
-            .slice(0, 3)
+            .slice(0, 2)
             .map((entry) => <ProductRow key={entry.id} product={entry} date={entry.scannedAt} />)
         ) : (
-          <Copy muted>
-            Tu biblioteca empieza con el primer producto que consultes. Se guardará en este
-            dispositivo.
-          </Copy>
+          <Copy muted>Aquí encontrarás los productos que consultes.</Copy>
         )}
         <Action title="Abrir mi biblioteca" secondary onPress={() => router.navigate('/library')} />
       </Card>
       <View style={{ borderTopWidth: 1, borderColor: c.border, paddingTop: 20, gap: 8 }}>
-        <Copy>Precios con contexto, sin falsas ofertas.</Copy>
         <Copy muted>
-          Tus anotaciones son privadas. Las aportaciones públicas de Open Prices tienen cobertura
-          limitada y no garantizan stock ni precio actual. En la ficha puedes revisar también
-          gluten, trazas e ingredientes.
+          Sin cuenta. Tus datos se guardan en este dispositivo. Los precios disponibles pueden
+          cambiar; en cada ficha también puedes revisar la información sobre gluten.
         </Copy>
       </View>
     </Screen>

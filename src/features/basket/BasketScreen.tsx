@@ -7,6 +7,7 @@ import { normalizeBarcode } from '@/src/domain/barcode';
 import { useLibrary } from '@/src/features/library/useLibrary';
 import { Action, Card, Copy, Field, Heading, Notice, Screen } from '@/src/shared/ui';
 import { Confirm } from '@/src/shared/Confirm';
+import { Disclosure } from '@/src/shared/Disclosure';
 
 function BasketItem({
   line,
@@ -154,10 +155,7 @@ export function BasketScreen() {
   return (
     <Screen>
       <Heading eyebrow="Prepara tu próxima compra">Mi cesta</Heading>
-      <Copy muted>
-        Guarda los productos y el número de envases que necesitas. La cesta es privada y funciona
-        sin conexión.
-      </Copy>
+      <Copy muted>Añade productos, indica cuántos necesitas y compara el total.</Copy>
       {ready ? (
         <Copy>
           {data.basket.length} {data.basket.length === 1 ? 'producto' : 'productos'} · {packages}{' '}
@@ -169,11 +167,6 @@ export function BasketScreen() {
         icon="pricetags-outline"
         disabled={!ready || !data.basket.length}
         onPress={() => router.push('/basket-comparison')}
-      />
-      <Action
-        title="Formatos y alternativas"
-        secondary
-        onPress={() => router.push('/alternatives')}
       />
       {!ready && !error ? <ActivityIndicator /> : null}
       {error ? (
@@ -187,32 +180,34 @@ export function BasketScreen() {
         </>
       ) : null}
       <Card>
-        <Field
-          label="Código para añadir a la cesta"
-          placeholder="EAN o UPC del producto"
-          value={code}
-          onChangeText={setCode}
-          keyboardType="number-pad"
-          maxLength={24}
-          editable={ready && !busy}
-        />
-        <Action
-          title="Añadir código a la cesta"
-          icon="add-outline"
-          disabled={!ready || busy || !code.trim()}
-          onPress={() => void addCode()}
-        />
-        <Action
-          title="Elegir de mi biblioteca"
-          secondary
-          onPress={() => router.navigate('/library')}
-        />
         <Action
           title="Escanear un producto"
           secondary
           icon="scan-outline"
           onPress={() => router.navigate('/scan')}
         />
+        <Action
+          title="Elegir de mi biblioteca"
+          secondary
+          onPress={() => router.navigate('/library')}
+        />
+        <Disclosure title="Añadir por código">
+          <Field
+            label="Código para añadir a la cesta"
+            placeholder="EAN o UPC del producto"
+            value={code}
+            onChangeText={setCode}
+            keyboardType="number-pad"
+            maxLength={24}
+            editable={ready && !busy}
+          />
+          <Action
+            title="Añadir código a la cesta"
+            icon="add-outline"
+            disabled={!ready || busy || !code.trim()}
+            onPress={() => void addCode()}
+          />
+        </Disclosure>
       </Card>
       {message ? <Notice error={failed}>{message}</Notice> : null}
       {ready && !data.basket.length ? (
@@ -243,31 +238,38 @@ export function BasketScreen() {
           onPress={() => setLimit((value) => value + 20)}
         />
       ) : null}
-      <View style={{ gap: 12 }}>
-        <Copy muted>
-          Hasta 100 productos distintos y 99 envases por producto. Repetir un código suma un envase.
-          Compara los totales por sucursal confirmada; los productos sin precio quedan como
-          faltantes.
-        </Copy>
-        <Copy muted>
-          La cesta se incluye al exportar y restaurar tus datos. Vaciarla conserva favoritos,
-          historial y precios.
-        </Copy>
+      <Disclosure title="Más opciones de la cesta">
         <Action
-          title="Copias y privacidad"
+          title="Formatos y alternativas"
           secondary
-          onPress={() => router.navigate('/settings')}
+          onPress={() => router.push('/alternatives')}
         />
-        {data.basket.length ? (
+        <View style={{ gap: 12 }}>
+          <Copy muted>
+            Hasta 100 productos distintos y 99 envases por producto. Repetir un código suma un
+            envase. Compara los totales por sucursal confirmada; los productos sin precio quedan
+            como faltantes.
+          </Copy>
+          <Copy muted>
+            La cesta se incluye al exportar y restaurar tus datos. Vaciarla conserva favoritos,
+            historial y precios.
+          </Copy>
           <Action
-            title="Vaciar cesta"
+            title="Copias y privacidad"
             secondary
-            danger
-            disabled={!ready || busy}
-            onPress={() => setConfirm({ basket: data.basket })}
+            onPress={() => router.navigate('/settings')}
           />
-        ) : null}
-      </View>
+          {data.basket.length ? (
+            <Action
+              title="Vaciar cesta"
+              secondary
+              danger
+              disabled={!ready || busy}
+              onPress={() => setConfirm({ basket: data.basket })}
+            />
+          ) : null}
+        </View>
+      </Disclosure>
       <Confirm
         visible={confirm !== null}
         title={confirm && 'line' in confirm ? 'Quitar producto de la cesta' : 'Vaciar cesta'}

@@ -1,3 +1,4 @@
+import { expandSection } from './helpers/disclosure';
 import { test, expect, type Page } from '@playwright/test';
 
 async function enlargeText(page: Page) {
@@ -83,6 +84,8 @@ test('biblioteca y unidades exponen la selección sin depender del color', async
   await expect(favorites).toHaveAttribute('aria-pressed', 'false');
   await expect(history).toHaveAttribute('aria-pressed', 'true');
   await page.goto('/prices');
+  await expandSection(page, 'Anotar un precio sin buscar el producto');
+  await expandSection(page, 'Fecha, formato y condiciones');
   const unit = page.getByRole('button', { name: 'Unidad', exact: true });
   const kg = page.getByRole('button', { name: 'Kilogramos', exact: true });
   await expect(unit).toHaveAttribute('aria-pressed', 'true');

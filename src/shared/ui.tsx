@@ -81,6 +81,7 @@ export function Action({
   busy = false,
   danger = false,
   selected,
+  expanded,
   accessibilityLabel,
 }: {
   title: string;
@@ -91,6 +92,7 @@ export function Action({
   busy?: boolean;
   danger?: boolean;
   selected?: boolean;
+  expanded?: boolean;
   accessibilityLabel?: string;
 }) {
   const c = usePalette();
@@ -102,9 +104,10 @@ export function Action({
       accessibilityState={{
         disabled: disabled || busy,
         busy,
+        ...(expanded === undefined ? {} : { expanded }),
         ...(Platform.OS === 'web' ? {} : { selected }),
       }}
-      {...(Platform.OS === 'web' ? { 'aria-pressed': selected } : {})}
+      {...(Platform.OS === 'web' ? { 'aria-pressed': selected, 'aria-expanded': expanded } : {})}
       disabled={disabled || busy}
       onPress={onPress}
       style={({ pressed }) => [

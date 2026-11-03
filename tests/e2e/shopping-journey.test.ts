@@ -1,3 +1,4 @@
+import { expandSection } from './helpers/disclosure';
 import { test, expect, type Page, type Route } from '@playwright/test';
 import { readFile } from 'node:fs/promises';
 import { items, privateRows, expected, groupName, seedCopy, publicRows } from './fixtures/shopping';
@@ -107,6 +108,7 @@ test('CAL-01: prepara, compara, sustituye y recupera la misma compra offline con
   for (const row of privateRows) {
     const item = items[row.item];
     await page.goto('/prices');
+    await expandSection(page, 'Anotar un precio sin buscar el producto');
     await page
       .getByRole('textbox', { name: 'Código de barras del producto', exact: true })
       .fill(item.code);
@@ -119,11 +121,12 @@ test('CAL-01: prepara, compara, sustituye y recupera la misma compra offline con
     await page
       .getByRole('textbox', { name: 'Sucursal o localidad', exact: true })
       .fill('Calle ' + row.shop + ' 1');
+    await expandSection(page, 'Fecha, formato y condiciones');
     await page
       .getByRole('textbox', { name: 'Cantidad del envase (opcional)', exact: true })
       .fill(item.amount);
     await page.getByRole('button', { name: item.unit, exact: true }).click();
-    await page.getByRole('button', { name: 'Guardar precio privado', exact: true }).click();
+    await page.getByRole('button', { name: 'Guardar precio', exact: true }).click();
     await expect(
       page.getByText('Precio guardado en este dispositivo.', { exact: true }),
     ).toBeVisible();
@@ -183,6 +186,7 @@ test('CAL-01: prepara, compara, sustituye y recupera la misma compra offline con
     page.getByText(/Sin precio para esta sucursal. No se asigna precio cero/),
   ).toBeVisible();
   await page.goto('/basket');
+  await expandSection(page, 'Más opciones de la cesta');
   await page.getByRole('button', { name: 'Formatos y alternativas', exact: true }).click();
   await page.getByRole('button', { name: 'Crear grupo de alternativas', exact: true }).click();
   await page.getByRole('textbox', { name: 'Nombre del grupo', exact: true }).fill(groupName);
@@ -311,6 +315,7 @@ test('CAL-01: vincular fuentes conserva precisión y excluye la oferta más reci
     page.getByText(/Oferta o notas excluidas por los filtros. No se asigna precio cero/),
   ).toBeVisible();
   await expect(page.getByText(/3 × 1,805.*5,415/)).toBeVisible();
+  await expandSection(page, 'Cambiar filtros de la cesta');
   await page
     .getByRole('button', { name: 'Incluir ofertas y anotaciones con notas', exact: true })
     .click();
@@ -326,6 +331,7 @@ test('CAL-01: vincular fuentes conserva precisión y excluye la oferta más reci
       { exact: true },
     ),
   ).toBeVisible();
+  await expandSection(page, 'Cambiar filtros de la cesta');
   await page.getByRole('button', { name: 'Precios públicos solo de España', exact: true }).click();
   await expect(
     page.getByText(
@@ -333,6 +339,7 @@ test('CAL-01: vincular fuentes conserva precisión y excluye la oferta más reci
       { exact: true },
     ),
   ).toBeVisible();
+  await expandSection(page, 'Cambiar filtros de la cesta');
   await page.getByRole('button', { name: 'Precios públicos solo de España', exact: true }).click();
   await page.goto('/settings');
   const copy = JSON.parse((await backup(page)).toString());

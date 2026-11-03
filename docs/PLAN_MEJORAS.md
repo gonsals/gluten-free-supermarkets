@@ -8,6 +8,7 @@ Actualizado el **03-11-2026**, conforme al enfoque acordado. La [hoja de ruta](H
 - Estados: **verificada**, **pendiente**, **bloqueada** o **condicionada**. «Verificada» incluye el alcance y las limitaciones de su evidencia; no implica validación externa.
 - Responsable por defecto: técnico que ejecute la tarea y documente resultado/commit. MAR-01 requiere decisión del propietario; GLU-01, revisión experta por designar; BET-01, coordinación y participantes por concretar. No son revisiones ya realizadas.
 - Un hito de datos no se entrega a medias: cesta, migración, copias y borrado forman una sola entrega revisable. No hay estimaciones de calendario sin disponibilidad y muestra.
+- Desde iteración 16, por petición del propietario: presentar primero el recorrido básico, conservar borradores al plegar opciones, exponer filtros activos y mantener accesibles las funciones avanzadas. [Guía breve de uso](USO_SENCILLO.md). La simplificación no levanta los bloqueos de seguridad o validación física.
 
 ## Base y siguiente entrega
 

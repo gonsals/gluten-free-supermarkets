@@ -5,6 +5,7 @@ import type { PriceObservation } from '@/src/domain/price';
 import { Action, Card, Copy, Field, Heading, Notice } from '@/src/shared/ui';
 import { usePublicPrices } from './usePublicPrices';
 import { UnitPrice } from './UnitPrice';
+import { Disclosure } from '@/src/shared/Disclosure';
 
 export function PriceComparison({
   barcode,
@@ -42,8 +43,7 @@ export function PriceComparison({
     <>
       <Heading eyebrow="Mismo código, mismo envase">Dónde sale mejor</Heading>
       <Copy muted>
-        Comparamos observaciones por sucursal. Los precios pueden cambiar y no garantizan
-        existencias. Una marca de supermercado no demuestra que tenga el menor precio.
+        Precios disponibles para este envase. Pueden cambiar; comprueba la tienda y la fecha.
       </Copy>
       {remote.error ? <Notice error>{remote.error}</Notice> : null}
       {remote.loading && cheapest ? (
@@ -76,42 +76,50 @@ export function PriceComparison({
               : 'No hay precios que cumplan estos filtros. No significa que el producto no se venda. Puedes ampliar los filtros o anotar un precio que hayas visto.'}
         </Notice>
       )}
-      <Field
-        label="Filtrar tienda o localidad"
-        value={location}
-        onChangeText={(value) => {
-          setLocation(value);
-          setLimit(20);
-        }}
-        placeholder="Ej. Mercadona o Madrid"
-      />
-      <Action
-        title="Solo precios de los últimos 7 días"
-        selected={recentOnly}
-        secondary={!recentOnly}
-        onPress={() => {
-          setRecentOnly((value) => !value);
-          setLimit(20);
-        }}
-      />
-      <Action
-        title="Incluir ofertas y anotaciones con notas"
-        selected={offers}
-        secondary={!offers}
-        onPress={() => {
-          setOffers((value) => !value);
-          setLimit(20);
-        }}
-      />
-      <Action
-        title="Precios públicos solo de España"
-        selected={spainOnly}
-        secondary={!spainOnly}
-        onPress={() => {
-          setSpainOnly((value) => !value);
-          setLimit(20);
-        }}
-      />
+      <Copy muted>
+        {recentOnly ? 'Últimos 7 días' : 'Todas las fechas'} ·{' '}
+        {offers ? 'Con condiciones' : 'Sin ofertas'} ·{' '}
+        {spainOnly ? 'España (precios públicos)' : 'Todos los países'}
+        {location.trim() ? ` · Tienda o localidad: ${location.trim()}` : ''}
+      </Copy>
+      <Disclosure title="Cambiar filtros de precios">
+        <Field
+          label="Filtrar tienda o localidad"
+          value={location}
+          onChangeText={(value) => {
+            setLocation(value);
+            setLimit(20);
+          }}
+          placeholder="Ej. Mercadona o Madrid"
+        />
+        <Action
+          title="Solo precios de los últimos 7 días"
+          selected={recentOnly}
+          secondary={!recentOnly}
+          onPress={() => {
+            setRecentOnly((value) => !value);
+            setLimit(20);
+          }}
+        />
+        <Action
+          title="Incluir ofertas y anotaciones con notas"
+          selected={offers}
+          secondary={!offers}
+          onPress={() => {
+            setOffers((value) => !value);
+            setLimit(20);
+          }}
+        />
+        <Action
+          title="Precios públicos solo de España"
+          selected={spainOnly}
+          secondary={!spainOnly}
+          onPress={() => {
+            setSpainOnly((value) => !value);
+            setLimit(20);
+          }}
+        />
+      </Disclosure>
       {!recentOnly || offers ? (
         <Notice>
           Has ampliado la comparación a datos antiguos, ofertas o anotaciones con notas. No es una
@@ -162,20 +170,25 @@ export function PriceComparison({
       <Card>
         <Copy>Precios públicos de Open Prices</Copy>
         <Copy muted>
-          Datos colaborativos de Open Food Facts · ODbL. No es un catálogo completo ni una tarifa
-          oficial del supermercado. España filtra solo las aportaciones públicas; revisa siempre la
-          localidad de tus anotaciones.
+          Precios: Open Prices/ODbL. Ubicaciones: © OpenStreetMap contributors/ODbL.
         </Copy>
-        <Copy muted>
-          Consultar envía a Open Prices el código de este producto y los datos técnicos de conexión.
-          Tus precios, notas y biblioteca no se envían.
-        </Copy>
-        <Copy muted>Ubicaciones: © OpenStreetMap contributors, bajo ODbL.</Copy>
-        <Action
-          title="Atribución de OpenStreetMap"
-          secondary
-          onPress={() => void open('https://www.openstreetmap.org/copyright')}
-        />
+        <Disclosure title="Sobre estos precios y privacidad">
+          <Copy muted>
+            Datos colaborativos de Open Food Facts · ODbL. No es un catálogo completo ni una tarifa
+            oficial del supermercado. España filtra solo las aportaciones públicas; revisa siempre
+            la localidad de tus anotaciones.
+          </Copy>
+          <Copy muted>
+            Consultar envía a Open Prices el código de este producto y los datos técnicos de
+            conexión. Tus precios, notas y biblioteca no se envían.
+          </Copy>
+          <Copy muted>Ubicaciones: © OpenStreetMap contributors, bajo ODbL.</Copy>
+          <Action
+            title="Atribución de OpenStreetMap"
+            secondary
+            onPress={() => void open('https://www.openstreetmap.org/copyright')}
+          />
+        </Disclosure>
         {remote.loading ? <Notice>Consultando precios públicos…</Notice> : null}
         {remote.result ? (
           <Copy muted>

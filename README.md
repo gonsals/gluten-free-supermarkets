@@ -8,6 +8,8 @@ App de compra en **Expo 58, React 19 y React Native 0.88**, enfocada en comparar
 
 ## Funcionalidades
 
+**Uso más sencillo, iteración 16:** inicio más corto, formulario de precio con los datos esenciales y opciones secundarias desplegables. Los filtros conservan un resumen visible y cerrar opciones no borra el borrador. [Guía de uso en tres pasos](docs/USO_SENCILLO.md).
+
 - Inicio propio, navegación en español, iconos de marca y tema claro/oscuro.
 - Entrada manual EAN/UPC con validación de formato y dígito de control, conservando ceros iniciales.
 - Cámara trasera, linterna, permisos y recuperación mediante entrada manual. La cámara se desmonta al perder foco o pasar a segundo plano.

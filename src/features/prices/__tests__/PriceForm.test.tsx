@@ -17,7 +17,7 @@ test('sugiere Mercadona por Hacendado y guarda la tienda corregida por la person
   await fireEvent.changeText(store, 'Otra tienda');
   await fireEvent.changeText(screen.getByLabelText('Precio en euros'), '2,49');
   await fireEvent.changeText(screen.getByLabelText('Sucursal o localidad'), 'Madrid');
-  await fireEvent.press(screen.getByRole('button', { name: 'Guardar precio privado' }));
+  await fireEvent.press(screen.getByRole('button', { name: 'Guardar precio' }));
   await waitFor(() =>
     expect(mockAddPrice).toHaveBeenCalledWith(
       expect.objectContaining({ store: 'Otra tienda', amountMinor: 249, barcode: BARCODE }),

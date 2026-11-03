@@ -5,6 +5,7 @@ import { normalizeBarcode } from '@/src/domain/barcode';
 import { calendarDate, calendarInstant } from '@/src/domain/calendar';
 import { parseAmount, type PriceObservation } from '@/src/domain/price';
 import { Action, Card, Copy, Field, Notice } from '@/src/shared/ui';
+import { Disclosure } from '@/src/shared/Disclosure';
 import { useLibrary } from '@/src/features/library/useLibrary';
 import { useCachedProduct } from '@/src/features/products/useCachedProduct';
 import { storeSuggestions } from '@/src/domain/stores';
@@ -73,10 +74,7 @@ export function PriceForm({ barcode, product }: { barcode?: string; product?: Pr
   return (
     <Card>
       <Copy>Anotar un precio</Copy>
-      <Copy muted>
-        Registra lo que has visto en una tienda concreta. Guardarlo aquí no lo publica ni confirma
-        disponibilidad.
-      </Copy>
+      <Copy muted>Indica el precio y dónde lo has visto. Se guarda solo en este dispositivo.</Copy>
       {!barcode ? (
         <Field
           label="Código de barras del producto"
@@ -133,70 +131,76 @@ export function PriceForm({ barcode, product }: { barcode?: string; product?: Pr
         maxLength={150}
         placeholder="Localidad y dirección de la sucursal"
       />
-      <Field
-        label="Fecha de observación (AAAA-MM-DD)"
-        value={date}
-        onChangeText={setDate}
-        maxLength={10}
-      />
-      <Field
-        label="Cantidad del envase (opcional)"
-        value={quantity}
-        onChangeText={setQuantity}
-        keyboardType="decimal-pad"
-        placeholder="Ej. 0,5"
-        maxLength={10}
-      />
-      <Field
-        label="Componentes del pack"
-        value={components}
-        onChangeText={setComponents}
-        keyboardType="number-pad"
-        maxLength={2}
-      />
-      <Copy muted>
-        Indica el contenido de cada componente y cuántos incluye el precio. Ejemplo: 6 × 330 ml. No
-        se deduce del nombre.
-      </Copy>
-      <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 8 }}>
-        {(['unit', 'kg', 'g', 'l', 'ml'] as const).map((value) => (
-          <View key={value} style={{ minWidth: 80 }}>
-            <Action
-              title={value === 'unit' ? 'unidad' : value}
-              accessibilityLabel={
-                value === 'unit'
-                  ? 'Unidad'
-                  : value === 'kg'
-                    ? 'Kilogramos'
-                    : value === 'g'
-                      ? 'Gramos'
-                      : value === 'ml'
-                        ? 'Mililitros'
-                        : 'Litros'
-              }
-              selected={unit === value}
-              secondary={unit !== value}
-              onPress={() => setUnit(value)}
-            />
-          </View>
-        ))}
-      </View>
-      <Field
-        label="Fin de oferta (opcional, AAAA-MM-DD)"
-        value={offer}
-        onChangeText={setOffer}
-        maxLength={10}
-      />
-      <Field
-        label="Condiciones o notas (opcional)"
-        value={notes}
-        onChangeText={setNotes}
-        multiline
-        maxLength={500}
-      />
+      <Copy muted>Fecha del precio: {date}.</Copy>
+      <Disclosure title="Fecha, formato y condiciones">
+        <Field
+          label="Fecha de observación (AAAA-MM-DD)"
+          value={date}
+          onChangeText={setDate}
+          maxLength={10}
+        />
+        <Field
+          label="Cantidad del envase (opcional)"
+          value={quantity}
+          onChangeText={setQuantity}
+          keyboardType="decimal-pad"
+          placeholder="Ej. 0,5"
+          maxLength={10}
+        />
+        <Field
+          label="Componentes del pack"
+          value={components}
+          onChangeText={setComponents}
+          keyboardType="number-pad"
+          maxLength={2}
+        />
+        <Copy muted>
+          Indica el contenido de cada componente y cuántos incluye el precio. Ejemplo: 6 × 330 ml.
+          No se deduce del nombre.
+        </Copy>
+        <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 8 }}>
+          {(['unit', 'kg', 'g', 'l', 'ml'] as const).map((value) => (
+            <View key={value} style={{ minWidth: 80 }}>
+              <Action
+                title={value === 'unit' ? 'unidad' : value}
+                accessibilityLabel={
+                  value === 'unit'
+                    ? 'Unidad'
+                    : value === 'kg'
+                      ? 'Kilogramos'
+                      : value === 'g'
+                        ? 'Gramos'
+                        : value === 'ml'
+                          ? 'Mililitros'
+                          : 'Litros'
+                }
+                selected={unit === value}
+                secondary={unit !== value}
+                onPress={() => setUnit(value)}
+              />
+            </View>
+          ))}
+        </View>
+        <Field
+          label="Fin de oferta (opcional, AAAA-MM-DD)"
+          value={offer}
+          onChangeText={setOffer}
+          maxLength={10}
+        />
+        <Field
+          label="Condiciones o notas (opcional)"
+          value={notes}
+          onChangeText={setNotes}
+          multiline
+          maxLength={500}
+        />
+      </Disclosure>
+      {offer || notes.trim() ? (
+        <Copy muted>Este precio incluye condiciones. Revísalas antes de guardarlo.</Copy>
+      ) : null}
       {message ? <Notice>{message}</Notice> : null}
       <Action
-        title="Guardar precio privado"
+        title="Guardar precio"
         onPress={() => void save()}
         disabled={!ready}
         busy={busy}

@@ -1,9 +1,11 @@
+import { expandSection } from './helpers/disclosure';
 import { test, expect, type Page } from '@playwright/test';
 import { readFile } from 'node:fs/promises';
 
 const code = '3274080005003';
 const other = '3017620422003';
 async function addCode(page: Page, barcode = code) {
+  await expandSection(page, 'Añadir por código');
   await page
     .getByRole('textbox', { name: 'Código para añadir a la cesta', exact: true })
     .fill(barcode);
@@ -124,6 +126,7 @@ test('código sin ficha, validación de envases y cancelación/eliminación de c
   await save.click();
   await expect(quantity).toHaveValue('99');
   await addCode(page, other);
+  await expandSection(page, 'Más opciones de la cesta');
   await page.getByRole('button', { name: 'Vaciar cesta', exact: true }).click();
   await page.getByRole('button', { name: 'Cancelar', exact: true }).click();
   await expect(quantity).toHaveValue('99');
@@ -132,6 +135,7 @@ test('código sin ficha, validación de envases y cancelación/eliminación de c
     .click();
   await page.getByRole('button', { name: 'Confirmar eliminación', exact: true }).click();
   await expect(quantity).toHaveCount(0);
+  await expandSection(page, 'Más opciones de la cesta');
   await page.getByRole('button', { name: 'Vaciar cesta', exact: true }).click();
   await page.getByRole('button', { name: 'Confirmar eliminación', exact: true }).click();
   await expect(page.getByText(/Tu cesta está vacía/)).toBeVisible();
@@ -143,6 +147,7 @@ test('dos pestañas no borran cambios posteriores a abrir la confirmación', asy
 }) => {
   await page.goto('/basket');
   await addCode(page);
+  await expandSection(page, 'Más opciones de la cesta');
   await page.getByRole('button', { name: 'Vaciar cesta', exact: true }).click();
   const second = await context.newPage();
   await second.goto('/basket');
@@ -250,6 +255,7 @@ test('una pestaña antigua bloquea la actualización con salida explícita, sin 
   const current = await context.newPage();
   await current.goto('/basket');
   await expect(current.getByText(/Cierra las otras pestañas/)).toBeVisible();
+  await expandSection(current, 'Añadir por código');
   await expect(
     current.getByRole('button', { name: 'Añadir código a la cesta', exact: true }),
   ).toBeDisabled();
@@ -273,6 +279,7 @@ for (const colorScheme of ['light', 'dark'] as const) {
       content:
         'div,span,input,button,a { font-size: 26px !important; line-height: 1.5 !important; }',
     });
+    await expandSection(page, 'Más opciones de la cesta');
     await page.getByRole('button', { name: 'Vaciar cesta', exact: true }).click();
     const confirm = page
       .getByRole('dialog')

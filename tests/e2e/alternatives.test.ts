@@ -1,3 +1,4 @@
+import { expandSection } from './helpers/disclosure';
 import { test, expect, type Page } from '@playwright/test';
 import { readFile } from 'node:fs/promises';
 import { normalizeProduct } from '../../src/domain/product';
@@ -86,6 +87,7 @@ async function seed(
   await page.getByRole('button', { name: 'Sustituir y restaurar', exact: true }).click();
   await expect(page.getByText(/Copia restaurada en este dispositivo/)).toBeVisible();
   await page.goto('/basket');
+  await expandSection(page, 'Más opciones de la cesta');
   await page.getByRole('button', { name: 'Formatos y alternativas', exact: true }).click();
   if (options.group)
     await page.getByRole('button', { name: 'Comparar grupo ' + group.name, exact: true }).click();
@@ -225,12 +227,13 @@ test('anotar multipack conserva cantidad normalizada y precio por litro', async 
   await page.getByRole('textbox', { name: 'Precio en euros', exact: true }).fill('3,96');
   await page.getByRole('textbox', { name: 'Supermercado o tienda', exact: true }).fill('Mi tienda');
   await page.getByRole('textbox', { name: 'Sucursal o localidad', exact: true }).fill('Calle 1');
+  await expandSection(page, 'Fecha, formato y condiciones');
   await page
     .getByRole('textbox', { name: 'Cantidad del envase (opcional)', exact: true })
     .fill('330');
   await page.getByRole('textbox', { name: 'Componentes del pack', exact: true }).fill('6');
   await page.getByRole('button', { name: 'Mililitros', exact: true }).click();
-  await page.getByRole('button', { name: 'Guardar precio privado', exact: true }).click();
+  await page.getByRole('button', { name: 'Guardar precio', exact: true }).click();
   await expect(
     page.getByText('Precio guardado en este dispositivo.', { exact: true }),
   ).toBeVisible();

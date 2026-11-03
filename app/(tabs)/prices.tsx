@@ -9,6 +9,7 @@ import { glutenCopy } from '@/src/domain/product';
 import { compareQuotes, privateQuotes, quoteMoney } from '@/src/domain/comparison';
 import type { ProductSummary } from '@/src/data/local/library';
 import { AddToBasket } from '@/src/features/basket/AddToBasket';
+import { Disclosure } from '@/src/shared/Disclosure';
 
 export default function PricesScreen() {
   const router = useRouter();
@@ -59,11 +60,7 @@ export default function PricesScreen() {
         icon="basket-outline"
         onPress={() => router.push('/basket')}
       />
-      <Copy muted>
-        Busca un producto para consultar aportaciones públicas y tus anotaciones por tienda. La
-        comparación usa el mismo código y envase; no es un catálogo completo ni garantiza
-        existencias.
-      </Copy>
+      <Copy muted>Escanea un producto o escribe su código para ver los precios disponibles.</Copy>
       <Card>
         <Field
           label="Código para comparar precios"
@@ -90,20 +87,25 @@ export default function PricesScreen() {
         }}
         placeholder="Nombre, marca o código"
       />
-      <Action
-        title="Solo productos con declaración sin gluten"
-        selected={glutenFreeOnly}
-        secondary={!glutenFreeOnly}
-        onPress={() => {
-          setGlutenFreeOnly((value) => !value);
-          setLimit(20);
-        }}
-      />
+      <Disclosure title="Filtrar productos guardados">
+        <Action
+          title="Solo productos con declaración sin gluten"
+          selected={glutenFreeOnly}
+          secondary={!glutenFreeOnly}
+          onPress={() => {
+            setGlutenFreeOnly((value) => !value);
+            setLimit(20);
+          }}
+        />
+        {glutenFreeOnly ? (
+          <Copy muted>
+            Este filtro describe una declaración de la fuente; comprueba trazas y envase. No
+            certifica aptitud.
+          </Copy>
+        ) : null}
+      </Disclosure>
       {glutenFreeOnly ? (
-        <Copy muted>
-          Este filtro describe una declaración de la fuente; comprueba trazas y envase. No certifica
-          aptitud.
-        </Copy>
+        <Copy muted>Filtro activo: productos con declaración sin gluten.</Copy>
       ) : null}
       {matching.slice(0, limit).map((item) => {
         const quotes = compareQuotes(localQuotes, { barcode: item.barcode, recentOnly: true });
@@ -143,21 +145,25 @@ export default function PricesScreen() {
             : 'Escanea o introduce un código para empezar. También puedes anotar precios manualmente.'}
         </Notice>
       ) : null}
-      <PriceForm />
-      <Field
-        label="Filtrar mis precios"
-        placeholder="Código, tienda o localidad"
-        value={priceQuery}
-        onChangeText={setPriceQuery}
-      />
-      <PriceList
-        prices={data.prices.filter((x) =>
-          `${x.barcode} ${x.store} ${x.location}`
-            .toLocaleLowerCase('es')
-            .includes(priceQuery.trim().toLocaleLowerCase('es')),
-        )}
-        onDelete={(id) => repository.deletePrice(id)}
-      />
+      <Disclosure title="Anotar un precio sin buscar el producto">
+        <PriceForm />
+      </Disclosure>
+      <Disclosure title={`Mis precios guardados (${data.prices.length})`}>
+        <Field
+          label="Filtrar mis precios"
+          placeholder="Código, tienda o localidad"
+          value={priceQuery}
+          onChangeText={setPriceQuery}
+        />
+        <PriceList
+          prices={data.prices.filter((x) =>
+            `${x.barcode} ${x.store} ${x.location}`
+              .toLocaleLowerCase('es')
+              .includes(priceQuery.trim().toLocaleLowerCase('es')),
+          )}
+          onDelete={(id) => repository.deletePrice(id)}
+        />
+      </Disclosure>
     </Screen>
   );
 }

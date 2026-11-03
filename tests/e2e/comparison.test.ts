@@ -1,3 +1,4 @@
+import { expandSection } from './helpers/disclosure';
 import { test, expect, type Page } from '@playwright/test';
 
 const code = '3274080005003';
@@ -93,7 +94,7 @@ test('desde la ficha propone el supermercado, permite corregirlo y compara preci
     .fill('Tienda elegida');
   await page.getByRole('textbox', { name: 'Precio en euros', exact: true }).fill('2,49');
   await page.getByRole('textbox', { name: 'Sucursal o localidad', exact: true }).fill('Madrid');
-  await page.getByRole('button', { name: 'Guardar precio privado', exact: true }).click();
+  await page.getByRole('button', { name: 'Guardar precio', exact: true }).click();
   await expect(
     page.getByText('Precio guardado en este dispositivo.', { exact: true }),
   ).toBeVisible();
@@ -104,6 +105,7 @@ test('desde la ficha propone el supermercado, permite corregirlo y compara preci
       (request) => request.method === 'GET' && !request.url.includes('Tienda%20elegida'),
     ),
   ).toBe(true);
+  await expandSection(page, 'Cambiar filtros de precios');
   await page
     .getByRole('button', { name: 'Incluir ofertas y anotaciones con notas', exact: true })
     .click();
@@ -123,12 +125,14 @@ test('el comparador distingue ámbito geográfico, ofertas y filtros sin afirmar
   await routes(page);
   await page.goto(`/prices/${code}`);
   await expect(page.getByText(/^Menor precio entre los datos comparables:/)).toContainText('1,99');
+  await expandSection(page, 'Cambiar filtros de precios');
   await page.getByRole('button', { name: 'Precios públicos solo de España', exact: true }).click();
   await expect(page.getByText(/^Menor precio entre los datos comparables:/)).toContainText('1,00');
   await page
     .getByRole('textbox', { name: 'Filtrar tienda o localidad', exact: true })
     .fill('No existe');
   await expect(page.getByText(/No hay precios que cumplan estos filtros/)).toBeVisible();
+  await expandSection(page, 'Sobre estos precios y privacidad');
   await expect(page.getByText(/No es un catálogo completo ni una tarifa oficial/)).toBeVisible();
 });
 
@@ -154,6 +158,7 @@ test('el inicio prioriza comparar y conserva el filtro adicional sobre gluten', 
   await page.goto('/');
   await page.getByRole('button', { name: 'Comparar precios', exact: true }).click();
   await expect(page.getByRole('heading', { name: 'Comparar precios', exact: true })).toBeVisible();
+  await expandSection(page, 'Filtrar productos guardados');
   await page
     .getByRole('button', { name: 'Solo productos con declaración sin gluten', exact: true })
     .click();

@@ -1,3 +1,4 @@
+import { expandSection } from './helpers/disclosure';
 import { test, expect, type Page } from '@playwright/test';
 import { readFile, writeFile } from 'node:fs/promises';
 
@@ -38,6 +39,7 @@ async function createCopy(page: Page) {
     page.getByRole('button', { name: 'Quitar de favoritos', exact: true }),
   ).toBeVisible();
   await page.goto('/prices');
+  await expandSection(page, 'Anotar un precio sin buscar el producto');
   await page
     .getByRole('textbox', { name: 'Código de barras del producto', exact: true })
     .fill(code);
@@ -46,7 +48,7 @@ async function createCopy(page: Page) {
     .getByRole('textbox', { name: 'Supermercado o tienda', exact: true })
     .fill('Tienda de copia');
   await page.getByRole('textbox', { name: 'Sucursal o localidad', exact: true }).fill('Madrid');
-  await page.getByRole('button', { name: 'Guardar precio privado', exact: true }).click();
+  await page.getByRole('button', { name: 'Guardar precio', exact: true }).click();
   await expect(
     page.getByText('Precio guardado en este dispositivo.', { exact: true }),
   ).toBeVisible();

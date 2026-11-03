@@ -1,3 +1,4 @@
+import { expandSection } from './helpers/disclosure';
 import { test, expect } from '@playwright/test';
 import { readFile, writeFile } from 'node:fs/promises';
 import { resolve } from 'node:path';
@@ -178,6 +179,7 @@ test('una jerarquía de etiquetas inválida muestra contradicción y conserva la
 });
 test('anota un precio privado y lo conserva tras recargar', async ({ page }) => {
   await page.goto('/prices');
+  await expandSection(page, 'Anotar un precio sin buscar el producto');
   await page
     .getByRole('textbox', { name: 'Código de barras del producto', exact: true })
     .fill(code);
@@ -188,11 +190,12 @@ test('anota un precio privado y lo conserva tras recargar', async ({ page }) => 
   await page
     .getByRole('textbox', { name: 'Sucursal o localidad', exact: true })
     .fill('Madrid, sucursal de prueba');
-  await page.getByRole('button', { name: 'Guardar precio privado', exact: true }).click();
+  await page.getByRole('button', { name: 'Guardar precio', exact: true }).click();
   await expect(
     page.getByText('Precio guardado en este dispositivo.', { exact: true }),
   ).toBeVisible();
   await page.reload();
+  await expandSection(page, 'Mis precios guardados (1)');
   await expect(
     page.getByText('Tienda de prueba · Madrid, sucursal de prueba', { exact: true }),
   ).toBeVisible();
@@ -209,6 +212,7 @@ test('exporta la biblioteca y permite cancelar o confirmar su borrado sin dejar 
     page.getByRole('button', { name: 'Quitar de favoritos', exact: true }),
   ).toBeVisible();
   await page.goto('/prices');
+  await expandSection(page, 'Anotar un precio sin buscar el producto');
   await page
     .getByRole('textbox', { name: 'Código de barras del producto', exact: true })
     .fill(code);
@@ -217,7 +221,7 @@ test('exporta la biblioteca y permite cancelar o confirmar su borrado sin dejar 
     .getByRole('textbox', { name: 'Supermercado o tienda', exact: true })
     .fill('Exportación prueba');
   await page.getByRole('textbox', { name: 'Sucursal o localidad', exact: true }).fill('Madrid');
-  await page.getByRole('button', { name: 'Guardar precio privado', exact: true }).click();
+  await page.getByRole('button', { name: 'Guardar precio', exact: true }).click();
   await expect(
     page.getByText('Precio guardado en este dispositivo.', { exact: true }),
   ).toBeVisible();

@@ -116,6 +116,7 @@ Cada tarea del [backlog](PLAN_MEJORAS.md) tiene ID estable, prioridad, estado, d
 
 | Fecha | Decisión vigente |
 | --- | --- |
+| 03-11-2026 | Petición de simplificar: iteración 16 reduce información inicial y agrupa opciones secundarias; contrastar facilidad de uso antes de ampliar funciones. [Guía](USO_SENCILLO.md). |
 | 24-10-2026 | Versión local sin costes de backend; cuentas y nube fuera del alcance obligatorio. |
 | 25-10-2026 | B · Mesa elegida y aplicada; sustituye el desacuerdo con la identidad inicial. |
 | 26-10-2026 | Precio y compra económica como núcleo, gluten complementario y supermercado sugerido editable. |

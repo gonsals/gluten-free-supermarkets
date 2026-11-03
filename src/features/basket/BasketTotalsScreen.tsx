@@ -7,6 +7,7 @@ import { compareBasket, missingCopy, type ComparedBasket } from '@/src/domain/ba
 import { Action, Card, Copy, Field, Heading, Notice, Screen } from '@/src/shared/ui';
 import { useBasketPrices } from './useBasketPrices';
 import { BranchManager } from './BranchManager';
+import { Disclosure } from '@/src/shared/Disclosure';
 
 function BasketEstimate({ estimate }: { estimate: ComparedBasket }) {
   const router = useRouter();
@@ -184,8 +185,8 @@ function BasketTotals() {
     <Screen>
       <Heading eyebrow="Mismos productos y envases">Total de tu cesta</Heading>
       <Copy muted>
-        Estimaciones por sucursal confirmada, con cantidades y precios observados. Solo comparamos
-        totales con todos los productos cubiertos; no garantizan stock ni precio de caja.
+        Compara cuánto costaría tu cesta en cada tienda. Si faltan precios, verás un subtotal
+        separado. Los importes pueden cambiar.
       </Copy>
       <Action title="Editar mi cesta" secondary onPress={() => router.navigate('/basket')} />
       {error ? (
@@ -219,47 +220,72 @@ function BasketTotals() {
           se muestran aparte de cualquier ranking completo.
         </Notice>
       ) : null}
-      <Field
-        label="Filtrar sucursales de la cesta"
-        value={location}
-        onChangeText={(value) => {
-          setLocation(value);
-          setLimit(10);
-        }}
-        placeholder="Nombre o dirección confirmados"
-      />
-      <Action
-        title="Solo precios de los últimos 7 días"
-        selected={recentOnly}
-        secondary={!recentOnly}
-        onPress={() => setRecent((value) => !value)}
-      />
-      <Action
-        title="Incluir ofertas y anotaciones con notas"
-        selected={includeOffers}
-        secondary={!includeOffers}
-        onPress={() => setOffers((value) => !value)}
-      />
-      <Action
-        title="Precios públicos solo de España"
-        selected={publicSpainOnly}
-        secondary={!publicSpainOnly}
-        onPress={() => setSpain((value) => !value)}
-      />
+      <Copy muted>
+        {recentOnly ? 'Últimos 7 días' : 'Todas las fechas'} ·{' '}
+        {includeOffers ? 'Con condiciones' : 'Sin ofertas'} ·{' '}
+        {publicSpainOnly ? 'España (precios públicos)' : 'Todos los países'}
+        {location.trim() ? ` · Tienda o dirección: ${location.trim()}` : ''}
+      </Copy>
       {!recentOnly || includeOffers ? (
         <Notice>
           Has ampliado los filtros a precios antiguos o con condiciones. Las ofertas vencidas se
           excluyen siempre. Revisa cada observación.
         </Notice>
       ) : null}
+      {ready && data.basket.length
+        ? estimates
+            .slice(0, limit)
+            .map((estimate) => <BasketEstimate key={estimate.branch.id} estimate={estimate} />)
+        : null}
+      {estimates.length > limit ? (
+        <Action
+          title="Mostrar 10 sucursales más"
+          secondary
+          onPress={() => setLimit((value) => value + 10)}
+        />
+      ) : null}
+      <Disclosure title="Cambiar filtros de la cesta">
+        <Field
+          label="Filtrar sucursales de la cesta"
+          value={location}
+          onChangeText={(value) => {
+            setLocation(value);
+            setLimit(10);
+          }}
+          placeholder="Nombre o dirección confirmados"
+        />
+        <Action
+          title="Solo precios de los últimos 7 días"
+          selected={recentOnly}
+          secondary={!recentOnly}
+          onPress={() => setRecent((value) => !value)}
+        />
+        <Action
+          title="Incluir ofertas y anotaciones con notas"
+          selected={includeOffers}
+          secondary={!includeOffers}
+          onPress={() => setOffers((value) => !value)}
+        />
+        <Action
+          title="Precios públicos solo de España"
+          selected={publicSpainOnly}
+          secondary={!publicSpainOnly}
+          onPress={() => setSpain((value) => !value)}
+        />
+      </Disclosure>
       <Card>
-        <Copy>Fuentes públicas bajo demanda</Copy>
+        <Copy>Buscar más precios</Copy>
         <Copy muted>
-          Consultar envía a Open Prices códigos de hasta 10 productos por acción y datos de
-          conexión, sin notas ni precios privados. Una página de hasta 50 registros por producto;
-          sin paginación automática ni descarga de toda la cesta. Los resultados solo permanecen en
-          memoria y pueden ser incompletos.
+          Consulta Open Prices sin enviar tus anotaciones privadas. La cobertura puede ser limitada.
         </Copy>
+        <Disclosure title="Cómo se consultan los precios públicos">
+          <Copy muted>
+            Consultar envía a Open Prices códigos de hasta 10 productos por acción y datos de
+            conexión, sin notas ni precios privados. Una página de hasta 50 registros por producto;
+            sin paginación automática ni descarga de toda la cesta. Los resultados solo permanecen
+            en memoria y pueden ser incompletos.
+          </Copy>
+        </Disclosure>
         <Copy muted>
           {Object.keys(remote.pages).length}/{codes.length} productos consultados correctamente ·{' '}
           {Object.keys(remote.errors).length} consultas con error. Un resultado vacío no demuestra
@@ -305,22 +331,9 @@ function BasketTotals() {
         onPress={() => setManage((value) => !value)}
       />
       {manage ? <BranchManager quotes={quotes} /> : null}
-      {ready && data.basket.length
-        ? estimates
-            .slice(0, limit)
-            .map((estimate) => <BasketEstimate key={estimate.branch.id} estimate={estimate} />)
-        : null}
-      {estimates.length > limit ? (
-        <Action
-          title="Mostrar 10 sucursales más"
-          secondary
-          onPress={() => setLimit((value) => value + 10)}
-        />
-      ) : null}
       <Copy muted>
-        Se suman precios de envase × cantidades enteras, conservando milésimas de euro. No incluye
-        desplazamiento, envío, disponibilidad ni ventajas de fidelidad no indicadas. El menor total
-        corresponde solo a esta muestra y estos filtros.
+        Totales estimados con los precios disponibles. No incluyen desplazamiento ni envío, y no
+        garantizan existencias. Revisa las condiciones antes de comprar.
       </Copy>
     </Screen>
   );
