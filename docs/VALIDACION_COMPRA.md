@@ -2,6 +2,8 @@
 
 **Iteración 14, 30-10-2026. Tramo técnico verificado con datos sintéticos; compra real pendiente.** Responsable técnico: Codex, base `52ad242`. Se prueba el recorrido en navegador con tamaño móvil: consulta, anotación, cesta, sucursales, alternativas, exportación, borrado y restauración sin conexión. No es una compra efectuada, una tarifa de supermercado ni una prueba física de Android/iOS.
 
+**Continuación, iteración 15:** [validación Android emulada y matriz física](VALIDACION_ANDROID.md). La evidencia de esta página conserva su fecha y alcance web; la auditoría vigente está en [Dependencias](DEPENDENCIAS.md).
+
 ## Muestra y oráculo independiente
 
 Los nombres, tiendas, ubicaciones y precios son de ensayo. Los tres códigos tienen dígito de control válido y se usan como identificadores de prueba; no se atribuyen estos datos a productos comerciales ni se afirma que esos códigos estén libres en catálogos externos. Las respuestas de fichas y precios están controladas por el test. No se importa el normalizador ni el calculador de la app para obtener los importes esperados.

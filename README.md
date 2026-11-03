@@ -4,7 +4,7 @@ App de compra en **Expo 58, React 19 y React Native 0.88**, enfocada en comparar
 
 **Prioridad elegida el 26-10-2026: comprar de forma más económica.** La comparación actual es por código y envase; la cesta local ya guarda cantidades. Los totales por establecimiento y los grupos explícitos de formatos/alternativas ya están disponibles. La medición inicial de Madrid no da cobertura suficiente; la revisión de tres fuentes no permite aprobar otra integración. El recorrido completo ya tiene validación técnica con precios de ensayo y recuperación offline; la compra real sigue pendiente. [Alcance y fuentes](docs/COMPARADOR_DE_PRECIOS.md).
 
-**Estado: comparador, cesta y alternativas implementados técnicamente.** Mi cesta guarda productos y cantidades; Comparar total por tienda separa cestas completas y subtotales por sucursal confirmada. Mi cesta → Formatos y alternativas permite confirmar sustitutos, comparar desembolso y sobrante. Copias v4 conservan grupos, identificaciones y vínculos. DAT-01 medida: 0/10 productos con precio elegible en la muestra de Madrid. DAT-03 investigada: integración adicional condicionada a una fuente adecuada. CAL-01 técnica verificada con cuatro recorridos nuevos. Siguiente: CAL-02, Android emulado y preparación de la matriz física. [Orden y criterios vigentes](docs/HOJA_DE_RUTA.md). No se ha publicado en tiendas. Firebase permanece como ampliación opcional desactivada, fuera del núcleo; [estado remoto](docs/FIREBASE_REAL.md).
+**Estado: comparador, cesta y alternativas implementados técnicamente.** Mi cesta guarda productos y cantidades; Comparar total por tienda separa cestas completas y subtotales por sucursal confirmada. Mi cesta → Formatos y alternativas permite confirmar sustitutos, comparar desembolso y sobrante. Copias v4 conservan grupos, identificaciones y vínculos. DAT-01 medida: 0/10 productos con precio elegible en la muestra de Madrid. DAT-03 investigada: integración adicional condicionada a una fuente adecuada. CAL-01 técnica verificada con cuatro recorridos nuevos. CAL-02 emulada verificada en iteración 15; matriz física preparada y pendiente. Siguiente: SEG-01, resolver avisos de dependencias con un conjunto compatible. [Orden y criterios vigentes](docs/HOJA_DE_RUTA.md). No se ha publicado en tiendas. Firebase permanece como ampliación opcional desactivada, fuera del núcleo; [estado remoto](docs/FIREBASE_REAL.md).
 
 ## Funcionalidades
 
@@ -54,6 +54,8 @@ En PowerShell usar `npm.cmd`/`npx.cmd` si la política del equipo bloquea los ar
 | `npm run firebase:verify -- --project gluten-free-supermarket` | Comprueba región, protección de borrado, índices y lecturas anónimas del proyecto real, sin modificarlo. Requiere sesión de Firebase CLI. |
 | `npm run secrets:check` | Revisa archivos publicables e historial con Gitleaks verificado; solo admite el hallazgo histórico exacto cuya clave ya fue revocada. |
 
+Las APK preview se inspeccionan automáticamente. Para reconstrucciones sin cambios de SDK, plugins ni configuración nativa puede añadirse `--incremental`; el valor predeterminado conserva la generación limpia. [Alcance y resultados Android](docs/VALIDACION_ANDROID.md).
+
 Para Playwright, instalar una vez el navegador con `npx playwright install chromium`. En Linux de CI se usa `npx playwright install --with-deps chromium`.
 
 ## Servidor y pruebas de nube
@@ -76,6 +78,7 @@ La [hoja de ruta vigente](docs/HOJA_DE_RUTA.md) organiza los siguientes pasos y 
 
 | Documento | Uso |
 | --- | --- |
+| [Validación Android](docs/VALIDACION_ANDROID.md) | Iteración 15: APK sin Metro, permisos, compra, sustituciones y recuperación nativas emuladas; matriz física pendiente. |
 | [Validación integrada de compra](docs/VALIDACION_COMPRA.md) | Iteración 14: importes independientes, sustitución, fuentes vinculadas, 429 y recuperación offline. |
 | [Viabilidad de fuentes públicas](docs/FUENTES_PUBLICAS.md) | Iteración 13: Carrefour, FACUA y MAPA; decisión, límites y requisitos de un posible piloto. |
 | [Hoja de ruta vigente](docs/HOJA_DE_RUTA.md) | Cesta → totales por establecimiento → formatos/alternativas → validación → beta; cobertura y seguridad en paralelo. |

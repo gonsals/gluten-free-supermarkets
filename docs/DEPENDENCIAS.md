@@ -1,6 +1,6 @@
 # Dependencias y seguridad
 
-Verificación: **2026-10-25**. Se ha reemplazado el conjunto de dependencias de 2024 por versiones compatibles con Expo SDK 58 y se han regenerado los lockfiles de app y servidor sin `--force` ni `--legacy-peer-deps`.
+Última consulta: **2026-11-03**. Modernización inicial verificada el 25-10-2026. Se ha reemplazado el conjunto de dependencias de 2024 por versiones compatibles con Expo SDK 58 y se han regenerado los lockfiles de app y servidor sin `--force` ni `--legacy-peer-deps`.
 
 ## Versiones principales
 
@@ -37,7 +37,7 @@ La navegación y los hooks proceden ahora de `expo-router`, incluida su capa de 
 
 Estas cifras incluyen propagación de avisos por los paquetes que dependen de ellos. Las ocho entradas del 26-10 procedían de **tres avisos originales**, no de ocho fallos independientes demostrados en el móvil. El informe del 23 de octubre contenía 34 entradas. La base de avisos de npm ha cambiado: `braces` ya no figura en el informe actual y aparece un aviso de Zod revisado el 23 de octubre. Esta variación no demuestra que se hayan reparado 26 fallos mediante cambios de código.
 
-## Estado vigente · 29-10-2026
+## Estado anterior · 29-10-2026
 
 Parches compatibles instalados con Expo CLI: Expo 58.0.21, CLI 58.1.17, Router 58.0.28, React Native y preset 0.88.1, cámara 58.0.14, jest-expo 58.0.13. `expo install --check` pasa. La primera instalación detectó el peer del preset; se alineó sin `--force` ni `--legacy-peer-deps`. [Procedimiento oficial](https://docs.expo.dev/more/expo-cli/).
 
@@ -91,3 +91,20 @@ Investigación DAT-03 y corrección de una prueba web, sin cambios de paquetes o
 ## Revisión 30-10-2026 · Iteración 14
 
 Sin cambios de paquetes o lockfiles. La consulta real de `audit:security` devuelve 1 por deepmerge no exceptuado: 19 entradas de app (13 bajas, 3 moderadas, 3 altas), cero de functions. No se amplían excepciones ni su vencimiento. La entrega modifica navegación y añade aceptación web; no cambia la exposición nativa o habilita servicios. SEG-01 conserva su bloqueo.
+
+## Estado vigente · 03-11-2026 · Iteración 15
+
+Sin cambios de paquetes o lockfiles. Consulta real de ambos lockfiles mediante `npm run audit:security`, informe local ignorado `audit.json`, generado a las 09:41 UTC:
+
+| Ámbito | Bajas | Moderadas | Altas | Críticas | Entradas afectadas |
+| --- | --- | --- | --- | --- | --- |
+| App | 1 | 57 | 2 | 0 | 60 |
+| functions | 0 | 6 | 0 | 0 | 6 |
+
+Son entradas de paquetes/cadenas del informe, no vulnerabilidades independientes ni prueba de explotación. El recuento sustituye al de 19/0 de octubre para describir el estado actual; el informe y las clasificaciones de npm pueden cambiar aunque el lockfile no cambie.
+
+Avisos de origen recibidos en app: Zod, OpenTelemetry, deepmerge y ahora [`glob`, GHSA-3g3m-2fjr-6pw4](https://github.com/advisories/GHSA-3g3m-2fjr-6pw4) y [`minimatch`, GHSA-g3hv-75wg-m249](https://github.com/advisories/GHSA-g3hv-75wg-m249). Los dos últimos aparecen también en functions, sin excepción para ese ámbito. El control además rechaza cadenas incompletas recibidas para `eslint`, `eslint-config-expo`, `eslint-plugin-expo`, `@eslint-community/eslint-utils` y paquetes de `@typescript-eslint`; se deben revisar antes de considerar válido el árbol de exposición. No se atribuye sin investigación toda la cadena nueva a desarrollo ni al runtime móvil.
+
+**Salida 1 de `audit:security`; control de dependencias y publicación bloqueados.** No se ejecuta una corrección forzada, se amplían excepciones ni se renueva el vencimiento **22-11-2026**. La siguiente iteración SEG-01 debe contrastar versiones y avisos con sus fuentes, reconstruir las cadenas, aplicar únicamente actualizaciones compatibles y repetir las comprobaciones afectadas. Los avisos no resueltos seguirán visibles; las pruebas funcionales o el escaneo de claves no los subsanan.
+
+Las comprobaciones de esta entrega pasan a 43 pruebas Node de seguridad: una ejecuta diez casos Python del inspector Android sin SDK/red. No son diez dependencias nuevas. [Validación y límites de la APK](VALIDACION_ANDROID.md).

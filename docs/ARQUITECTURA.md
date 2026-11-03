@@ -1,6 +1,6 @@
 # Arquitectura · Comparador local y evolución a cesta
 
-Actualizada el **30-10-2026**. Distingue la base implementada en `638980a` del diseño pendiente para la [hoja de ruta](HOJA_DE_RUTA.md). El [diseño inicial](historico/ARQUITECTURA_ANTES_DEL_COMPARADOR.md) queda como histórico.
+Actualizada el **03-11-2026**. Distingue la base implementada en `638980a` del diseño pendiente para la [hoja de ruta](HOJA_DE_RUTA.md). El [diseño inicial](historico/ARQUITECTURA_ANTES_DEL_COMPARADOR.md) queda como histórico.
 
 ## Base implementada
 
@@ -110,3 +110,7 @@ Entrega de documentación y corrección del selector ambiguo de avisos en la pru
 ## Iteración 14 · Aceptación entre funcionalidades
 
 La [validación integrada CAL-01](VALIDACION_COMPRA.md) recorre UI, IndexedDB, cálculo y copia/restauración sin inyectar directamente el almacenamiento. Las fixtures y los importes esperados no importan calculadores ni normalizadores de app. Solo se corrige navegación explícita desde totales a cesta; almacenamiento/copia v4, proveedores y modelo monetario permanecen iguales. Las pruebas web usan respuestas HTTP controladas y el shell offline real; no acreditan Android físico.
+
+## Iteración 15 · Contrato del paquete Android
+
+Sin cambios de esquema/copia v4 ni de componentes de aplicación. `app.json` bloquea también superposición sobre otras apps. El builder preview y CI inspeccionan el manifiesto fusionado y el ZIP real mediante `scripts/inspect-android-apk.py`; diez casos Python se integran en el control de seguridad Node sin SDK ni red. La metainformación de nube/firma no reemplaza una verificación criptográfica de firma. `--incremental` conserva la generación nativa únicamente con SDK/plugins/configuración sin cambios; el valor predeterminado sigue limpio. El receptor local de copias en `tests/native/` es instrumentación separada, no una dependencia ni una capacidad de producto. [Pruebas y límites](VALIDACION_ANDROID.md).

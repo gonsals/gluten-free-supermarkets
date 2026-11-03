@@ -1,6 +1,6 @@
 # Calidad y operación · Comparador de compra
 
-Actualizado el **30-10-2026**. Criterios para el enfoque de [Producto](PRODUCTO.md) y las fases de la [hoja de ruta](HOJA_DE_RUTA.md). Los fallos del prototipo inicial se conservan en el [documento histórico](historico/CALIDAD_Y_OPERACION_ANTES_DEL_COMPARADOR.md); no describen el estado actual.
+Actualizado el **03-11-2026**. Criterios para el enfoque de [Producto](PRODUCTO.md) y las fases de la [hoja de ruta](HOJA_DE_RUTA.md). Los fallos del prototipo inicial se conservan en el [documento histórico](historico/CALIDAD_Y_OPERACION_ANTES_DEL_COMPARADOR.md); no describen el estado actual.
 
 ## Evidencia disponible y límites
 
@@ -85,9 +85,9 @@ Pruebas de reglas/servidor con `demo-sin-gluten`, sin credenciales de producció
 
 ## Seguridad y bloqueos de distribución
 
-SEG-01 sigue abierto: a 29-10-2026 quedan Zod, OpenTelemetry y el nuevo deepmerge en herramientas de desarrollo; 19 entradas afectadas de app y cero en servidor. node-forge 1.4.2 ya no aparece. deepmerge no tiene excepción y bloquea también `audit:security`. Las excepciones anteriores siguen exactas y vencen el **22-11-2026**; [Dependencias](DEPENDENCIAS.md) detalla exposición y versiones.
+SEG-01 sigue abierto: la consulta del 03-11 registra 60 entradas afectadas de app y 6 de functions. Nuevos avisos de glob/minimatch, además de Zod, OpenTelemetry y deepmerge; el control también rechaza cadenas incompletas del informe. No se ha evaluado todavía la exposición de todas las cadenas nuevas. Las excepciones anteriores siguen exactas y vencen el **22-11-2026**; [Dependencias](DEPENDENCIAS.md) detalla el estado.
 
-`audit:security` reconoce solo las excepciones anteriores, pero ahora falla por deepmerge; **`audit:release` sigue bloqueado** y debe pasar para publicación general. No ampliar excepciones para simular limpieza, ocultar avisos ni aplicar `audit fix --force`. Un aviso nuevo se evalúa por alcance y puede bloquear antes. Revisar seguridad antes de beta y de cada distribución.
+`audit:security` reconoce solo las excepciones anteriores y falla por avisos no aceptados y cadenas incompletas; **`audit:release` sigue bloqueado** y debe pasar para publicación general. No ampliar excepciones para simular limpieza, ocultar avisos ni aplicar `audit fix --force`. Un aviso nuevo se evalúa por alcance y puede bloquear antes. Revisar seguridad antes de beta y de cada distribución.
 
 Clave histórica revocada, archivos de entorno excluidos y escaneo de archivos/historial con excepción exacta documentada. No registrar códigos de autorización, tokens ni valores de `.env` en evidencia. Sin secretos administrativos en variables públicas. [Credenciales](SEGURIDAD_CREDENCIALES.md).
 
@@ -139,6 +139,14 @@ Entrega de documentación y corrección del selector ambiguo de avisos en la pru
 
 ## Iteración 14 · Recorrido de compra integrado
 
-[CAL-01 técnica verificada](VALIDACION_COMPRA.md): consulta y anotación por UI, sucursales confirmadas, totales completos/parciales, sustitución con cantidades y recuperación de copia v4 offline. Oráculo de importes independiente, discrepancia público/privado, milésimas, ofertas, país y 429. Cuatro pruebas web nuevas. «Editar mi cesta» navega expresamente a la cesta desde un acceso directo; no depende de volver en el historial. No cambia el esquema ni el runtime nativo. Compra real, validación física, beta y revisión experta siguen pendientes; próxima entrega CAL-02 emulada y preparación física.
+[CAL-01 técnica verificada](VALIDACION_COMPRA.md): consulta y anotación por UI, sucursales confirmadas, totales completos/parciales, sustitución con cantidades y recuperación de copia v4 offline. Oráculo de importes independiente, discrepancia público/privado, milésimas, ofertas, país y 429. Cuatro pruebas web nuevas. «Editar mi cesta» navega expresamente a la cesta desde un acceso directo; no depende de volver en el historial. No cambia el esquema ni el runtime nativo. Compra real, validación física, beta y revisión experta siguen pendientes; ese tramo se verifica después en iteración 15, con físico todavía pendiente.
 
 Comprobaciones finales de iteración 14: **220 pruebas de app, 42 de seguridad y 46 recorridos web**, tipos, lint y compatibilidad Expo correctos; secretos sin hallazgos nuevos no aceptados. La auditoría de dependencias sigue fallando por deepmerge; no se presenta como una publicación aprobada.
+
+## Iteración 15 · Validación Android y control de APK
+
+[CAL-02 emulada verificada](VALIDACION_ANDROID.md), ejecutada el 31-10 y documentada al cierre del 03-11: actualización v4 → v4, totales 7,75/8,07 €, sustitución a 7,60/7,80 €, persistencia SQLite, copias nativas exportadas/restauradas y comparación independiente del JSON. Denegación y recuperación del permiso desde ajustes, sesión de cámara emulada, petición TORCH, liberación asíncrona al salir y acceso directo a editar cesta. Fuente al 200 % y tema oscuro revisados. ARM64 incluida en la APK, ejecución únicamente x86_64; cámara física, TalkBack, iOS, compra real y revisión experta pendientes.
+
+Se bloquea el permiso de superposición innecesario y se inspeccionan automáticamente las APK preview local y de CI: permisos, hash, bundle, ABI, copia de Android y patrones de claves/archivos de entorno. No es una auditoría universal de secretos ni una verificación criptográfica de firma. Builder incremental opcional con idéntico hash (11 min 34 s → 1 min 10 s en este equipo). Receptor de compartir separado y solo de ensayo, sin red, fuera del producto.
+
+`npm run check` correcto: 220 pruebas de app/20 suites y 43 pruebas Node de seguridad (una engloba diez casos Python), tipos, lint y Expo. Los 46 recorridos web corresponden a CI de la base c43bb24, no a una repetición local en esta entrega. Auditoría del 03-11 bloqueada: 60 entradas de app y 6 de functions, sin ampliar excepciones ni modificar lockfiles. Siguiente iteración técnica SEG-01; [detalle vigente](DEPENDENCIAS.md).

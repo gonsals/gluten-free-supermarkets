@@ -1,6 +1,6 @@
 # Hoja de ruta · Comparar precios y planificar la compra
 
-Actualizada el **30-10-2026**. Este documento fija el orden de entrega vigente. El [backlog](PLAN_MEJORAS.md) contiene las tareas y sus criterios; [Producto](PRODUCTO.md) define el comportamiento esperado. El [plan anterior](historico/README.md) se conserva como histórico y deja de ordenar el trabajo.
+Actualizada el **03-11-2026**. Este documento fija el orden de entrega vigente. El [backlog](PLAN_MEJORAS.md) contiene las tareas y sus criterios; [Producto](PRODUCTO.md) define el comportamiento esperado. El [plan anterior](historico/README.md) se conserva como histórico y deja de ordenar el trabajo.
 
 ## Enfoque acordado
 
@@ -72,6 +72,8 @@ Definir grupos de alternativas explícitos, revisables por la persona; nombres s
 
 **CAL-01, CAL-02 y GLU-01**, P1. CAL-01 técnica está verificada en iteración 14 con [muestra sintética y recuperación integrada](VALIDACION_COMPRA.md); la compra real sigue pendiente. Las pruebas se añaden durante cada fase; aquí se cierra el recorrido integrado y la matriz física. Contrastar cesta, tickets o precios observados, faltantes, filtros y utilidad con muestra y versión registradas. No atribuir diferencias a ahorro real si no se ha hecho una compra equivalente.
 
+CAL-02 emulada se verifica en iteración 15: [APK, permisos, cámara emulada, sustituciones y recuperación offline](VALIDACION_ANDROID.md). Matriz física preparada; no cierra los criterios siguientes.
+
 Probar Android físico, cámara, permisos, red lenta/sin red, accesibilidad con TalkBack, fuente ampliada, restauración y actualización. iOS exige compilación y dispositivo con VoiceOver antes de declararlo soportado. La revisión experta sobre gluten y las sesiones de comprensión siguen pendientes.
 
 **Cierre:** sin bloqueos del recorrido, matriz con evidencia y limitaciones visibles. El objetivo de beta es validar decisiones de compra y claridad del dato, además del escaneo.
@@ -86,7 +88,7 @@ Propuesta de beta: 5–10 personas con consentimiento, versiones identificables 
 
 ## Seguridad y mantenimiento durante todas las fases
 
-**SEG-01 es P0 antes de publicación general.** El 29-10 la auditoría registra tres avisos de origen actuales (Zod, OpenTelemetry y deepmerge), 19 entradas afectadas de app y cero en `functions/`. node-forge 1.4.2 elimina su aviso anterior. deepmerge es nuevo y no está exceptuado: `audit:security` y el job de dependencias quedan bloqueados; el desarrollo local sigue sujeto a revisión de exposición documentada. Excepciones exactas con vencimiento **22-11-2026**; no se renuevan automáticamente. Las excepciones anteriores permanecen exactas y sin ampliación; ambos controles de auditoría quedan bloqueados por los avisos que correspondan. [Dependencias](DEPENDENCIAS.md).
+**SEG-01 es P0 antes de publicación general y la siguiente iteración técnica.** La consulta del 03-11 registra 60 entradas afectadas de app (1 baja, 57 moderadas, 2 altas) y 6 moderadas en `functions/`, con avisos de glob/minimatch además de Zod, OpenTelemetry y deepmerge, y cadenas incompletas rechazadas por el control. `audit:security` y el job de dependencias quedan bloqueados. Resolver con versiones compatibles y revisar la respuesta; no ampliar excepciones ni usar actualizaciones forzadas. Vencimiento **22-11-2026**, sin renovación automática. [Detalle y límites](DEPENDENCIAS.md).
 
 | Momento | Control |
 | --- | --- |
@@ -118,8 +120,9 @@ Cada tarea del [backlog](PLAN_MEJORAS.md) tiene ID estable, prioridad, estado, d
 | 25-10-2026 | B · Mesa elegida y aplicada; sustituye el desacuerdo con la identidad inicial. |
 | 26-10-2026 | Precio y compra económica como núcleo, gluten complementario y supermercado sugerido editable. |
 | 26-10-2026 | Investigar también fuentes públicas; Open Prices integrado con límites y separación de datos privados. |
+| 03-11-2026 | Cerrar CAL-02 emulada de iteración 15, mantener físico pendiente y priorizar SEG-01 ante los nuevos avisos de auditoría. |
 | 30-10-2026 | CAL-01 técnica verificada con muestra sintética; corregir acceso a editar cesta desde enlace directo y continuar CAL-02 emulada/preparación física. |
 | 30-10-2026 | DAT-03 revisa Carrefour, FACUA y MAPA sin aprobar un nuevo proveedor; continuar con CAL-01 técnica y mantener la integración condicionada. |
 | 26-10-2026 | Nuevo orden: cesta segura → total por establecimiento → formatos/alternativas → validación → beta. Cobertura y seguridad acompañan todas las fases. |
 
-**Siguiente iteración: CAL-02**, verificación Android emulada y preparación de la matriz física de la versión vigente. [CAL-01 técnica verificada en iteración 14](VALIDACION_COMPRA.md): cuatro casos integrados y resultados independientes; la compra real sigue pendiente y no se cierra con datos sintéticos. DAT-03 entrega la investigación de tres fuentes; no se aprueba otra integración. Compra física y sesiones reales siguen pendientes. DAT-01 ya entrega la medición de Madrid, cuyo resultado no acredita cobertura suficiente. UNI-01/ALT-01 entregadas técnicamente en iteración 11. Validación física, experta y de uso siguen pendientes. SEG-01 mantiene el bloqueo de publicación y ahora también el control de dependencias por deepmerge.
+**Siguiente iteración: SEG-01**, resolución compatible de avisos de dependencias y revisión de las cadenas incompletas del informe. [CAL-02 emulada verificada en iteración 15](VALIDACION_ANDROID.md); matriz física preparada y pendiente. [CAL-01 técnica verificada en iteración 14](VALIDACION_COMPRA.md): cuatro casos integrados y resultados independientes; la compra real sigue pendiente y no se cierra con datos sintéticos. DAT-03 entrega la investigación de tres fuentes; no se aprueba otra integración. Compra física y sesiones reales siguen pendientes. DAT-01 ya entrega la medición de Madrid, cuyo resultado no acredita cobertura suficiente. UNI-01/ALT-01 entregadas técnicamente en iteración 11. Validación física, experta y de uso siguen pendientes. SEG-01 mantiene bloqueados la publicación y el control de dependencias; consultar el informe del 03-11 antes de decidir actualizaciones.

@@ -1,6 +1,6 @@
 # Implementación y verificación
 
-Actualización: **2026-10-30**. Este documento refleja el trabajo posterior a la auditoría del commit `3044a18`. El propietario centra ahora el producto en comparación de precios, manteniendo gluten como función adicional. El MVP conserva arquitectura por responsabilidades, dependencias actualizadas y pruebas. No equivale todavía a una publicación validada en tiendas.
+Actualización: **2026-11-03**. Este documento refleja el trabajo posterior a la auditoría del commit `3044a18`. El propietario centra ahora el producto en comparación de precios, manteniendo gluten como función adicional. El MVP conserva arquitectura por responsabilidades, dependencias actualizadas y pruebas. No equivale todavía a una publicación validada en tiendas.
 
 ## Cambios aplicados
 
@@ -84,7 +84,7 @@ La decisión vigente del propietario es una versión local sin costes de backend
 - Validar VoiceOver/TalkBack, tipografías ampliadas y comprensión de los resultados con personas usuarias y revisión experta del dominio.
 - Registrar identidad definitiva, firma, cuentas de tiendas, soporte, presupuesto y responsables operativos.
 - Medir latencia, estabilidad, coste y carga en una beta controlada. Los objetivos del documento de producto siguen siendo metas, no métricas ya conseguidas.
-- La cesta local ya está implementada (CES-01/CES-02). TIE-01/CES-03 están implementadas en iteración 10; formatos/alternativas (UNI-01/ALT-01) se entregaron en iteración 11. DAT-01 se midió en iteración 12 y DAT-03 se investigó en iteración 13, sin nueva integración aprobada. CAL-01 técnica se verifica en iteración 14; sigue la verificación Android emulada y preparación física (CAL-02). Búsqueda global, mapas, alertas e integraciones oficiales requieren validar demanda y fuentes; no se simulan disponibilidad ni datos.
+- La cesta local ya está implementada (CES-01/CES-02). TIE-01/CES-03 están implementadas en iteración 10; formatos/alternativas (UNI-01/ALT-01) se entregaron en iteración 11. DAT-01 se midió en iteración 12 y DAT-03 se investigó en iteración 13, sin nueva integración aprobada. CAL-01 técnica se verifica en iteración 14; CAL-02 emulada se verifica en iteración 15 y queda pendiente la matriz física; siguiente tramo técnico SEG-01. Búsqueda global, mapas, alertas e integraciones oficiales requieren validar demanda y fuentes; no se simulan disponibilidad ni datos.
 
 La [hoja de ruta](HOJA_DE_RUTA.md) y el [backlog vigente](PLAN_MEJORAS.md) ordenan el comparador y su evolución a cesta. El [plan anterior](historico/README.md) queda archivado. CES-01/CES-02 tienen implementación técnica en la iteración 9; TIE-01/CES-03 se entregan técnicamente en iteración 10; la siguiente entrega es **UNI-01 + ALT-01**. Los puntos anteriores impiden dar por cerrada la publicación por tener código y pruebas locales.
 
@@ -106,6 +106,14 @@ Entrega de documentación y corrección del selector ambiguo de avisos en la pru
 
 ## Iteración 14 · Recorrido de compra integrado
 
-[CAL-01 técnica verificada](VALIDACION_COMPRA.md): consulta y anotación por UI, sucursales confirmadas, totales completos/parciales, sustitución con cantidades y recuperación de copia v4 offline. Oráculo de importes independiente, discrepancia público/privado, milésimas, ofertas, país y 429. Cuatro pruebas web nuevas. «Editar mi cesta» navega expresamente a la cesta desde un acceso directo; no depende de volver en el historial. No cambia el esquema ni el runtime nativo. Compra real, validación física, beta y revisión experta siguen pendientes; próxima entrega CAL-02 emulada y preparación física.
+[CAL-01 técnica verificada](VALIDACION_COMPRA.md): consulta y anotación por UI, sucursales confirmadas, totales completos/parciales, sustitución con cantidades y recuperación de copia v4 offline. Oráculo de importes independiente, discrepancia público/privado, milésimas, ofertas, país y 429. Cuatro pruebas web nuevas. «Editar mi cesta» navega expresamente a la cesta desde un acceso directo; no depende de volver en el historial. No cambia el esquema ni el runtime nativo. Compra real, validación física, beta y revisión experta siguen pendientes; ese tramo se verifica después en iteración 15, con físico todavía pendiente.
 
 Comprobaciones finales de iteración 14: **220 pruebas de app, 42 de seguridad y 46 recorridos web**, tipos, lint y compatibilidad Expo correctos; secretos sin hallazgos nuevos no aceptados. La auditoría de dependencias sigue fallando por deepmerge; no se presenta como una publicación aprobada.
+
+## Iteración 15 · Validación Android y control de APK
+
+[CAL-02 emulada verificada](VALIDACION_ANDROID.md), ejecutada el 31-10 y documentada al cierre del 03-11: actualización v4 → v4, totales 7,75/8,07 €, sustitución a 7,60/7,80 €, persistencia SQLite, copias nativas exportadas/restauradas y comparación independiente del JSON. Denegación y recuperación del permiso desde ajustes, sesión de cámara emulada, petición TORCH, liberación asíncrona al salir y acceso directo a editar cesta. Fuente al 200 % y tema oscuro revisados. ARM64 incluida en la APK, ejecución únicamente x86_64; cámara física, TalkBack, iOS, compra real y revisión experta pendientes.
+
+Se bloquea el permiso de superposición innecesario y se inspeccionan automáticamente las APK preview local y de CI: permisos, hash, bundle, ABI, copia de Android y patrones de claves/archivos de entorno. No es una auditoría universal de secretos ni una verificación criptográfica de firma. Builder incremental opcional con idéntico hash (11 min 34 s → 1 min 10 s en este equipo). Receptor de compartir separado y solo de ensayo, sin red, fuera del producto.
+
+`npm run check` correcto: 220 pruebas de app/20 suites y 43 pruebas Node de seguridad (una engloba diez casos Python), tipos, lint y Expo. Los 46 recorridos web corresponden a CI de la base c43bb24, no a una repetición local en esta entrega. Auditoría del 03-11 bloqueada: 60 entradas de app y 6 de functions, sin ampliar excepciones ni modificar lockfiles. Siguiente iteración técnica SEG-01; [detalle vigente](DEPENDENCIAS.md).
