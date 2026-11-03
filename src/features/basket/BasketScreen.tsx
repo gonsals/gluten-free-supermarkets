@@ -26,72 +26,113 @@ function BasketItem({
 }) {
   const { repository } = useLibrary();
   const router = useRouter();
-  const [quantity, setQuantity] = useState(String(line.quantity));
+  const [input, setInput] = useState({ saved: line.quantity, text: String(line.quantity) });
+  // Reset the draft when storage changes without remounting the focused controls.
+  if (input.saved !== line.quantity) {
+    setInput({ saved: line.quantity, text: String(line.quantity) });
+  }
+  const quantity = input.text;
   const valid = /^\d{1,2}$/.test(quantity) && validBasketQuantity(Number(quantity));
+  const edited = !valid || Number(quantity) !== line.quantity;
   const title = line.name || `Producto ${line.barcode}`;
   return (
     <Card>
       <Copy>{title}</Copy>
-      <Copy muted>
-        {line.barcode} · {line.quantity} {line.quantity === 1 ? 'envase' : 'envases'}
-      </Copy>
-      {!hasProduct ? (
-        <Copy muted>
-          Sin ficha guardada. Puedes mantener el código en la cesta o consultarlo cuando tengas
-          conexión.
-        </Copy>
-      ) : null}
-      <Copy muted>
-        {hasPrice
-          ? 'Hay anotaciones privadas; revisa fecha, tienda y condiciones al comparar.'
-          : 'Sin precio privado anotado. Puedes consultar aportaciones públicas al comparar este producto.'}
-      </Copy>
       <Field
-        label={`Envases de ${title}`}
+        label="Envases"
+        accessibilityLabel={`Envases de ${title}`}
         value={quantity}
-        onChangeText={setQuantity}
+        onChangeText={(text) => setInput({ saved: line.quantity, text })}
         keyboardType="number-pad"
         maxLength={3}
         editable={!busy}
         error={!valid}
       />
+      <View style={{ flexDirection: 'row', gap: 12 }}>
+        <View style={{ flex: 1 }}>
+          <Action
+            title="−"
+            accessibilityLabel={`Quitar un envase de ${title}`}
+            secondary
+            disabled={edited || line.quantity <= 1}
+            busy={busy}
+            keepFocusWhileBusy
+            onPress={() =>
+              void run(() =>
+                repository.setBasketQuantity(line.barcode, line.quantity - 1, line.quantity),
+              )
+            }
+          />
+        </View>
+        <View style={{ flex: 1 }}>
+          <Action
+            title="+"
+            accessibilityLabel={`Añadir un envase de ${title}`}
+            secondary
+            disabled={edited || line.quantity >= 99}
+            busy={busy}
+            keepFocusWhileBusy
+            onPress={() =>
+              void run(() =>
+                repository.setBasketQuantity(line.barcode, line.quantity + 1, line.quantity),
+              )
+            }
+          />
+        </View>
+      </View>
       {!valid ? <Notice error>Introduce entre 1 y 99 envases enteros.</Notice> : null}
-      <Action
-        title="Guardar cantidad"
-        accessibilityLabel={`Guardar cantidad de ${title}`}
-        secondary
-        disabled={busy || !valid || Number(quantity) === line.quantity}
-        onPress={() =>
-          void run(() =>
-            repository.setBasketQuantity(line.barcode, Number(quantity), line.quantity),
-          )
-        }
-      />
-      <Action
-        title="Comparar este producto"
-        secondary
-        icon="pricetags-outline"
-        onPress={() =>
-          router.push({ pathname: '/prices/[barcode]', params: { barcode: line.barcode } })
-        }
-      />
-      {hasProduct ? (
+      {edited ? (
         <Action
-          title="Ver ficha e información sobre gluten"
+          title="Guardar cantidad"
+          accessibilityLabel={`Guardar cantidad de ${title}`}
           secondary
+          disabled={busy || !valid || Number(quantity) === line.quantity}
           onPress={() =>
-            router.push({ pathname: '/product/[barcode]', params: { barcode: line.barcode } })
+            void run(() =>
+              repository.setBasketQuantity(line.barcode, Number(quantity), line.quantity),
+            )
           }
         />
       ) : null}
-      <Action
-        title="Quitar de la cesta"
-        accessibilityLabel={`Quitar ${title} de la cesta`}
-        secondary
-        danger
-        disabled={busy}
-        onPress={onRemove}
-      />
+      {!hasPrice ? <Copy muted>Sin precio anotado.</Copy> : null}
+      <Disclosure title="Opciones" accessibilityLabel={`Opciones de ${title}`}>
+        <Copy muted>Código: {line.barcode}</Copy>
+        {!hasProduct ? (
+          <Copy muted>
+            Sin ficha guardada. Puedes consultar el producto cuando tengas conexión.
+          </Copy>
+        ) : null}
+        <Copy muted>
+          {hasPrice
+            ? 'Hay precios anotados. Revisa la tienda y la fecha al comparar.'
+            : 'Sin precio privado anotado. Puedes buscar precios al comparar este producto.'}
+        </Copy>
+        <Action
+          title="Comparar este producto"
+          secondary
+          icon="pricetags-outline"
+          onPress={() =>
+            router.push({ pathname: '/prices/[barcode]', params: { barcode: line.barcode } })
+          }
+        />
+        {hasProduct ? (
+          <Action
+            title="Ver ficha e información sobre gluten"
+            secondary
+            onPress={() =>
+              router.push({ pathname: '/product/[barcode]', params: { barcode: line.barcode } })
+            }
+          />
+        ) : null}
+        <Action
+          title="Quitar de la cesta"
+          accessibilityLabel={`Quitar ${title} de la cesta`}
+          secondary
+          danger
+          disabled={busy}
+          onPress={onRemove}
+        />
+      </Disclosure>
     </Card>
   );
 }
@@ -221,7 +262,7 @@ export function BasketScreen() {
             .slice(0, limit)
             .map((line) => (
               <BasketItem
-                key={`${line.barcode}:${line.quantity}`}
+                key={line.barcode}
                 line={line}
                 busy={busy}
                 run={run}

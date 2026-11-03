@@ -175,6 +175,7 @@ test('una jerarquía de etiquetas inválida muestra contradicción y conserva la
   await expect(
     page.getByText(/Algunos campos recibidos no tienen el formato esperado/),
   ).toBeVisible();
+  await expandSection(page, 'Ingredientes y etiquetado');
   await expect(page.getByText('Arroz y sal', { exact: true })).toBeVisible();
 });
 test('anota un precio privado y lo conserva tras recargar', async ({ page }) => {

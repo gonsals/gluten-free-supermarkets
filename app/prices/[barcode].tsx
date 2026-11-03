@@ -8,6 +8,7 @@ import { Action, Copy, Heading, Notice, Screen } from '@/src/shared/ui';
 import { PriceComparison } from '@/src/features/prices/PriceComparison';
 import { useCachedProduct } from '@/src/features/products/useCachedProduct';
 import { AddToBasket } from '@/src/features/basket/AddToBasket';
+import { Disclosure } from '@/src/shared/Disclosure';
 
 export default function ProductPricesScreen() {
   const { barcode } = useLocalSearchParams<{ barcode: string }>();
@@ -33,6 +34,7 @@ function ProductPrices({ barcode }: { barcode: string }) {
       </Copy>
       {valid ? (
         <>
+          <PriceComparison barcode={barcode} prices={prices} />
           <AddToBasket barcode={barcode} product={product ?? undefined} />
           <Action
             title={`Mi cesta (${data.basket.length})`}
@@ -40,15 +42,15 @@ function ProductPrices({ barcode }: { barcode: string }) {
             icon="basket-outline"
             onPress={() => router.push('/basket')}
           />
-          <PriceComparison barcode={barcode} prices={prices} />
           <Action
             title="Ver ficha e información sobre gluten"
             secondary
             onPress={() => router.push({ pathname: '/product/[barcode]', params: { barcode } })}
           />
           <PriceForm barcode={barcode} product={product} />
-          <Heading>Tus anotaciones de este producto</Heading>
-          <PriceList prices={prices} onDelete={(id) => repository.deletePrice(id)} />
+          <Disclosure title={`Mis anotaciones de este producto (${prices.length})`}>
+            <PriceList prices={prices} onDelete={(id) => repository.deletePrice(id)} />
+          </Disclosure>
           <SharedPrices
             barcode={barcode}
             localPrices={data.prices.filter((x) => x.barcode === barcode)}

@@ -75,6 +75,8 @@ La declaración sin gluten puede filtrar alternativas cuando haya evidencia comp
 
 **Simplificación solicitada el 03-11-2026, iteración 16:** priorizar buscar producto → comparar/anotar → cesta. Inicio más corto; importe, tienda y sucursal primero al anotar. Fecha, formatos, condiciones, filtros y opciones adicionales de cesta se despliegan cuando se necesitan, conservando borradores y selección. El resumen de filtros activos, faltantes, condiciones de resultados y procedencia siguen visibles. Los totales se muestran antes de los controles secundarios. [Guía breve](USO_SENCILLO.md). No añadir nuevas funciones antes de contrastar la facilidad del recorrido.
 
+**Continuación, iteración 17:** cambiar envases con un toque y guardar al momento, dentro de 1–99. La edición manual conserva su guardado explícito; los botones no sobrescriben un borrador pendiente. Comparar/ficha/quitar de cada línea se agrupan en «Opciones», con etiqueta accesible que identifica el producto y confirmación de eliminación. En ficha, ingredientes y detalles de fuente se despliegan, manteniendo estado, razones, trazas, faltantes, procedencia, fecha, restauración y errores visibles. Comparar muestra el resultado antes de añadir a cesta; anotaciones completas accesibles bajo su desplegable. No cambia identidad de sucursal, contrato monetario ni interpretación de gluten.
+
 | Pantalla | Comportamiento vigente / previsto |
 | --- | --- |
 | Inicio | Compra económica como propósito y acceso principal a comparar. En la entrega de cesta, añadir acceso a cesta activa con estado y faltantes. |

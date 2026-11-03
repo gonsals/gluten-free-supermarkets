@@ -79,6 +79,7 @@ export function Action({
   secondary = false,
   disabled = false,
   busy = false,
+  keepFocusWhileBusy = false,
   danger = false,
   selected,
   expanded,
@@ -90,6 +91,7 @@ export function Action({
   secondary?: boolean;
   disabled?: boolean;
   busy?: boolean;
+  keepFocusWhileBusy?: boolean;
   danger?: boolean;
   selected?: boolean;
   expanded?: boolean;
@@ -107,9 +109,14 @@ export function Action({
         ...(expanded === undefined ? {} : { expanded }),
         ...(Platform.OS === 'web' ? {} : { selected }),
       }}
-      {...(Platform.OS === 'web' ? { 'aria-pressed': selected, 'aria-expanded': expanded } : {})}
-      disabled={disabled || busy}
-      onPress={onPress}
+      {...(Platform.OS === 'web'
+        ? { 'aria-pressed': selected, 'aria-expanded': expanded, 'aria-busy': busy }
+        : {})}
+      // Quantity steppers stay focusable during a write; the handler still blocks re-entry.
+      disabled={disabled || (busy && !keepFocusWhileBusy)}
+      onPress={() => {
+        if (!disabled && !busy) onPress();
+      }}
       style={({ pressed }) => [
         styles.action,
         {

@@ -97,6 +97,7 @@ test('añade desde ficha y biblioteca, agrupa, edita, conserva offline y recuper
   await page.goto('/basket');
   await page.reload();
   await expect(quantity).toHaveValue('4');
+  await expandSection(page, 'Opciones de Arroz para la cesta');
   await expect(page.getByText(/Sin precio privado anotado/)).toBeVisible();
   await page
     .getByRole('button', { name: 'Ver ficha e información sobre gluten', exact: true })
@@ -112,6 +113,7 @@ test('código sin ficha, validación de envases y cancelación/eliminación de c
 }) => {
   await page.goto('/basket');
   await addCode(page);
+  await expandSection(page, `Opciones de Producto ${code}`);
   await expect(page.getByText(/Sin ficha guardada/)).toBeVisible();
   const quantity = page.getByRole('textbox', { name: `Envases de Producto ${code}`, exact: true });
   const save = page.getByRole('button', {
@@ -130,6 +132,7 @@ test('código sin ficha, validación de envases y cancelación/eliminación de c
   await page.getByRole('button', { name: 'Vaciar cesta', exact: true }).click();
   await page.getByRole('button', { name: 'Cancelar', exact: true }).click();
   await expect(quantity).toHaveValue('99');
+  await expandSection(page, `Opciones de Producto ${code}`);
   await page
     .getByRole('button', { name: `Quitar Producto ${code} de la cesta`, exact: true })
     .click();

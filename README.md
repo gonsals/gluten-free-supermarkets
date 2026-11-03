@@ -8,7 +8,7 @@ App de compra en **Expo 58, React 19 y React Native 0.88**, enfocada en comparar
 
 ## Funcionalidades
 
-**Uso más sencillo, iteración 16:** inicio más corto, formulario de precio con los datos esenciales y opciones secundarias desplegables. Los filtros conservan un resumen visible y cerrar opciones no borra el borrador. [Guía de uso en tres pasos](docs/USO_SENCILLO.md).
+**Uso más sencillo, iteraciones 16–17:** inicio más corto, datos esenciales primero y opciones secundarias desplegables. La cesta permite cambiar envases con «−» y «+», con guardado inmediato. En la ficha, ingredientes y detalles de la fuente se despliegan; estado sobre gluten, trazas y fecha siguen visibles. Los filtros conservan un resumen visible y cerrar opciones no borra el borrador. [Guía de uso en tres pasos](docs/USO_SENCILLO.md).
 
 - Inicio propio, navegación en español, iconos de marca y tema claro/oscuro.
 - Entrada manual EAN/UPC con validación de formato y dígito de control, conservando ceros iniciales.

@@ -10,6 +10,7 @@ import { AppError, errorCopy } from '@/src/domain/errors';
 import { useLibrary } from '@/src/features/library/useLibrary';
 import { Action, Card, Copy, Notice } from '@/src/shared/ui';
 import { assessmentAppearance, typography, usePalette } from '@/src/shared/theme';
+import { Disclosure } from '@/src/shared/Disclosure';
 
 export function ProductCard({
   product,
@@ -106,6 +107,14 @@ export function ProductCard({
           <Action title="Comparar precios y anotar" onPress={onPrices} icon="pricetags-outline" />
         ) : null}
         <AddToBasket barcode={product.barcode} product={product} />
+        <Action
+          title={favorite ? 'Quitar de favoritos' : 'Guardar en favoritos'}
+          icon={favorite ? 'heart' : 'heart-outline'}
+          onPress={() => void toggle()}
+          secondary
+          disabled={!ready}
+          busy={saving}
+        />
         <View
           style={{
             padding: 18,
@@ -165,54 +174,24 @@ export function ProductCard({
           icon="information-circle-outline"
           onPress={() => router.push('/results-guide')}
         />
-        <Action
-          title={favorite ? 'Quitar de favoritos' : 'Guardar en favoritos'}
-          icon={favorite ? 'heart' : 'heart-outline'}
-          onPress={() => void toggle()}
-          secondary
-          disabled={!ready}
-          busy={saving}
-        />
         {message ? <Notice error>{message}</Notice> : null}
       </Card>
       <Card>
-        <Text accessibilityRole="header" style={{ fontSize: 19, color: c.ink, fontWeight: '700' }}>
-          Lo que dice la fuente
-        </Text>
-        {evidence.map((field) => (
-          <View key={field.id} style={{ gap: 8 }}>
-            <Copy muted>{field.title}</Copy>
-            <Copy>
-              {field.value ?? 'Sin información disponible en la fuente. No confirma ausencia.'}
-            </Copy>
-          </View>
-        ))}
+        <Disclosure title="Ingredientes y etiquetado">
+          {evidence.map((field) => (
+            <View key={field.id} style={{ gap: 8 }}>
+              <Copy muted>{field.title}</Copy>
+              <Copy>
+                {field.value ?? 'Sin información disponible en la fuente. No confirma ausencia.'}
+              </Copy>
+            </View>
+          ))}
+        </Disclosure>
       </Card>
       <Card>
-        <Copy>Datos de Open Food Facts</Copy>
-        <Copy muted>
-          {cached ? 'Ficha guardada en este dispositivo. ' : ''}Última consulta:{' '}
-          {date(product.source.fetchedAt)}.
-        </Copy>
-        {product.source.updatedAt ? (
-          <Copy muted>
-            Modificación en la fuente: {date(product.source.updatedAt)}. No es una fecha de
-            certificación.
-          </Copy>
-        ) : null}
         {product.source.environment === 'staging' ? (
           <Notice error>Datos del entorno de pruebas.</Notice>
         ) : null}
-        <Copy muted>
-          El etiquetado puede cambiar. Comprueba el envase; esta consulta describe información de la
-          fuente.
-        </Copy>
-        <Action
-          title="Consultar o corregir datos en la fuente"
-          onPress={() => void openSource()}
-          secondary
-          icon="open-outline"
-        />
         {refreshError ? <Notice error>{refreshError}</Notice> : null}
         {onRefresh ? (
           <Action
@@ -223,6 +202,24 @@ export function ProductCard({
             icon="refresh"
           />
         ) : null}
+        <Disclosure title="Ver fuente y detalles de la ficha">
+          {product.source.updatedAt ? (
+            <Copy muted>
+              Modificación en la fuente: {date(product.source.updatedAt)}. No es una fecha de
+              certificación.
+            </Copy>
+          ) : null}
+          <Copy muted>
+            El etiquetado puede cambiar. Comprueba el envase; esta consulta describe información de
+            la fuente.
+          </Copy>
+          <Action
+            title="Consultar o corregir datos en la fuente"
+            onPress={() => void openSource()}
+            secondary
+            icon="open-outline"
+          />
+        </Disclosure>
       </Card>
     </>
   );
