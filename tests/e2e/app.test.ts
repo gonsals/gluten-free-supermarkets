@@ -1,3 +1,4 @@
+import { expandSection } from './helpers/disclosure';
 import { test, expect } from '@playwright/test';
 import { readFile, writeFile } from 'node:fs/promises';
 import { resolve } from 'node:path';
@@ -96,8 +97,90 @@ test('recupera el escáner tras no encontrado y rechaza código inválido antes 
     '',
   );
 });
+
+test('la ficha muestra procedencia y trazas y abre la guía sin conexión', async ({
+  page,
+  context,
+}) => {
+  await page.route('https://world.openfoodfacts.org/api/v2/product/**', (route) =>
+    route.fulfill({
+      json: {
+        status: 1,
+        product: {
+          code,
+          product_name: 'Ficha incompleta',
+          labels_tags: ['en:no-gluten'],
+          traces_tags: ['en:gluten'],
+        },
+      },
+    }),
+  );
+  await page.goto('/scan');
+  await page.getByRole('textbox', { name: 'Código de barras', exact: true }).fill(code);
+  await page.getByRole('button', { name: 'Buscar producto', exact: true }).click();
+  await expect(
+    page.getByRole('heading', { name: 'Figura como sin gluten', exact: true }),
+  ).toBeVisible();
+  await expect(page.getByText(/Información de Open Food Facts/)).toBeVisible();
+  await expect(
+    page.getByText(/Sin información disponible: ingredientes, alérgenos declarados/),
+  ).toBeVisible();
+  await expect(page.getByText(/La fuente declara trazas: Gluten/)).toBeVisible();
+  await page.evaluate(() => navigator.serviceWorker.ready);
+  await page.waitForFunction(() => Boolean(navigator.serviceWorker.controller));
+  await context.setOffline(true);
+  await page.getByRole('button', { name: 'Cómo interpretar este resultado', exact: true }).click();
+  await expect(
+    page.getByRole('heading', { name: 'Cómo leer una ficha', exact: true }),
+  ).toBeVisible();
+  await expect(
+    page.getByRole('heading', { name: 'Datos contradictorios', exact: true }),
+  ).toBeVisible();
+  await page.reload();
+  await expect(
+    page.getByRole('heading', { name: 'Cómo leer una ficha', exact: true }),
+  ).toBeVisible();
+  await expect(
+    page.getByText('No significa que el producto contenga gluten.', { exact: true }),
+  ).toBeVisible();
+  await context.setOffline(false);
+});
+
+test('una jerarquía de etiquetas inválida muestra contradicción y conserva la evidencia', async ({
+  page,
+}) => {
+  await page.route('https://world.openfoodfacts.org/api/v2/product/**', (route) =>
+    route.fulfill({
+      json: {
+        status: 1,
+        product: {
+          code,
+          product_name: 'Formato incorrecto',
+          labels_tags: ['en:no-gluten'],
+          labels_hierarchy: 'en:no-gluten',
+          ingredients_text_es: 'Arroz y sal',
+        },
+      },
+    }),
+  );
+  await page.goto('/scan');
+  await page.getByRole('textbox', { name: 'Código de barras', exact: true }).fill(code);
+  await page.getByRole('button', { name: 'Buscar producto', exact: true }).click();
+  await expect(
+    page.getByRole('heading', { name: 'Datos contradictorios', exact: true }),
+  ).toBeVisible();
+  await expect(
+    page.getByRole('heading', { name: 'Figura como sin gluten', exact: true }),
+  ).toHaveCount(0);
+  await expect(
+    page.getByText(/Algunos campos recibidos no tienen el formato esperado/),
+  ).toBeVisible();
+  await expandSection(page, 'Ingredientes y etiquetado');
+  await expect(page.getByText('Arroz y sal', { exact: true })).toBeVisible();
+});
 test('anota un precio privado y lo conserva tras recargar', async ({ page }) => {
   await page.goto('/prices');
+  await expandSection(page, 'Anotar un precio sin buscar el producto');
   await page
     .getByRole('textbox', { name: 'Código de barras del producto', exact: true })
     .fill(code);
@@ -108,14 +191,70 @@ test('anota un precio privado y lo conserva tras recargar', async ({ page }) => 
   await page
     .getByRole('textbox', { name: 'Sucursal o localidad', exact: true })
     .fill('Madrid, sucursal de prueba');
-  await page.getByRole('button', { name: 'Guardar precio privado', exact: true }).click();
+  await page.getByRole('button', { name: 'Guardar precio', exact: true }).click();
   await expect(
     page.getByText('Precio guardado en este dispositivo.', { exact: true }),
   ).toBeVisible();
   await page.reload();
+  await expandSection(page, 'Mis precios guardados (1)');
   await expect(
     page.getByText('Tienda de prueba · Madrid, sucursal de prueba', { exact: true }),
   ).toBeVisible();
+});
+
+test('exporta la biblioteca y permite cancelar o confirmar su borrado sin dejar datos tras recargar', async ({
+  page,
+}) => {
+  await page.goto('/scan');
+  await page.getByRole('textbox', { name: 'Código de barras', exact: true }).fill(code);
+  await page.getByRole('button', { name: 'Buscar producto', exact: true }).click();
+  await page.getByRole('button', { name: 'Guardar en favoritos', exact: true }).click();
+  await expect(
+    page.getByRole('button', { name: 'Quitar de favoritos', exact: true }),
+  ).toBeVisible();
+  await page.goto('/prices');
+  await expandSection(page, 'Anotar un precio sin buscar el producto');
+  await page
+    .getByRole('textbox', { name: 'Código de barras del producto', exact: true })
+    .fill(code);
+  await page.getByRole('textbox', { name: 'Precio en euros', exact: true }).fill('2,49');
+  await page
+    .getByRole('textbox', { name: 'Supermercado o tienda', exact: true })
+    .fill('Exportación prueba');
+  await page.getByRole('textbox', { name: 'Sucursal o localidad', exact: true }).fill('Madrid');
+  await page.getByRole('button', { name: 'Guardar precio', exact: true }).click();
+  await expect(
+    page.getByText('Precio guardado en este dispositivo.', { exact: true }),
+  ).toBeVisible();
+  await page.goto('/settings');
+  const downloadReady = page.waitForEvent('download');
+  await page.getByRole('button', { name: 'Exportar mis datos', exact: true }).click();
+  const download = await downloadReady;
+  expect(download.suggestedFilename()).toBe('sin-gluten-datos.json');
+  const exported = JSON.parse(await readFile((await download.path())!, 'utf8'));
+  expect(exported.products).toHaveLength(1);
+  expect(exported.products[0].barcode).toBe(code);
+  expect(exported.favorites[code].deleted).toBe(false);
+  expect(exported.history).toHaveLength(1);
+  expect(exported.prices[0].amountMinor).toBe(249);
+  await page.getByRole('button', { name: 'Borrar todos los datos locales', exact: true }).click();
+  await page.getByRole('button', { name: 'Cancelar', exact: true }).click();
+  await page.goto('/library');
+  await expect(page.getByRole('button', { name: 'Favoritos (1)', exact: true })).toBeVisible();
+  await page.goto('/settings');
+  await page.getByRole('button', { name: 'Borrar todos los datos locales', exact: true }).click();
+  await page.getByRole('button', { name: 'Confirmar eliminación', exact: true }).click();
+  await expect(page.getByText(/Datos locales eliminados/)).toBeVisible();
+  await page.reload();
+  const emptyDownloadReady = page.waitForEvent('download');
+  await page.getByRole('button', { name: 'Exportar mis datos', exact: true }).click();
+  const emptyDownload = await emptyDownloadReady;
+  const empty = JSON.parse(await readFile((await emptyDownload.path())!, 'utf8'));
+  expect(empty.products).toEqual([]);
+  expect(empty.favorites).toEqual({});
+  expect(empty.history).toEqual([]);
+  expect(empty.prices).toEqual([]);
+  expect(empty.cache).toEqual({});
 });
 
 test('una actualización conserva la versión de las pestañas abiertas y activa la nueva al cerrarlas', async ({

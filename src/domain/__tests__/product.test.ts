@@ -17,6 +17,7 @@ import {
 import { BARCODE, product } from '@/tests/fixtures';
 import { displayTag, traceDescription } from '../display';
 import { calendarDate, calendarInstant } from '../calendar';
+import { evidenceFields } from '../evidence';
 
 test('las fechas de precios respetan el día local y rechazan fechas inexistentes', () => {
   const local = new Date(2026, 9, 23, 0, 15);
@@ -69,6 +70,57 @@ describe('Información de gluten basada en evidencia', () => {
     expect(result.assessment.state).toBe('conflicting');
     result.assessment.rulesVersion = 'old';
     expect(refreshAssessment(result).assessment.state).toBe('conflicting');
+  });
+  test.each([{ hierarchy: 'en:no-gluten' }, { hierarchy: ['en:no-gluten', 7] }])(
+    'la jerarquía malformada %j tampoco permite ocultar un problema tras una etiqueta positiva',
+    ({ hierarchy }) => {
+      const result = normalizeProduct(
+        { labels_tags: ['en:no-gluten'], labels_hierarchy: hierarchy },
+        BARCODE,
+        'production',
+      );
+      expect(result.assessment.state).toBe('conflicting');
+      expect(result.dataIssues).toContain('malformed_tags');
+      expect(result.labels).toContain('en:no-gluten');
+    },
+  );
+  test('los ingredientes españoles y la jerarquía válida cuentan como datos disponibles', () => {
+    const result = normalizeProduct(
+      { ingredients_text_es: 'Arroz y sal', labels_hierarchy: ['en:no-gluten'] },
+      BARCODE,
+      'production',
+    );
+    expect(result.missingFields).not.toContain('ingredients_text');
+    expect(result.missingFields).not.toContain('labels_tags');
+    expect(result.assessment.state).toBe('declared_gluten_free');
+    expect(evidenceFields(result).find((x) => x.id === 'ingredients')?.value).toBe('Arroz y sal');
+  });
+  test('la evidencia distingue trazas ausentes de una declaración de ninguna en la fuente', () => {
+    const absent = normalizeProduct({}, BARCODE, 'production');
+    const declared = normalizeProduct({ traces_tags: ['en:none'] }, BARCODE, 'production');
+    expect(evidenceFields(absent).find((x) => x.id === 'traces')?.value).toBeNull();
+    expect(evidenceFields(declared).find((x) => x.id === 'traces')?.value).toBe(
+      'Ninguno declarado en la fuente',
+    );
+    expect(declared.assessment.state).toBe('unknown');
+    expect(declared.assessment.traceWarnings).toEqual([]);
+  });
+  test('la evidencia conserva texto original sin inventar una clasificación y admite caché anterior', () => {
+    const result = normalizeProduct(
+      {
+        allergens: 'Texto original sin taxonomía',
+        traces: 'en:gluten',
+        ingredients_text_es: 'Arroz',
+      },
+      BARCODE,
+      'production',
+    );
+    result.missingFields = ['ingredients_text'];
+    const fields = evidenceFields(result);
+    expect(fields.find((x) => x.id === 'ingredients')?.value).toBe('Arroz');
+    expect(fields.find((x) => x.id === 'allergens')?.value).toBe('Texto original sin taxonomía');
+    expect(fields.find((x) => x.id === 'traces')?.value).toBe('Gluten');
+    expect(result.assessment.state).toBe('unknown');
   });
   test('valida caché, fechas, origen de imagen y versione de reglas', () => {
     expect(isProduct(product())).toBe(true);

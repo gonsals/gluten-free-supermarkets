@@ -74,6 +74,8 @@ App Check **no está activado**: falta elegir e integrar un proveedor compatible
 
 ## Android e iOS
 
+La dirección visual elegida es [Mesa](BRANDING_MESA.md). Para regenerar los iconos y el splash desde sus SVG, ejecutar `npm run brand:generate` **antes** de generar el proyecto nativo. El helper de Windows utiliza un worker de Gradle para serializar tareas nativas; Metro conserva su límite de dos procesos. El workflow de Linux mantiene su configuración propia.
+
 La generación nativa usa configuración y plugins versionados; `android/` e `ios/` son carpetas generadas e ignoradas. No guardar cambios manuales importantes únicamente allí.
 
 `withAndroidBuildInputs` limita Metro a dos procesos durante el empaquetado nativo y excluye de las entradas de Gradle los artefactos generados y la copia `node_modules-sdk52`. React Native excluye `node_modules`, pero no una copia con otro nombre: sin este ajuste Gradle recorre y calcula hashes de las dependencias antiguas antes de arrancar Metro. La copia conservada no se borra y el código fuente de la app continúa siendo una entrada de compilación.
@@ -125,3 +127,17 @@ El service worker precarga código y recursos del mismo origen con versión por 
 Antes de publicar: resolver el control de seguridad de release, validar lenguaje y reglas de gluten con revisión experta, completar la matriz física, política de privacidad y contacto de soporte, medir latencia/fallos/costes en beta y acordar límites operativos. Las metas de los documentos de producto no son métricas ya logradas.
 
 Para recuperar una versión problemática, reconstruir el commit anterior con sus lockfiles y configuración del entorno, probar sus contratos con las reglas y datos vigentes y publicar mediante el mecanismo elegido. No se ha instalado actualización remota automática ni ensayado una reversión real. Los cambios de esquema futuros necesitan migración y compatibilidad entre versiones antes del despliegue.
+
+## Iteración 15 · Inspección Android y reconstrucción incremental
+
+Toda construcción Windows `--variant preview` ejecuta ahora `scripts/inspect-android-apk.py` sobre la APK copiada y sus metadatos; genera `artifacts/singluten-preview-universal-inspection.json` para arquitectura universal. CI inspecciona igualmente su APK ARM64, sin subir binarios ni contratar servicios. Requiere Python y `aapt2` de Android SDK, además de los requisitos de compilación existentes. Comprueba paquete, hash, bundle incorporado, ABI, permisos, copia automática desactivada, ausencia de archivos `.env*` y patrón común de clave de Google. El resultado de firma corresponde al metadato, no a una verificación criptográfica; Gitleaks sigue siendo necesario para código/historial.
+
+Con SDK, plugins y configuración nativa sin cambios se puede reutilizar la generación y caché Gradle:
+
+```powershell
+npm.cmd run build:android:windows -- --variant preview --architecture universal --incremental
+```
+
+La opción añade `--no-clean` a prebuild de Expo 58; sin ella se conserva la generación limpia predeterminada. Tras cambios de SDK, plugins, permisos, iconos u otra configuración nativa, reconstruir **sin** `--incremental`. No guardar parches manuales solo en carpetas generadas. La medición y hash del ensayo, junto con las limitaciones físicas, están en [Validación Android](VALIDACION_ANDROID.md).
+
+Para verificar el archivo compartido por Android sin cuentas ni nube existe un [receptor local de ensayo](../tests/native/README.md), separado del producto. Instalarlo solo en una instancia temporal propia con datos sintéticos y serial verificado. Los destinos de guardado disponibles en un teléfono real y la posterior restauración siguen en la matriz física; este helper no añade al producto un selector de guardado.

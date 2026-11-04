@@ -1,53 +1,85 @@
-import { useLocalSearchParams } from 'expo-router';
-import { useState } from 'react';
-import { normalizeBarcode } from '@/src/domain/barcode';
-import { isPriceCurrent, money } from '@/src/domain/price';
+import { useLocalSearchParams, useRouter } from 'expo-router';
+import { normalizeBarcode, sameGtin } from '@/src/domain/barcode';
 import { useLibrary } from '@/src/features/library/useLibrary';
 import { PriceForm } from '@/src/features/prices/PriceForm';
 import { PriceList } from '@/src/features/prices/PriceList';
 import { SharedPrices } from '@/src/features/prices/SharedPrices';
-import { Card, Copy, Field, Heading, Notice, Screen } from '@/src/shared/ui';
+import { Action, Copy, Heading, Notice, Screen } from '@/src/shared/ui';
+import { PriceComparison } from '@/src/features/prices/PriceComparison';
+import { useCachedProduct } from '@/src/features/products/useCachedProduct';
+import { AddToBasket } from '@/src/features/basket/AddToBasket';
+import { Disclosure } from '@/src/shared/Disclosure';
 
 export default function ProductPricesScreen() {
-  const { barcode } = useLocalSearchParams<{ barcode: string }>();
+  const { barcode, name, offers, older } = useLocalSearchParams<{
+    barcode: string;
+    name?: string;
+    offers?: string;
+    older?: string;
+  }>();
+  const resultName = typeof name === 'string' ? name.slice(0, 300).trim() : '';
+  return (
+    <ProductPrices
+      key={`${barcode}:${offers === '1'}:${older === '1'}`}
+      barcode={barcode}
+      resultName={resultName}
+      offers={offers === '1'}
+      older={older === '1'}
+    />
+  );
+}
+function ProductPrices({
+  barcode,
+  resultName,
+  offers,
+  older,
+}: {
+  barcode: string;
+  resultName: string;
+  offers: boolean;
+  older: boolean;
+}) {
+  const router = useRouter();
   const { data, repository } = useLibrary();
-  const [location, setLocation] = useState('');
+  const product = useCachedProduct(barcode);
   let valid = true;
   try {
     normalizeBarcode(barcode);
   } catch {
     valid = false;
   }
-  const prices = data.prices.filter(
-    (price) =>
-      price.barcode === barcode &&
-      `${price.location} ${price.store}`
-        .toLocaleLowerCase('es')
-        .includes(location.toLocaleLowerCase('es')),
-  );
-  const recent = prices.filter((price) => isPriceCurrent(price));
-  const min = recent.length ? Math.min(...recent.map((x) => x.amountMinor)) : null;
+  const prices = data.prices.filter((price) => valid && sameGtin(price.barcode, barcode));
   return (
     <Screen>
-      <Heading>Compara tus observaciones</Heading>
+      <Heading>{product?.name ?? (resultName || 'Comparar este producto')}</Heading>
       <Copy muted>
         Código {barcode}. Mismo producto y envase; los precios pueden cambiar y no confirman
         disponibilidad.
       </Copy>
       {valid ? (
         <>
-          <PriceForm barcode={barcode} />
-          <Field label="Filtrar tienda o localidad" value={location} onChangeText={setLocation} />
-          {min !== null ? (
-            <Card>
-              <Copy>Menor precio observado recientemente: {money(min)}.</Copy>
-              <Copy muted>
-                Entre tus anotaciones de los últimos 7 días y ofertas no vencidas. Revisa fecha y
-                condiciones de cada observación.
-              </Copy>
-            </Card>
-          ) : null}
-          <PriceList prices={prices} onDelete={(id) => repository.deletePrice(id)} />
+          <PriceComparison
+            barcode={barcode}
+            prices={prices}
+            initialOffers={offers}
+            initialRecentOnly={!older}
+          />
+          <AddToBasket barcode={barcode} product={product ?? undefined} />
+          <Action
+            title={`Mi cesta (${data.basket.length})`}
+            secondary
+            icon="basket-outline"
+            onPress={() => router.push('/basket')}
+          />
+          <Action
+            title="Ver ficha e información sobre gluten"
+            secondary
+            onPress={() => router.push({ pathname: '/product/[barcode]', params: { barcode } })}
+          />
+          <PriceForm barcode={barcode} product={product} />
+          <Disclosure title={`Mis anotaciones de este producto (${prices.length})`}>
+            <PriceList prices={prices} onDelete={(id) => repository.deletePrice(id)} />
+          </Disclosure>
           <SharedPrices
             barcode={barcode}
             localPrices={data.prices.filter((x) => x.barcode === barcode)}

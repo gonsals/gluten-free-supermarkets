@@ -6,7 +6,7 @@ export async function exportData(contents: string): Promise<void> {
     throw new Error('No se puede compartir un archivo desde este dispositivo.');
   const file = new File(Paths.cache, 'sin-gluten-datos.json');
   try {
-    file.write(contents);
+    await file.write(contents);
     await shareAsync(file.uri, {
       mimeType: 'application/json',
       dialogTitle: 'Exportar mis datos de SinGluten',

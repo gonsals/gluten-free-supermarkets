@@ -1,180 +1,128 @@
-# Arquitectura y modelo de datos propuestos
+# Arquitectura · Comparador local y evolución a cesta
 
-**Diseño de referencia**, 2026-10-23. El MVP posterior está descrito en [Implementación](IMPLEMENTACION.md), incluidas sus decisiones concretas: SQLite transaccional en móvil, IndexedDB web, sincronización manual de favoritos y precios públicos separados de sus originales privados. Las propuestas de caché de catálogo compartida y sincronización permanente siguen sujetas a demanda y medición. [Estado actual](ESTADO_ACTUAL.md) conserva la auditoría histórica.
+## Iteración 20 · Registro y grupos de proveedores
 
-## 1. Decisiones de base
+[SUP-02](PRECIOS_BARCELONA.md) centraliza seis cadenas y páginas aprobadas en `retailSources`. `retailCatalog` exige fuente declarada, dominio/ruta y grupo conocido; admite SKU alfanuméricos de DIA. Mercadona Barcelona usa identidad `:bcn1` y grupo `@bcn1`; las filas legacy de Valencia no entran en la nueva búsqueda. Los adaptadores nuevos leen datos embebidos, sin ejecutar scripts, enviar analítica o crear cuentas. El actualizador valida/sustituye por grupo y conserva fechas de grupos fallidos; detiene la cadena ante 403/429. La consulta móvil limita a dos categorías por nuevo proveedor y mantiene caché/cancelación. Copias privadas v4, GTIN y nube permanecen independientes.
 
-| Decisión propuesta | Motivo y límite |
+## Iteración 19 · Adaptadores de supermercados
+
+[SUP-01](PRECIOS_SUPERMERCADOS.md) mantiene `RetailPrice` separado de `PriceQuote`: SKU/grupo y ámbito web, sin GTIN o sucursal fabricados. `retailCatalog` valida lista blanca, fuentes, dinero y fechas; `retailPrices` aplica vigencia y filtros. `src/data/retail/live.ts` selecciona categorías localmente y consulta fuentes en móvil; reutiliza los parsers puros del actualizador. Caché por fuente/categoría, cancelación, fallos con fechas intactas y sustitución de grupos completos. `client.ts` valida la descarga estática de GitHub para web; el JSON incluido permite búsqueda offline. `useCatalogSearch` combina operaciones independientes en paralelo sin persistir el catálogo en biblioteca/copias. `RetailResults` presenta estos datos antes de las aportaciones por GTIN. El cron web solo se activará en la rama predeterminada; revisar conjuntamente la referencia remota al promover. Sin nuevo backend, dependencias o esquema.
+
+Actualizada el **03-11-2026**. Distingue la base implementada en `638980a` del diseño pendiente para la [hoja de ruta](HOJA_DE_RUTA.md). El [diseño inicial](historico/ARQUITECTURA_ANTES_DEL_COMPARADOR.md) queda como histórico.
+
+## Base implementada
+
+| Capa / ubicación | Responsabilidad actual |
 | --- | --- |
-| Mantener React Native, Expo, Expo Router y TypeScript | Aprovechar el trabajo existente y una base móvil común. Actualizar SDK y módulos como conjunto compatible. |
-| Mantener Firebase inicialmente | Ya existe integración; evita una migración sin una necesidad demostrada. Validar consultas, reglas, costes y experiencia de desarrollo antes de ampliarlo. |
-| Organizar por funcionalidades y capas | Separar cámara, producto, historial y precios permite cambiar un proveedor sin reescribir pantallas. |
-| Un módulo puro para interpretar gluten | La UI y la persistencia deben compartir reglas reproducibles. |
-| Historial y favoritos locales en el MVP | Menor fricción; utilidad sin red ni cuentas. Incorporar sincronización como fase separada. |
-| Backend gestionado cuando haya datos compartidos | Validación, moderación, cuotas y caché compartida requieren un punto de confianza. Candidato coherente: funciones gestionadas junto a Firebase, por evaluar. |
+| `app/` | Rutas Expo Router: inicio, comparar, consultar, biblioteca y ajustes; rutas adicionales de ficha y nube opcional. |
+| `src/features/` | Composición de pantallas, formularios, consulta y ciclo de cámara. `prices/PriceComparison.tsx` y `usePublicPrices.ts` coordinan comparación y fuente pública. |
+| `src/domain/` | Códigos, producto, evidencia versionada, anotaciones, tiendas y comparación pura. `comparison.ts` distingue PriceQuote privada/pública; `stores.ts` normaliza sugerencias. |
+| `src/data/open-food-facts/` | Contrato de fichas, normalización, campos acotados y errores de proveedor. |
+| `src/data/open-prices/` | GET público validado y acotado, precios en EUR y mismo GTIN/envase. |
+| `src/data/local/` | Repositorio y adaptadores transaccionales SQLite móvil / IndexedDB web. |
+| `src/shared/` | Mesa, UI, configuración, exportación y observabilidad opcional. |
+| `src/data/firebase/`, `functions/` | Cuentas, favoritos y contribuciones opcionales; desactivadas en la app y fuera del alcance local. |
 
-Una app escalable necesita límites, contratos, permisos y medición. No requiere microservicios en esta etapa.
+Expo 58 / React Native 0.88 / React 19, TypeScript y Node/npm fijados. [Versiones y deuda de seguridad](DEPENDENCIAS.md). Las pantallas no interpretan directamente los JSON externos ni hacen de autoridad monetaria o de gluten; esas reglas pertenecen al dominio y a adaptadores comprobables.
 
-## 2. Separación de responsabilidades
+## Persistencia y límites actuales — iteración 9
 
-```text
-Rutas y pantallas Expo Router
-  ↓
-Casos de uso: consultar, guardar favorito, registrar consulta
-  ↓
-Dominio: Product, GlutenAssessment, reglas puras y errores tipados
-  ↓
-Interfaces: ProductRepository, HistoryRepository, FavoritesRepository
-  ↓
-Adaptadores: Open Food Facts / almacenamiento local / Firebase
-```
+Biblioteca `LibraryData` **versión 4**, separada por entorno de Open Food Facts (`library:${offEnv}:v1`). Historial máximo de 1.000, 250 favoritos activos y 1.000 anotaciones privadas de precio. La retención de fichas se basa en referencias de historial/favoritos y un margen acotado; **la cesta y los precios privados ya se incorporan a esa política en la iteración 9**.
 
-La pantalla no conoce las claves del JSON de Open Food Facts. Los adaptadores validan datos externos, normalizan ausencias y traducen fallos. Los repositorios devuelven resultados de dominio. La interpretación no hace peticiones ni depende de React o Firestore.
+Las operaciones se serializan por instancia y leen la raíz actual antes de cada mutación. La comparación de raíz esperada y la escritura de metadatos/fichas son atómicas en SQLite/IndexedDB. Un conflicto se muestra sin sobrescribir; se comprueban además cantidades/cesta/snapshot de acciones destructivas. La iteración 9 prueba dos instancias y dos pestañas. El refresco al cambiar de ruta/foco no es sincronización instantánea entre ventanas.
 
-Estructura posible, a introducir gradualmente:
+Copias actuales: `format: sin-gluten-library`, `backupVersion: 4`, datos `version: 4`, cesta, sucursales y grupos incluidos e importación compatible con v1/v2/v3; validación de hasta 20 MiB, códigos, fechas, referencias y límites. Restauración completa confirmada, sin fusión; conserva fechas, recalcula evaluación y elimina vinculación de cuenta. [Contrato completo](COPIAS_LOCALES.md). El nombre del formato es un identificador técnico que no se cambia por decidir un nombre comercial.
+
+Los precios públicos no se guardan en la biblioteca ni se incluyen en sus copias. Su caché actual vive en memoria cinco minutos, hasta cien páginas. Mantener el dato externo separado del contenido privado es un límite de arquitectura y de procedencia.
+
+## Flujo de comparación actual
 
 ```text
-app/                          Rutas finas; composición de pantallas
-src/features/scanner/         Cámara, permisos y captura de códigos
-src/features/products/        Ficha y casos de consulta
-src/features/history/         Historial local y su búsqueda
-src/features/favorites/       Gestión de favoritos
-src/features/prices/          Solo cuando entre en alcance
-src/domain/                   Tipos y reglas de interpretación
-src/data/open-food-facts/      Cliente, validación y normalización
-src/data/local/               Repositorios locales y migraciones
-src/data/firebase/            Repositorios remotos cuando se activen
-src/shared/ui/                Componentes y tokens visuales
-src/shared/config/            Configuración validada por entorno
-src/shared/observability/     Errores y mediciones sin datos personales
-tests/fixtures/               Respuestas representativas de API
+Código válido → ficha/cache local y consulta de producto cuando corresponde
+             → precios privados locales + lectura pública explícita
+             → normalización de PriceQuote por origen
+             → última observación por referencia → filtros de elegibilidad
+             → ranking del mismo GTIN/envase → UI con fuente/fecha/límites
 ```
 
-No mover todos los archivos de golpe: primero extraer el cliente y reglas, después adelgazar la pantalla y finalmente agrupar funciones al crecer.
+Unidades de cálculo: milésimas enteras de EUR; las anotaciones privadas en céntimos se multiplican por diez. No usar coma flotante como fuente de verdad ni redondear antes de ordenar. Una referencia pública de ubicación y una privada de tienda/localidad siguen separadas; no hay resolución automática entre orígenes.
 
-## 3. Contratos de producto
+Open Prices: solo GET, EUR, GTIN validado/equivalente, hasta 50 resultados por página y tres páginas, carga adicional por acción, timeout ocho segundos, cancelación, tratamiento de 429 y reintento explícito. Se valida respuesta y tamaño antes de interpretar; no se promete un límite de descarga por streaming que no está implementado. Descartar autor/comentarios en normalización, sin descargar pruebas o tickets. [Contrato y evidencia](COMPARADOR_DE_PRECIOS.md).
 
-Ejemplo conceptual de TypeScript; no es un contrato existente:
+El fallo público no bloquea la biblioteca privada. El modo offline conserva las fichas y anotaciones guardadas; no hay caché pública persistente ni nuevos precios sin conexión. Fuente, fecha, condiciones y cobertura no pueden perderse al pasar del adaptador a la pantalla.
 
-```ts
-type GlutenState =
-  | 'declared_gluten_free'
-  | 'declared_gluten'
-  | 'unknown'
-  | 'conflicting';
+## Cesta y migración implementadas — CES-01/CES-02
 
-interface Product {
-  barcode: string;
-  name: string | null;
-  brands: string[];
-  imageUrl: string | null;
-  ingredientsText: string | null;
-  labels: string[];
-  allergens: string[];
-  traces: string[];
-  missingFields: string[];
-  source: {
-    provider: 'open_food_facts';
-    productUrl: string;
-    sourceUpdatedAt: string | null;
-    fetchedAt: string;
-    environment: 'staging' | 'production';
-  };
-  assessment: {
-    state: GlutenState;
-    reasons: string[];
-    traceWarnings: string[];
-    rulesVersion: string;
-    assessedAt: string;
-  };
-  schemaVersion: number;
-}
-```
+Una cesta activa con líneas referenciadas por GTIN, nombre de resumen, fecha de alta y cantidad entera de envases; límites de 100 líneas y 1–99 envases. No duplicar fichas completas dentro de cada línea ni persistir totales como autoridad: derivarlos de líneas, observaciones y filtros.
 
-Conservar evidencia original relevante o una representación trazable de ella. `fetchedAt` significa consulta y `assessedAt` ejecución de reglas; ninguna equivale a certificación o inspección. El adaptador debe distinguir `labels` vacío de campo ausente mediante `missingFields`.
+La iteración 9 introdujo cesta/copia v2. La iteración 10 añade sucursales y vínculos en **esquema/copia v3**, migrando v1 con cesta vacía y v2 conservando su cesta. Se conserva la clave física histórica `library:${offEnv}:v1` y las fichas; el campo interno marca versión 4 desde la iteración 11; migrar v3 conserva cesta/sucursales y crea grupos vacíos. SQLite incorpora triggers contra regresión de versión; IndexedDB se abre con versión física 4, bloqueando clientes v1/v2/v3 y mostrando salida útil si mantienen conexiones abiertas. [Contrato, política y evidencia](CESTA_LOCAL.md).
 
-El resultado de consulta debe diferenciar `found`, `not_found` y errores como `invalid_barcode`, `offline`, `timeout`, `rate_limited`, `provider_error`, `invalid_response`. El repositorio devuelve también si el dato es de caché y si se considera pendiente de refresco.
+Contrato de migración/recuperación implementado, con verificación técnica en [Cesta local](CESTA_LOCAL.md) y validación física pendiente:
 
-Los códigos se almacenan como cadenas. Las reglas de normalización de EAN/UPC y su dígito de control deben ser explícitas y probadas; no eliminar ceros indiscriminadamente. Los QR quedan fuera del flujo de producto salvo que se defina y valide un formato soportado.
+1. Validar la versión antes de escribir; no modificar datos desconocidos. No migrar repetidamente en cada arranque.
+2. Preparar transformación íntegra y confirmar en transacción. Un fallo conserva la versión anterior recuperable y muestra una salida útil.
+3. Importar v1 crea cesta vacía; v2 conserva su cesta sin sucursales; v3 conserva también identificaciones/vínculos. v4 añade grupos explícitos. Exportar usa v4, hasta 3.000 fichas y 20 MiB; el margen contempla referencias de los grupos. Rechazar versiones desconocidas sin sustituir la biblioteca.
+4. Una app anterior a v4 rechaza la nueva copia/raíz; se verifica con el lector real de `3270728`. Mantener barrera entre clientes activos y recuperación hacia delante; no recomendar downgrade que borre datos nuevos.
+5. Incluir cesta, sucursales y grupos en exportación, resumen de restauración y borrado completo; limpiar historial conserva lo referenciado por grupos/cesta/favoritos/precios según contrato de retención.
+6. Probar dos instancias/pestañas, cambio durante un diálogo y fallo de almacenamiento. Comparar la raíz serializada en la transacción de cada adaptador; la cola por instancia se mantiene, pero no es la única protección.
 
-## 4. Consulta y caché
+No subir cesta a Firebase. Cancelación, límites y política de borrado pertenecen al mismo contrato que el resto de datos privados.
 
-1. Validar y normalizar código.
-2. Reutilizar la petición en curso para el mismo código; bloquear eventos repetidos del escáner.
-3. Leer caché local y presentar el dato guardado con fecha.
-4. Si hay red y corresponde refrescar, consultar al proveedor o a una caché gestionada cuando exista.
-5. Validar respuesta, interpretar con la versión actual de reglas y actualizar caché.
-6. Registrar la consulta en historial sin duplicados causados por callbacks.
+## Identidad y totales implementados — TIE-01/CES-03
 
-La nueva petición cancela o invalida la anterior. Una respuesta antigua nunca sustituye al producto activo. Reiniciar el escáner limpia el estado de error de la operación anterior.
+La iteración 10 distingue el texto de cadena de la fuente, una referencia sin confirmar y la sucursal física local confirmada. `branches.ts` valida 50 sucursales y 20 referencias por cada una; no hay catálogo canónico de cadenas ni inferencia de ámbito nacional. Un vínculo entre ubicación pública y anotación privada necesita evidencia/confirmación, procedencia y posibilidad de deshacer. Normalizar texto sirve para buscar, no para probar identidad. No convertir una anotación de cadena en observación nacional sin fuente que lo acredite.
 
-Política inicial a validar: refresco tras 24 h, caché negativa de producto no encontrado de 5 min, tamaño acotado y expulsión por uso. Estos tiempos controlan consultas; no acreditan vigencia del etiquetado. Favoritos e historial conservan su referencia aunque se expulse una imagen o una entrada de caché.
+`basketComparison.ts` implementa funciones puras para: selección de observación, elegibilidad, resolución de fuentes vinculadas, cobertura por línea/cantidad y total completo/parcial. El resultado debe conservar las observaciones utilizadas y motivos de exclusión para explicar la pantalla y reproducir las pruebas.
 
-Respetar `429` y `Retry-After` cuando estén disponibles; reintentos limitados con espera creciente y variación aleatoria solo para fallos transitorios. No reintentar códigos inválidos ni producto inexistente. Solicitar únicamente los campos necesarios. Directrices: [API oficial de Open Food Facts](https://openfoodfacts.github.io/openfoodfacts-server/api/).
+La discrepancia entre fuentes debe tener regla determinista documentada y visible, sin seleccionar arbitrariamente el menor precio. Calcular en enteros con límites de producto/cantidad/importe y comprobar desbordamiento. Preservar milésimas y aplicar política única de presentación; solo cestas completas participan en el ranking. Un subtotal incompleto no es un total barato.
 
-Para almacenamiento local, evaluar SQLite por consultas, migraciones y límites de volumen. Verificar soporte web por separado; el contrato del repositorio permite una implementación distinta en navegador. No usar el mecanismo local de secretos como almacén masivo de productos.
+No hacer una petición por cada render, cada fila visible o cada cambio de cantidad. Consultas públicas desde cesta: acción explícita, máximo diez productos por acción, secuenciales y una primera página de cincuenta resultados por código; cancelación, 429 y resultados solo en memoria. No se recorre automáticamente la cesta ni se siguen páginas. Medir cobertura y límites del proveedor con DAT-01 antes de aumentar volumen.
 
-## 5. Modelo remoto evolutivo
+Contrato, desempates, copias v3 y evidencia en [Totales y sucursales](TOTALES_Y_SUCURSALES.md). Los vínculos guardan clave/origen, nunca una copia del precio público.
 
-No crear estas colecciones hasta que la función correspondiente esté en alcance. Es una propuesta que sustituiría gradualmente al esquema actual.
+## Proveedores y crecimiento — DAT/UNI/ALT
 
-| Recurso | Campos principales | Escritura prevista |
-| --- | --- | --- |
-| `products/{barcode}` | Producto normalizado, evidencia, versión de esquema/reglas y fechas de origen/recepción. | Importador o backend controlado; clientes sin edición arbitraria del catálogo. |
-| `users/{uid}` | Preferencias mínimas y fechas técnicas. | Usuario sobre campos permitidos. |
-| `users/{uid}/favorites/{barcode}` | Código, fecha de guardado y versión de sincronización. | Propietario; solo si activa sincronización. |
-| `users/{uid}/scanHistory/{scanId}` | Código, fecha de consulta y resumen/versiones consultadas. | Propietario; colección opcional, no subir historial por defecto. |
-| `supermarkets/{chainId}` | Nombre y ámbito de la cadena. | Administración/importación validada. |
-| `stores/{storeId}` | Cadena, nombre, localidad y ubicación comercial si se necesita. | Administración/importación validada. |
-| `priceObservations/{observationId}` | Código, sucursal o ámbito, importe, moneda, cantidad, autor, fechas y estado de moderación. | Ingreso validado; publicación controlada. |
-| `productReports/{reportId}` | Referencia del producto, motivo y estado de revisión. | Alta limitada; lectura restringida al remitente/moderación según política. |
+Cada proveedor aporta observaciones normalizadas con identidad, ámbito, importe/unidad, fecha y procedencia, además de paginación/errores. El motor de comparación no depende de nombres de campos HTTP. Datos inválidos, moneda incompatible, categoría a granel o stock desconocido no se completan mediante inferencias.
 
-### Reglas de integridad
+DAT-02 podría añadir caché pública persistente separada con retención, expulsión, atribución y borrado propios; excluirla de las copias privadas. No se activa por reorganizar este documento. DAT-03 exige revisar contrato y permisos de cada nueva fuente; no sustituir un error por scraping sin control o un catálogo ficticio.
 
-- Importes en unidades monetarias menores enteras, por ejemplo céntimos; moneda explícita. Rechazar importes no finitos, negativos y valores fuera de límites definidos.
-- Precio de artículo separado del precio normalizado por kg/l/unidad; solo calcular cuando cantidad y unidad sean conocidas y compatibles.
-- `observedAt` informa de cuándo se vio el precio; `createdAt` del servidor informa de cuándo se recibió. No confiar en la fecha del cliente para establecer autoridad.
-- Observaciones de precio nuevas en lugar de sobrescribir la única observación del supermercado. Promociones con fechas y condiciones propias.
-- Autor y estado de moderación no pueden ser elegidos arbitrariamente por el cliente.
-- Validar tamaños de texto, formatos, referencias, listas y campos permitidos en el punto de ingreso.
-- Identificadores de operación idempotentes para que reintentar una escritura no duplique contribuciones.
-- Versiones de esquema y migraciones probadas; no actualizar todos los documentos al arrancar cada móvil.
+UNI-01/ALT-01 implementadas: `measure.ts` normaliza millonésimas enteras de kg/l/unidad y multipacks, usando BigInt para parseo/redondeo. `alternatives.ts` valida 20 grupos de hasta 10 GTIN, con necesidad y envase explícitos. Se conservan las fichas referenciadas por grupos al limpiar historial. Las sustituciones comprueban revisión completa y grupo antes del commit atómico; no fusionan silenciosamente una alternativa ya presente. La pantalla solo usa precios privados recientes sin oferta/notas, paginando sucursales de diez en diez; no llama al proveedor público. [Contrato](FORMATOS_Y_ALTERNATIVAS.md). Separar precio unitario, necesidad de envases enteros y sobrante. El módulo de evidencia sobre gluten conserva su independencia: no utiliza precio o supermercado para inferir composición.
 
-### Consultas e índices
+## Seguridad, privacidad y operación
 
-Diseñar índices a partir de pantallas: historial por propietario y fecha descendente; favoritos por propietario y fecha; observaciones publicadas por código/sucursal y fecha. Versionar los índices necesarios.
+- Validar API, archivos, códigos, URLs, importes, cantidades y tamaños al entrar; errores tipados y sin volcar respuestas, credenciales o historiales.
+- Mantener secretos administrativos fuera de `EXPO_PUBLIC_*`, repositorio y bundle. [Seguridad de credenciales](SEGURIDAD_CREDENCIALES.md).
+- Las consultas públicas transmiten código y datos de conexión, no anotaciones ni lista de compra completa. La búsqueda local de tienda/localidad no se envía al proveedor actual.
+- Respetar atribución de Open Food Facts, Open Prices y OpenStreetMap, separando sus datos de los privados. Revisar condiciones si cambia la reutilización.
+- Firebase permanece opcional y desactivado en todos los perfiles. No desplegar Functions, activar Blaze ni contratar infraestructura para estas fases. Su modelo remoto histórico no se convierte en dependencia de la cesta.
+- Si se retoma FUT-03: exigir presupuesto expreso, aislamiento, validación, moderación, conflictos, borrado, cuotas y pruebas remotas antes de activación; el código existente no acredita operación real completa.
 
-Paginar por cursor y limitar tamaños, con propuesta inicial de 20 elementos por página. Evitar listeners globales al catálogo, lectura de todos los precios para cada ficha y patrones de una petición adicional por cada fila de lista.
+## Escalabilidad comprobable
 
-Una búsqueda por nombre o múltiples filtros necesita un diseño específico. Validar lo que permite el proveedor; si se añade un motor de búsqueda, hacerlo tras medir volumen y relevancia. No asumir que Firestore ofrece búsqueda de texto completa.
+Medir tamaño local, latencia de arranque/listas/cálculo, memoria de caché, peticiones por acción, cancelaciones/429 y cobertura útil. Registrar equipo, SO, versión, red, muestra y caché fría/caliente; no prometer capacidad global a partir de tests locales.
 
-## 6. Seguridad, sincronización y límites
+Conservar paginación, límites y migraciones ensayadas. Añadir índices o consultas específicas cuando el perfilado lo justifique; no hacer crecer snapshots, copias o refrescos sin límites. La capacidad de APIs externas sigue siendo una restricción aunque no contratemos backend. [Calidad y operación](CALIDAD_Y_OPERACION.md) concreta verificaciones y límites de entrega.
 
-En MVP: consultas sin cuenta, historial y favoritos locales. Si se incorpora una cuenta, separar identidad de datos de producto y enlazar el contenido local solo con una acción explícita de sincronización.
+## Iteración 12 · Medición pública DAT-01
 
-Las reglas remotas deben negar por defecto, aislar datos por `uid`, proteger roles y restringir catálogo/precios públicos. Verificar en emulador lecturas, escrituras y consultas entre dos usuarios. App Check y cuotas complementan la autorización; no la sustituyen. Las claves públicas de Firebase no autorizan por sí mismas: [documentación oficial](https://firebase.google.com/docs/projects/api-keys).
+[Informe, muestra y decisión](COBERTURA_PRECIOS_PUBLICOS.md): diez GTIN fijados antes de consultar, 20 GET de precios a producción más uno de preproducción. 33 observaciones compatibles y cero elegibles para la muestra Madrid; sin cestas completas ni errores de proveedor. Plan, instantánea pública y resumen ODbL separados de la biblioteca y de la caché de la app. Reproducción offline con `npm run coverage:prices -- --replay`; nuevas consultas acotadas con `--collect`, sin subir anotaciones ni activar servicios.
 
-Para sincronización: favoritos como conjunto con operaciones de alta/baja y marcas de borrado; historial como eventos idempotentes; contribuciones como cola local validada al llegar al servidor. Separar errores temporales de rechazos definitivos y mostrar operaciones pendientes. Probar conflictos entre dispositivos, cierre de sesión y eliminación de cuenta.
+Comprobaciones: 220 pruebas de app, 42 de seguridad, tipos, lint y compatibilidad Expo. Las pruebas del colector simulan red, presupuesto, 429 y preproducción; no repiten la consulta pública. No se cambia el contrato v4. DAT-03 pasa a P1 para evaluar una fuente adecuada antes de integrarla; DAT-02 sigue condicionada. El control de dependencias sigue bloqueado por deepmerge, sin ampliar excepciones.
 
-La caché compartida y el backend se introducen cuando hagan falta control global del tráfico, normalización central, moderación o contribuciones. Antes, fijar presupuesto y evaluar mantenimiento. Un backend con credenciales administrativas debe validar identidad y permisos: no puede delegar toda la seguridad en reglas que ese acceso administrativo omita.
+## Iteración 13 · Viabilidad de otras fuentes
 
-## 7. Escalado y control de costes
+[DAT-03 investigada](FUENTES_PUBLICAS.md): Carrefour, FACUA y el conjunto MAPA de origen/mayorista. La evidencia no permite aprobar otro proveedor; permisos/contrato no acreditados o ámbito incompatible. No se descargan catálogos, incorporan precios ni crean adaptadores internos sin contrato. Integración condicionada; siguiente entrega CAL-01 técnica con anotaciones sintéticas declaradas. No acredita compra física, accesibilidad nativa ni revisión experta.
 
-| Riesgo | Control propuesto | Medición |
-| --- | --- | --- |
-| Muchas consultas repetidas | Caché local, deduplicación en curso y posteriormente caché compartida. | Aciertos de caché, consultas externas por sesión y `429`. |
-| Coste creciente en Firestore | Paginación, índices adecuados, listeners acotados y resúmenes cuando se justifiquen. | Lecturas/escrituras por flujo y coste por 1.000 consultas. |
-| Catálogo divergente | Normalización única, refrescos controlados y versiones de reglas. | Edad del dato y fallos de normalización. |
-| Abuso de contribuciones | Identidad, límites por usuario/origen, validación y revisión. | Rechazos, duplicados y tiempo de moderación. |
-| Datos locales crecientes | Límite configurable, política de limpieza y migraciones. | Tamaño local y latencia de listas. |
-| Cambios de proveedor | Interfaces de repositorio y pruebas de contrato. | Errores de contrato por versión. |
+Entrega de documentación y corrección del selector ambiguo de avisos en la prueba web de alternativas, sin cambios de runtime, dependencias, almacenamiento v4 o nube. Se validan enlaces, tareas, históricos y secretos; se repiten tipos, lint, compatibilidad Expo, 220 pruebas de app, 42 de seguridad y 42 recorridos web. La auditoría actual mantiene el bloqueo por deepmerge, sin ampliar excepciones.
 
-Simular carga de 1× y 10× la beta esperada antes de ampliar usuarios. El volumen base y el presupuesto mensual aún no están definidos, por lo que no se promete un número de usuarios soportados. Establecer alertas de gasto y un mecanismo para desactivar contribuciones o funciones costosas manteniendo la lectura local.
+## Iteración 14 · Aceptación entre funcionalidades
 
-## 8. Retención y procedencia
+La [validación integrada CAL-01](VALIDACION_COMPRA.md) recorre UI, IndexedDB, cálculo y copia/restauración sin inyectar directamente el almacenamiento. Las fixtures y los importes esperados no importan calculadores ni normalizadores de app. Solo se corrige navegación explícita desde totales a cesta; almacenamiento/copia v4, proveedores y modelo monetario permanecen iguales. Las pruebas web usan respuestas HTTP controladas y el shell offline real; no acreditan Android físico.
 
-Propuesta inicial: historial local limitado a las últimas 1.000 consultas con opción de borrar; favoritos no se eliminan automáticamente. Validar estos límites con uso real. Si se sincroniza, definir la misma política remota y el borrado de copias derivadas.
+## Iteración 15 · Contrato del paquete Android
 
-Para precios, definir antigüedad visible, caducidad de ofertas y política de archivo antes de publicarlos. Las evidencias fotográficas, si se añaden, necesitan límites de almacenamiento, eliminación de metadatos no necesarios y permisos propios.
+Sin cambios de esquema/copia v4 ni de componentes de aplicación. `app.json` bloquea también superposición sobre otras apps. El builder preview y CI inspeccionan el manifiesto fusionado y el ZIP real mediante `scripts/inspect-android-apk.py`; diez casos Python se integran en el control de seguridad Node sin SDK ni red. La metainformación de nube/firma no reemplaza una verificación criptográfica de firma. `--incremental` conserva la generación nativa únicamente con SDK/plugins/configuración sin cambios; el valor predeterminado sigue limpio. El receptor local de copias en `tests/native/` es instrumentación separada, no una dependencia ni una capacidad de producto. [Pruebas y límites](VALIDACION_ANDROID.md).
 
-Preservar atribución y separar datos importados de datos aportados por usuarios. Revisar las condiciones de reutilización antes de publicar un catálogo derivado: [licencias de Open Food Facts](https://openfoodfacts.github.io/openfoodfacts-server/api/tutorials/license-be-on-the-legal-side/).
+## Iteración 18 · Búsqueda de catálogo
+
+`CatalogSearch` separa el formulario de la consulta aplicada y combina metadatos públicos/privados en memoria. `useCatalogSearch` coordina cancelación, foco y generaciones para rechazar respuestas tardías. El cliente Open Prices comparte transporte/429 entre búsqueda y GTIN; valida veinte productos por página y solicita un lote de hasta cincuenta precios, con un máximo explícito de tres páginas de productos. La tienda se filtra localmente. `namedPrices` conserva identidad por GTIN/referencia, última observación, país/antigüedad y promociones antes de ordenar envases. Ningún resultado público se escribe en biblioteca/copias; los nuevos indicadores de oferta son derivados. [Contrato y límites](BUSCADOR_DE_PRECIOS.md).

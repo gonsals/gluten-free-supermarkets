@@ -1,3 +1,5 @@
+import { normalizeStores } from './stores';
+
 export const PRODUCT_SCHEMA = 1;
 export const RULES_VERSION = '1.0.0';
 export type GlutenState = 'declared_gluten_free' | 'declared_gluten' | 'unknown' | 'conflicting';
@@ -11,6 +13,7 @@ export interface Product {
   barcode: string;
   name: string | null;
   brands: string[];
+  stores?: string[];
   imageUrl: string | null;
   ingredientsText: string | null;
   allergensText: string | null;
@@ -26,6 +29,7 @@ export interface Product {
     fetchedAt: string;
     updatedAt: string | null;
     environment: 'staging' | 'production';
+    restoredAt?: string;
   };
   assessment: GlutenAssessment;
   schemaVersion: number;
@@ -133,10 +137,16 @@ export function normalizeProduct(
   now = new Date(),
 ): Product {
   if (!record(raw)) throw new Error('invalid_response');
+  const ingredientsText = text(raw.ingredients_text_es) ?? text(raw.ingredients_text);
   const missingFields = ['labels_tags', 'allergens_tags', 'traces_tags', 'ingredients_text'].filter(
-    (k) => raw[k] === undefined || raw[k] === null,
+    (k) =>
+      k === 'ingredients_text'
+        ? ingredientsText === null
+        : k === 'labels_tags'
+          ? raw.labels_tags == null && raw.labels_hierarchy == null
+          : raw[k] == null,
   );
-  const malformed = ['labels_tags', 'allergens_tags', 'traces_tags'].some(
+  const malformed = ['labels_tags', 'labels_hierarchy', 'allergens_tags', 'traces_tags'].some(
     (k) =>
       raw[k] != null &&
       (!Array.isArray(raw[k]) || (raw[k] as unknown[]).some((x) => typeof x !== 'string')),
@@ -160,8 +170,9 @@ export function normalizeProduct(
       .split(',')
       .map((x) => x.trim())
       .filter(Boolean),
+    stores: normalizeStores(raw.stores, raw.stores_tags),
     imageUrl: safeImage(raw.image_front_url ?? raw.image_url),
-    ingredientsText: text(raw.ingredients_text_es) ?? text(raw.ingredients_text),
+    ingredientsText,
     allergensText: text(raw.allergens, 2000),
     tracesText: text(raw.traces, 2000),
     labels,
@@ -206,10 +217,19 @@ export function isProduct(value: unknown): value is Product {
     strings(value.allergens) &&
     strings(value.traces) &&
     strings(value.brands) &&
+    (value.stores === undefined ||
+      (Array.isArray(value.stores) &&
+        value.stores.length <= 20 &&
+        value.stores.every(
+          (store) => typeof store === 'string' && store.trim().length > 0 && store.length <= 100,
+        ))) &&
     strings(value.missingFields) &&
     strings(value.dataIssues) &&
     typeof value.source.fetchedAt === 'string' &&
     Number.isFinite(Date.parse(value.source.fetchedAt)) &&
+    (value.source.restoredAt === undefined ||
+      (typeof value.source.restoredAt === 'string' &&
+        Number.isFinite(Date.parse(value.source.restoredAt)))) &&
     typeof value.source.url === 'string' &&
     /^https:\/\/world\.openfoodfacts\.(org|net)\/product\/\d+$/.test(value.source.url) &&
     ['production', 'staging'].includes(String(value.source.environment)) &&

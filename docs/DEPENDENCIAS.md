@@ -1,5 +1,13 @@
 # Dependencias y seguridad
 
+## Integración en main · 04-11-2026
+
+Se conservan las actualizaciones ya presentes en main: ESLint 10.13.0 con el adaptador de compatibilidad Expo, TypeScript 7.0.2 para comprobar la app y el servidor, y TypeScript 6.0.3 para la API de herramientas. El lockfile de app corresponde al de main; los scripts de seguridad, precios y marca de la rama de mejoras se mantienen. La excepción low de deepmerge ya existente en main recibe el ámbito explícito `app` exigido por el validador actual; no cambia su gravedad, motivo ni vencimiento del 22-11.
+
+Tipos, lint de app/servidor, compilación de functions, 258 pruebas de app, 58 de seguridad y 62 recorridos web correctos tras instalar los lockfiles combinados. La auditoría vuelve a ejecutarse y conserva salida 1: 56 entradas en app (1 baja, 53 moderadas, 2 altas) y 6 moderadas en functions; además rechaza cadenas incompletas de herramientas y avisos glob/minimatch sin excepción aplicable. La compatibilidad Expo también devuelve 1 y recomienda once actualizaciones. No se amplían excepciones para silenciar estos resultados. Los apartados siguientes conservan sus fotografías y decisiones anteriores; SEG-01 continúa pendiente para distribución.
+
+Última consulta: **2026-11-03**. Modernización inicial verificada el 25-10-2026. Se ha reemplazado el conjunto de dependencias de 2024 por versiones compatibles con Expo SDK 58 y se han regenerado los lockfiles de app y servidor sin `--force` ni `--legacy-peer-deps`.
+
 ## Revisión de PR del 30 de octubre de 2026
 
 - Se aplican los parches recomendados de Expo 58.0.21, módulos del SDK, React Native 0.88.1 y el preset de Jest 0.88.1, sin cambiar de SDK.
@@ -10,19 +18,17 @@
 
 Los apartados siguientes conservan la fotografía de la migración del 24 de octubre; las versiones resueltas y los recuentos actuales se consultan en los lockfiles y en la salida de `npm run audit:security`.
 
-Verificación: **2026-10-24**. Se ha reemplazado el conjunto de dependencias de 2024 por versiones compatibles con Expo SDK 58 y se han regenerado los lockfiles de app y servidor sin `--force` ni `--legacy-peer-deps`.
-
 ## Versiones principales
 
 | Área | Antes | Ahora |
 | --- | --- | --- |
-| Expo | 52.0.18 | 58.0.19 |
+| Expo | 52.0.18 | 58.0.21 |
 | React / React DOM | 18.3.1 | 19.3.0, pareja del SDK |
-| React Native | 0.76.5 | 0.88.0 |
-| Expo Router | 4.0.11 | 58.0.26 |
-| Cámara | expo-camera 16 + react-native-camera sin uso | expo-camera 58.0.12; cámara antigua retirada |
+| React Native | 0.76.5 | 0.88.1 |
+| Expo Router | 4.0.11 | 58.0.28 |
+| Cámara | expo-camera 16 + react-native-camera sin uso | expo-camera 58.0.14; cámara antigua retirada |
 | Firebase cliente | 11.0.1 en el lockfile inicial | 13.1.0 |
-| Pruebas | Jest 29 / jest-expo 51 incompatibles | Jest 30.5.2, jest-expo 58.0.12, testing-library 14.1.0 |
+| Pruebas | Jest 29 / jest-expo 51 incompatibles | Jest 30.5.2, jest-expo 58.0.13, testing-library 14.1.0 |
 | TypeScript | 5.3 | 6.0.3 |
 | Calidad | Sin configuración de lint | ESLint 9.39.5, eslint-config-expo 58.0.4, Prettier 3.9.10 |
 | Servidor nuevo | No existía | firebase-admin 14.5.0, firebase-functions 7.4.0, Node 24 |
@@ -41,12 +47,21 @@ La navegación y los hooks proceden ahora de `expo-router`, incluida su capa de 
 | Informe npm | Críticas | Altas | Moderadas | Bajas | Total de entradas afectadas |
 | --- | --- | --- | --- | --- | --- |
 | Prototipo inicial | 6 | 77 | 22 | 5 | 110 |
-| App actual, incluyendo herramientas | 0 | 5 | 3 | 0 | 8 |
+| App 26-10-2026, incluyendo herramientas | 0 | 5 | 3 | 0 | 8 |
+| App 29-10-2026, incluyendo herramientas | 0 | 3 | 3 | 13 | 19 |
 | Servidor `functions/` actual | 0 | 0 | 0 | 0 | 0 |
 
-Estas cifras incluyen propagación de avisos por los paquetes que dependen de ellos. Las ocho entradas actuales proceden de **tres avisos originales**, no de ocho fallos independientes demostrados en el móvil. El informe del 23 de octubre contenía 34 entradas. La base de avisos de npm ha cambiado: `braces` ya no figura en el informe actual y aparece un aviso de Zod revisado el 23 de octubre. Esta variación no demuestra que se hayan reparado 26 fallos mediante cambios de código.
+Estas cifras incluyen propagación de avisos por los paquetes que dependen de ellos. Las ocho entradas del 26-10 procedían de **tres avisos originales**, no de ocho fallos independientes demostrados en el móvil. El informe del 23 de octubre contenía 34 entradas. La base de avisos de npm ha cambiado: `braces` ya no figura en el informe actual y aparece un aviso de Zod revisado el 23 de octubre. Esta variación no demuestra que se hayan reparado 26 fallos mediante cambios de código.
 
-## Avisos residuales y exposición
+## Estado anterior · 29-10-2026
+
+Parches compatibles instalados con Expo CLI: Expo 58.0.21, CLI 58.1.17, Router 58.0.28, React Native y preset 0.88.1, cámara 58.0.14, jest-expo 58.0.13. `expo install --check` pasa. La primera instalación detectó el peer del preset; se alineó sin `--force` ni `--legacy-peer-deps`. [Procedimiento oficial](https://docs.expo.dev/more/expo-cli/).
+
+El lockfile instala node-forge **1.4.2**, cuyo aviso anterior ya no aparece en la auditoría. La consulta actual tiene **19 entradas: 13 bajas, 3 moderadas y 3 altas**; functions sigue en cero. Los avisos originales actuales son Zod, OpenTelemetry y [deepmerge GHSA-gcqx-w48m-w2h4](https://github.com/advisories/GHSA-gcqx-w48m-w2h4), revisado el 27-10, sin parche publicado. deepmerge 4.3.1 llega por `@expo/config` y Jest; no lo importa el código funcional de la app. Se revisa la exposición en herramientas de configuración/pruebas locales y se conserva la restricción de no procesar proyectos/configuraciones no confiables. El desarrollo local de formatos continúa; esto no acredita seguridad de una publicación.
+
+**`audit:security` devuelve 1 por el nuevo aviso no exceptuado; `audit:release` y el job de dependencias quedan bloqueados.** No se amplían excepciones ni se degradan Expo/Jest para ocultar el informe. Se mantiene el plazo 22-11-2026 de las excepciones previas, sin renovación automática. SEG-01 debe resolver este aviso junto con los residuales antes de publicar. Las revisiones históricas siguientes conservan su fecha y no son el estado actual.
+
+## Avisos residuales y exposición · revisión anterior
 
 | Paquete y aviso | Situación y tratamiento |
 | --- | --- |
@@ -69,4 +84,47 @@ La clasificación describe las cadenas inspeccionadas; no sustituye una revisió
 
 Las tres excepciones de desarrollo están descritas en `.security/audit-exceptions.json` y caducan el **2026-11-22**. No son una aprobación de publicación: `npm run audit:release` es estricto y falla mientras existan avisos. Un responsable debe revisar exposición y resolución antes de distribuir una versión general.
 
+### Revisión de la iteración 4 · 25 de octubre
+
+Se han vuelto a consultar npm y los tres avisos enlazados. No hay una actualización compatible de sus consumidores: Expo CLI sigue en 58.1.15, Zod 3 en 3.25.76, node-forge en 1.4.0 y Firebase CLI en 15.34.1. Las copias de Zod 4 ya instaladas están en 4.6.7; no sustituyen la copia 3 requerida por Expo. El informe mantiene **ocho entradas afectadas en app y cero en functions**. No se modifican dependencias ni se alarga el plazo de las excepciones.
+
+Se ha corregido un fallo del control: una fecha `reviewBy` mal escrita producía `NaN` y podía eludir la comprobación de caducidad. Ahora se valida la fecha real del calendario, la estructura de cada excepción y su ámbito. Una excepción de herramientas de app no autoriza el mismo aviso en el servidor.
+
+El control también rechaza procesos fallidos o interrumpidos, respuestas truncadas, recuentos incoherentes, formatos desconocidos y cadenas de dependencias sin aviso original. La consulta tiene un límite de dos minutos por ámbito. Si falla una respuesta, se conserva el diagnóstico en `audit.json` y se comprueba el otro ámbito. No se deduplican dos gravedades diferentes del mismo aviso de forma que una oculte la otra.
+
+`npm run test:security` ejecuta **34 pruebas**, incluidas cinco de integración del CLI en carpetas temporales con informes simulados, sin consultar npm ni cambiar los archivos de la app. Forma parte de `npm run check` y, por tanto, del job de app en CI. La consulta real con `audit:security` pasa bajo las excepciones existentes; la consulta real con `audit:release` devuelve **1**, el bloqueo esperado. La [matriz de esta iteración](PRUEBAS_ITERACION_4.md) distingue comprobaciones correctas, bloqueos y pruebas físicas pendientes.
+
 Dependabot revisa semanalmente los paquetes de app/servidor y agrupa módulos que deben actualizarse juntos. Las acciones de GitHub se han actualizado a sus versiones actuales consultadas y fijado por SHA completo. Cada actualización necesita compatibilidad Expo, tipos, lint, tests, exportación y verificación nativa cuando cambie el runtime.
+
+## Revisión 30-10-2026 · Iteración 12
+
+Sin cambios de dependencias o lockfiles. La consulta real `audit:security` vuelve a devolver 1 por deepmerge no exceptuado: 19 entradas en app (13 bajas, 3 moderadas, 3 altas), cero en functions. No se amplían excepciones ni su vencimiento. El nuevo script de medición usa TypeScript ya instalado y no forma parte del código importado por las pantallas. Las comprobaciones de seguridad aumentan a 42 con pruebas del colector; pasarlas no equivale a resolver los avisos de terceros.
+
+## Revisión 30-10-2026 · Iteración 13
+
+Investigación DAT-03 y corrección de una prueba web, sin cambios de paquetes o lockfiles ni ampliación de excepciones. `audit:security` consultado de nuevo: salida 1 por deepmerge no exceptuado, 19 entradas de app (13 bajas, 3 moderadas, 3 altas) y cero de functions. SEG-01 sigue abierto; no se considera corregido por cerrar la investigación de fuentes. No hay cambio de exposición del runtime por esta entrega.
+
+## Revisión 30-10-2026 · Iteración 14
+
+Sin cambios de paquetes o lockfiles. La consulta real de `audit:security` devuelve 1 por deepmerge no exceptuado: 19 entradas de app (13 bajas, 3 moderadas, 3 altas), cero de functions. No se amplían excepciones ni su vencimiento. La entrega modifica navegación y añade aceptación web; no cambia la exposición nativa o habilita servicios. SEG-01 conserva su bloqueo.
+
+## Estado vigente · 03-11-2026 · Iteración 15
+
+Sin cambios de paquetes o lockfiles. Consulta real de ambos lockfiles mediante `npm run audit:security`, informe local ignorado `audit.json`, generado a las 09:41 UTC:
+
+| Ámbito | Bajas | Moderadas | Altas | Críticas | Entradas afectadas |
+| --- | --- | --- | --- | --- | --- |
+| App | 1 | 57 | 2 | 0 | 60 |
+| functions | 0 | 6 | 0 | 0 | 6 |
+
+Son entradas de paquetes/cadenas del informe, no vulnerabilidades independientes ni prueba de explotación. El recuento sustituye al de 19/0 de octubre para describir el estado actual; el informe y las clasificaciones de npm pueden cambiar aunque el lockfile no cambie.
+
+Avisos de origen recibidos en app: Zod, OpenTelemetry, deepmerge y ahora [`glob`, GHSA-3g3m-2fjr-6pw4](https://github.com/advisories/GHSA-3g3m-2fjr-6pw4) y [`minimatch`, GHSA-g3hv-75wg-m249](https://github.com/advisories/GHSA-g3hv-75wg-m249). Los dos últimos aparecen también en functions, sin excepción para ese ámbito. El control además rechaza cadenas incompletas recibidas para `eslint`, `eslint-config-expo`, `eslint-plugin-expo`, `@eslint-community/eslint-utils` y paquetes de `@typescript-eslint`; se deben revisar antes de considerar válido el árbol de exposición. No se atribuye sin investigación toda la cadena nueva a desarrollo ni al runtime móvil.
+
+**Salida 1 de `audit:security`; control de dependencias y publicación bloqueados.** No se ejecuta una corrección forzada, se amplían excepciones ni se renueva el vencimiento **22-11-2026**. La siguiente iteración SEG-01 debe contrastar versiones y avisos con sus fuentes, reconstruir las cadenas, aplicar únicamente actualizaciones compatibles y repetir las comprobaciones afectadas. Los avisos no resueltos seguirán visibles; las pruebas funcionales o el escaneo de claves no los subsanan.
+
+Las comprobaciones de esta entrega pasan a 43 pruebas Node de seguridad: una ejecuta diez casos Python del inspector Android sin SDK/red. No son diez dependencias nuevas. [Validación y límites de la APK](VALIDACION_ANDROID.md).
+
+La [ejecución remota de `6eb647e`](https://github.com/gonsals/gluten-free-supermarkets/actions/runs/41613962094) confirma esos recuentos de auditoría y aprueba las 220 pruebas de app y 43 de seguridad. El job app falla después porque el catálogo Expo consultado el 03-11 espera `@expo/metro-runtime ~58.0.16`, `expo ~58.0.22`, `expo-router ~58.0.29`, `expo-sqlite ~58.0.15` y `react-native-screens ~4.30.1`. El control local completo del 31-10 pasó con el catálogo anterior. SEG-01 debe alinear esos parches además de resolver los avisos, repetir `check`/web y verificar el runtime nativo afectado; no se ha actualizado silenciosamente la APK cuya evidencia se documenta en iteración 15.
+
+Durante el cierre de la iteración 17, el arranque de Expo del 03-11 ya anuncia Expo `~58.0.23` y otros diez paquetes por revisar. Es un aviso del catálogo de compatibilidad posterior al CI anterior, no otra consulta de `npm audit` ni una actualización instalada. Esta entrega simplifica la interfaz sin cambiar paquetes, lockfiles o excepciones. SEG-01 debe consultar de nuevo el catálogo completo al ejecutarse; la lista de cinco recomendaciones del primer CI no es una lista fija de pendientes.

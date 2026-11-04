@@ -15,6 +15,8 @@ parser = argparse.ArgumentParser(description=__doc__)
 parser.add_argument('--architecture', choices=['arm64-v8a', 'x86_64', 'universal'], default='arm64-v8a')
 parser.add_argument('--variant', choices=['debug', 'preview'], default='debug',
                     help='Preview embeds JavaScript and uses the development signing key; not for stores.')
+parser.add_argument('--incremental', action='store_true',
+                    help='Reuse generated native folders only when SDK and config plugins are unchanged.')
 arguments = parser.parse_args()
 build_architectures = 'arm64-v8a,x86_64' if arguments.architecture == 'universal' else arguments.architecture
 root = Path(__file__).resolve().parent.parent
@@ -40,9 +42,18 @@ staging.mkdir(exist_ok=True)
 subprocess.run(['subst', drive, str(staging)], check=True)
 try:
     environment['SINGLUTEN_CXX_ROOT'] = drive + '\\'
-    subprocess.run([node, str(root / 'node_modules' / 'expo' / 'bin' / 'cli'), 'prebuild', '--platform', 'android', '--no-install'], cwd=root, env=environment, check=True)
+    prebuild = [node, str(root / 'node_modules' / 'expo' / 'bin' / 'cli'), 'prebuild', '--platform', 'android', '--no-install']
+    if arguments.incremental:
+        # SDK 58 prebuild recreates native folders by default. Keep its clean
+        # behavior for SDK/plugin changes, but allow measured incremental builds.
+        prebuild.append('--no-clean')
+    subprocess.run(prebuild, cwd=root, env=environment, check=True)
     build_type = 'release' if arguments.variant == 'preview' else 'debug'
-    subprocess.run([str(android / 'gradlew.bat'), 'assemble' + build_type.title(), '--no-daemon', '--max-workers=2', '-PreactNativeArchitectures=' + build_architectures], cwd=android, env=environment, check=True)
+    # AGP uses shared hardlinks for native libraries. Serialize Windows tasks so
+    # one CMake task cannot hold a library while another replaces its output.
+    # Scope the task to the application; the root task selector also assembles
+    # standalone AARs for every library, beyond the app's required dependencies.
+    subprocess.run([str(android / 'gradlew.bat'), ':app:assemble' + build_type.title(), '--no-daemon', '--max-workers=1', '-PreactNativeArchitectures=' + build_architectures], cwd=android, env=environment, check=True)
     source = android / 'app' / 'build' / 'outputs' / 'apk' / build_type / ('app-' + build_type + '.apk')
     artifacts = root / 'artifacts'
     artifacts.mkdir(exist_ok=True)
@@ -57,6 +68,11 @@ try:
         'signing': 'development-key-not-for-stores',
         'cloudEnabled': False if arguments.variant == 'preview' else 'environment-dependent',
     }, indent=2) + '\n', encoding='utf-8')
+    if arguments.variant == 'preview':
+        subprocess.run([
+            sys.executable, str(root / 'scripts' / 'inspect-android-apk.py'), str(destination),
+            '--report', str(artifacts / ('singluten-' + arguments.variant + '-' + arguments.architecture + '-inspection.json')),
+        ], cwd=root, env=environment, check=True)
     print(destination)
 finally:
     subprocess.run(['subst', drive, '/d'], check=True)

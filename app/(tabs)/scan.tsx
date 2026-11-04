@@ -1,10 +1,11 @@
-import { CameraView, useCameraPermissions } from 'expo-camera';
+import { CameraView } from 'expo-camera';
 import { useIsFocused, useFocusEffect, useRouter } from 'expo-router';
-import { useCallback, useEffect, useRef, useState } from 'react';
-import { ActivityIndicator, AppState, Linking, Platform, Text, View } from 'react-native';
+import { useCallback, useRef, useState } from 'react';
+import { ActivityIndicator, Linking, Platform, Text, View } from 'react-native';
 import { errorCopy } from '@/src/domain/errors';
 import { ProductCard } from '@/src/features/products/ProductCard';
 import { useProductLookup } from '@/src/features/products/useProductLookup';
+import { useScannerCamera } from '@/src/features/scanner/useScannerCamera';
 import { Action, Card, Copy, Field, Heading, Notice, Screen } from '@/src/shared/ui';
 import { usePalette } from '@/src/shared/theme';
 
@@ -12,28 +13,17 @@ export default function ScanScreen() {
   const focused = useIsFocused();
   const router = useRouter();
   const c = usePalette();
-  const [permission, requestPermission] = useCameraPermissions();
-  const [mode, setMode] = useState<'manual' | 'camera'>('manual');
+  const camera = useScannerCamera(focused);
+  const { permission, mode } = camera;
   const [barcode, setBarcode] = useState('');
-  const [torch, setTorch] = useState(false);
-  const [cameraError, setCameraError] = useState('');
-  const [foreground, setForeground] = useState(AppState.currentState === 'active');
   const blocked = useRef<symbol | null>(null);
   const result = useProductLookup();
   const { reset } = result;
-  useEffect(() => {
-    const listener = AppState.addEventListener('change', (state) =>
-      setForeground(state === 'active'),
-    );
-    return () => listener.remove();
-  }, []);
   useFocusEffect(
     useCallback(
       () => () => {
         reset();
         blocked.current = null;
-        setTorch(false);
-        setMode('manual');
       },
       [reset],
     ),
@@ -42,6 +32,7 @@ export default function ScanScreen() {
     if (blocked.current) return;
     const token = Symbol();
     blocked.current = token;
+    camera.turnOffTorch();
     setBarcode(code);
     try {
       await result.lookup(code);
@@ -53,23 +44,10 @@ export default function ScanScreen() {
     reset();
     blocked.current = null;
     setBarcode('');
-    setCameraError('');
-  }
-  async function startCamera() {
-    setCameraError('');
-    const current = permission?.granted ? permission : await requestPermission();
-    if (current.granted) setMode('camera');
-    else setCameraError('No se ha concedido acceso. Puedes introducir el código manualmente.');
+    camera.clearError();
   }
   const activeCamera =
-    mode === 'camera' &&
-    permission?.granted &&
-    focused &&
-    foreground &&
-    !result.loading &&
-    !result.product &&
-    !result.error &&
-    !cameraError;
+    camera.enabled && !result.loading && !result.product && !result.error && !camera.error;
   return (
     <Screen>
       <Heading eyebrow="Consulta de alimentos">Un código, más información.</Heading>
@@ -102,16 +80,14 @@ export default function ScanScreen() {
             title="Usar cámara"
             secondary
             icon="camera-outline"
-            onPress={() => void startCamera()}
+            onPress={() => void camera.startCamera()}
+            busy={camera.requesting}
           />
         ) : (
           <Action
             title="Introducir código manualmente"
             secondary
-            onPress={() => {
-              setMode('manual');
-              setTorch(false);
-            }}
+            onPress={camera.enterManual}
             icon="keypad-outline"
           />
         )}
@@ -119,14 +95,10 @@ export default function ScanScreen() {
           <Action
             title="Abrir ajustes de cámara"
             secondary
-            onPress={() =>
-              void Linking.openSettings().catch(() =>
-                setCameraError('Abre los ajustes del dispositivo para permitir la cámara.'),
-              )
-            }
+            onPress={() => void Linking.openSettings().catch(() => camera.settingsError())}
           />
         ) : null}
-        {cameraError ? <Notice error>{cameraError}</Notice> : null}
+        {camera.error ? <Notice error>{camera.error}</Notice> : null}
       </Card>
       {activeCamera ? (
         <Card>
@@ -134,13 +106,9 @@ export default function ScanScreen() {
             <CameraView
               style={{ flex: 1 }}
               facing="back"
-              enableTorch={torch}
+              enableTorch={camera.torch}
               barcodeScannerSettings={{ barcodeTypes: ['ean8', 'ean13', 'upc_a'] }}
-              onMountError={() =>
-                setCameraError(
-                  'La cámara no está disponible. Puedes introducir el código manualmente.',
-                )
-              }
+              onMountError={camera.mountError}
               onBarcodeScanned={({ data }) => {
                 if (!blocked.current) void submit(data);
               }}
@@ -163,8 +131,8 @@ export default function ScanScreen() {
             Acerca el código y evita los reflejos. El marco sirve como ayuda visual.
           </Copy>
           <Action
-            title={torch ? 'Apagar linterna' : 'Encender linterna'}
-            onPress={() => setTorch((value) => !value)}
+            title={camera.torch ? 'Apagar linterna' : 'Encender linterna'}
+            onPress={camera.toggleTorch}
             secondary
             icon="flashlight-outline"
           />

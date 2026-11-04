@@ -208,6 +208,7 @@ export function AccountPanel() {
       )}
       {message ? <Notice>{message}</Notice> : null}
       <Confirm
+        title="Eliminar cuenta"
         visible={confirm}
         message="Se eliminarán tu cuenta, favoritos remotos, contribuciones asociadas y los datos de este dispositivo. Esta operación no puede deshacerse."
         onCancel={() => setConfirm(false)}

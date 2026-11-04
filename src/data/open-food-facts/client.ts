@@ -3,7 +3,7 @@ import { AppError } from '@/src/domain/errors';
 import { normalizeProduct, record, type Product } from '@/src/domain/product';
 
 const FIELDS =
-  'code,product_name,product_name_es,brands,image_front_url,image_url,ingredients_text,ingredients_text_es,labels_tags,labels_hierarchy,allergens_tags,allergens,traces_tags,traces,last_modified_t';
+  'code,product_name,product_name_es,brands,stores,stores_tags,image_front_url,image_url,ingredients_text,ingredients_text_es,labels_tags,labels_hierarchy,allergens_tags,allergens,traces_tags,traces,last_modified_t';
 export interface ProductClient {
   fetchProduct(code: string, signal?: AbortSignal): Promise<Product>;
 }

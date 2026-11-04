@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useRouter } from 'expo-router';
 import { ActivityIndicator, Text, View } from 'react-native';
 import { useLibrary } from '@/src/features/library/useLibrary';
 import { ProductRow } from '@/src/features/library/ProductRow';
@@ -7,6 +8,7 @@ import { Confirm } from '@/src/shared/Confirm';
 import { usePalette } from '@/src/shared/theme';
 
 export default function LibraryScreen() {
+  const router = useRouter();
   const { ready, data, error, repository } = useLibrary();
   const c = usePalette();
   const [tab, setTab] = useState<'favorites' | 'history'>('favorites');
@@ -36,10 +38,17 @@ export default function LibraryScreen() {
       <Copy muted>
         Favoritos e historial se guardan en este dispositivo y se pueden consultar sin conexión.
       </Copy>
+      <Action
+        title={`Mi cesta (${data.basket.length})`}
+        icon="basket-outline"
+        secondary
+        onPress={() => router.push('/basket')}
+      />
       <View style={{ flexDirection: 'row', gap: 10 }}>
         <View style={{ flex: 1 }}>
           <Action
             title={`Favoritos (${favorites.length})`}
+            selected={tab === 'favorites'}
             secondary={tab !== 'favorites'}
             onPress={() => {
               setTab('favorites');
@@ -50,6 +59,7 @@ export default function LibraryScreen() {
         <View style={{ flex: 1 }}>
           <Action
             title={`Historial (${data.history.length})`}
+            selected={tab === 'history'}
             secondary={tab !== 'history'}
             onPress={() => {
               setTab('history');
@@ -78,6 +88,7 @@ export default function LibraryScreen() {
               <ProductRow
                 key={'id' in entry ? String(entry.id) : entry.barcode}
                 product={entry}
+                allowBasket
                 date={'scannedAt' in entry ? String(entry.scannedAt) : undefined}
               />
             ))
@@ -107,8 +118,9 @@ export default function LibraryScreen() {
         <Action title="Borrar historial" secondary danger onPress={() => setConfirm(true)} />
       ) : null}
       <Confirm
+        title="Borrar historial"
         visible={confirm}
-        message="Se borrará el historial de este dispositivo. Tus favoritos y precios se conservarán."
+        message="Se borrará el historial de este dispositivo. Tu cesta, favoritos y precios se conservarán."
         onCancel={() => setConfirm(false)}
         onConfirm={() => void clear()}
       />

@@ -10,9 +10,10 @@ import { useEffect } from 'react';
 import { useColorScheme } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { Action, Card, Copy, Heading, Screen } from '@/src/shared/ui';
-import { usePalette } from '@/src/shared/theme';
+import { typography, usePalette } from '@/src/shared/theme';
 import { reportTechnicalEvent } from '@/src/shared/telemetry';
 import { OfflineSupport } from '@/src/shared/OfflineSupport';
+import { LibraryLifecycle } from '@/src/features/library/LibraryLifecycle';
 
 export function ErrorBoundary({ retry }: ErrorBoundaryProps) {
   useEffect(() => {
@@ -35,23 +36,43 @@ export function ErrorBoundary({ retry }: ErrorBoundaryProps) {
 export default function RootLayout() {
   const scheme = useColorScheme();
   const c = usePalette();
+  const navigationTheme = scheme === 'dark' ? DarkTheme : DefaultTheme;
   return (
     <SafeAreaProvider>
       <OfflineSupport />
-      <ThemeProvider value={scheme === 'dark' ? DarkTheme : DefaultTheme}>
+      <LibraryLifecycle />
+      <ThemeProvider
+        value={{
+          ...navigationTheme,
+          colors: {
+            ...navigationTheme.colors,
+            primary: c.accent,
+            background: c.bg,
+            card: c.surface,
+            text: c.ink,
+            border: c.border,
+            notification: c.danger,
+          },
+        }}
+      >
         <StatusBar style={scheme === 'dark' ? 'light' : 'dark'} />
         <Stack
           screenOptions={{
             headerStyle: { backgroundColor: c.bg },
             headerTintColor: c.ink,
+            headerTitleStyle: { fontFamily: typography.editorial, fontWeight: '400' },
             contentStyle: { backgroundColor: c.bg },
             headerBackTitle: 'Volver',
           }}
         >
           <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
           <Stack.Screen name="product/[barcode]" options={{ title: 'Detalle del producto' }} />
-          <Stack.Screen name="prices/[barcode]" options={{ title: 'Precios observados' }} />
+          <Stack.Screen name="prices/[barcode]" options={{ title: 'Comparar precios' }} />
+          <Stack.Screen name="basket" options={{ title: 'Mi cesta' }} />
+          <Stack.Screen name="basket-comparison" options={{ title: 'Comparar cesta' }} />
+          <Stack.Screen name="alternatives" options={{ title: 'Formatos y alternativas' }} />
           <Stack.Screen name="moderation" options={{ title: 'Revisión de contribuciones' }} />
+          <Stack.Screen name="results-guide" options={{ title: 'Guía de resultados' }} />
           <Stack.Screen name="+not-found" options={{ title: 'Página no encontrada' }} />
         </Stack>
       </ThemeProvider>
