@@ -2,6 +2,7 @@ import { normalizeBarcode, sameGtin } from '@/src/domain/barcode';
 import { fold, type PriceQuote } from '@/src/domain/comparison';
 import { searchText, type CatalogPricePage, type NamedProduct } from '@/src/domain/catalogSearch';
 import { record } from '@/src/domain/product';
+import { productImageUrl } from '@/src/domain/productImages';
 
 export interface PublicPricePage {
   quotes: PriceQuote[];
@@ -293,11 +294,13 @@ export function createOpenPricesClient(
             !fold(`${raw.product_name} ${short(raw.brands, 200)}`).includes(fold(text))
           )
             continue;
+          const imageUrl = productImageUrl('open_prices', raw.image_url);
           products.set(code.padStart(14, '0'), {
             barcode: code,
             name: raw.product_name.trim(),
             brands: short(raw.brands, 200),
             quantity: short(raw.quantity, 100),
+            ...(imageUrl ? { imageUrl } : {}),
           });
         } catch {
           /* A malformed catalogue code never enters a price query. */

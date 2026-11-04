@@ -1,5 +1,9 @@
 # Implementación y verificación
 
+## Iteración 24 · Fotos de producto en la comparación
+
+Se añade `imageUrl` opcional, validación por proveedor en `productImages` y extracción de la foto del propio registro en los seis adaptadores y Open Prices. `ProductPhoto` conserva encuadre, nombre accesible y fallback; `Disclosure` expone visibilidad para diferir las imágenes plegadas sin desmontar borradores. La actualización de las páginas existentes incluye fotos en 1.368 de 1.369 referencias, sin nuevas llamadas de metadatos por producto, cambios en copias privadas o servicios contratados. [Contrato y fuentes](FOTOS_PRODUCTOS.md).
+
 ## Corrección 23 · Arroz seco frente a arroz cocido
 
 Incidencia del propietario, 04-11-2026: buscar «arroz» destacaba un vasito cocido de 250 g, con envase de 1,05 € y equivalente de 4,20 €/kg, por delante del arroz seco de 1 kg. No era un error de conversión: el mínimo por envase mezclaba productos distintos. La consulta oficial de Mercadona, categoría 118 para Barcelona, confirma el SKU 22281 cocido y el SKU 5044 redondo seco, este último a 1,15 € por 1 kg en esa comprobación. Los importes son evidencia fechada, no tarifas garantizadas.

@@ -1,4 +1,4 @@
-// Read-only adapters for the public Spanish storefronts. No sessions, API keys or images.
+// Read-only adapters for public storefronts. Product photo candidates are validated by the DTO.
 const SOURCES = {
   mercadona: 'https://tienda.mercadona.es',
   aldi: 'https://www.aldi.es',
@@ -40,7 +40,7 @@ function officialUrl(value, retailer) {
     return null;
   }
 }
-function base(retailer, sku, name, sourceUrl, checkedAt) {
+function base(retailer, sku, name, sourceUrl, checkedAt, photo) {
   const clean = text(name);
   if (
     (typeof sku !== 'string' && typeof sku !== 'number') ||
@@ -50,6 +50,14 @@ function base(retailer, sku, name, sourceUrl, checkedAt) {
     !officialUrl(sourceUrl, retailer)
   )
     return null;
+  let imageUrl;
+  if (typeof photo === 'string' && photo.length <= 1200) {
+    try {
+      imageUrl = new URL(photo, SOURCES[retailer]).href;
+    } catch {
+      /* Optional photo. */
+    }
+  }
   return {
     id: `${retailer}:${sku}`,
     retailer,
@@ -62,6 +70,7 @@ function base(retailer, sku, name, sourceUrl, checkedAt) {
     isOffer: false,
     conditions: '',
     unitPrice: null,
+    ...(imageUrl ? { imageUrl } : {}),
   };
 }
 function mercadona(payload, checkedAt, context = {}) {
@@ -69,7 +78,7 @@ function mercadona(payload, checkedAt, context = {}) {
   if (!Array.isArray(payload?.categories)) throw new Error('Unexpected Mercadona category');
   return payload.categories.flatMap((category) =>
     (category.products ?? []).flatMap((p) => {
-      const b = base('mercadona', p.id, p.display_name, p.share_url, checkedAt);
+      const b = base('mercadona', p.id, p.display_name, p.share_url, checkedAt, p.thumbnail);
       const price = p.price_instructions;
       if (!b || p.published !== true || p.status != null || p.unavailable_from || !price) return [];
       const amountMilli = money(price.unit_price);
@@ -115,6 +124,11 @@ function aldi(html, checkedAt) {
       p.name,
       `${SOURCES.aldi}/producto/${p.productSlug}.html`,
       checkedAt,
+      Array.isArray(p.assets)
+        ? p.assets.find(
+            (asset) => asset && asset.type === 'primary' && asset.isAiGenerated !== true,
+          )?.url
+        : undefined,
     );
     const price = p.currentPrice;
     if (!b || !p.isAvailable || p.isRecall || !price) return [];
@@ -158,7 +172,14 @@ function lidl(html, checkedAt) {
   );
   if (!records.length) throw new Error('Missing Lidl product grid');
   return records.flatMap((p) => {
-    const b = base('lidl', p.productId, p.title, `${SOURCES.lidl}${p.canonicalPath}`, checkedAt);
+    const b = base(
+      'lidl',
+      p.productId,
+      p.title,
+      `${SOURCES.lidl}${p.canonicalPath}`,
+      checkedAt,
+      p.image,
+    );
     const region = p.regionsPrices?.['1'];
     if (!b || p.productType !== 'RETAIL' || !region || p.preventSelling) return [];
     // Never substitute a price from a different region or flatten loyalty into the regular price.
@@ -215,7 +236,7 @@ function dia(html, checkedAt, context = {}) {
   const products = state?.l2?.plp_items?.length ? state.l2.plp_items : state?.l1?.items;
   if (!Array.isArray(products)) throw new Error('Unexpected DIA catalog');
   return products.flatMap((p) => {
-    const b = base('dia', p.sku_id, p.display_name, `${SOURCES.dia}${p.url}`, checkedAt);
+    const b = base('dia', p.sku_id, p.display_name, `${SOURCES.dia}${p.url}`, checkedAt, p.image);
     const price = p.prices,
       amountMilli = money(price?.price);
     if (
@@ -263,7 +284,14 @@ function ametller(html, checkedAt, context = {}) {
   return lists.flatMap((d) =>
     d.itemListElement.flatMap(({ item: p }) => {
       if (!p || p['@type'] !== 'Product') return [];
-      const b = base('ametller', p.sku, p.name, p.url, checkedAt),
+      const b = base(
+          'ametller',
+          p.sku,
+          p.name,
+          p.url,
+          checkedAt,
+          Array.isArray(p.image) ? p.image[0] : p.image,
+        ),
         offer = p.offers;
       const amountMilli = money(offer?.price);
       if (
@@ -301,8 +329,17 @@ function caprabo(html, checkedAt, context = {}) {
     const data = JSON.parse(decode(metric)),
       items = data.ecommerce?.items;
     if (data.ecommerce?.currency !== 'EUR' || items?.length !== 1) return [];
+    const imageTag = block.match(/<img\b[^>]*\bclass="[^"]*\bproduct-img\b[^"]*"[^>]*>/)?.[0];
+    const photo = imageTag?.match(/\ssrc="([^"]+)"/)?.[1];
     const p = items[0],
-      b = base('caprabo', p.item_id, p.item_name, decode(url), checkedAt);
+      b = base(
+        'caprabo',
+        p.item_id,
+        p.item_name,
+        decode(url),
+        checkedAt,
+        photo ? decode(photo) : undefined,
+      );
     const displayed = block.match(
       /<span class="price-offer-now">\s*(\d+[.,]\d{2})\s*<\/span>/,
     )?.[1];

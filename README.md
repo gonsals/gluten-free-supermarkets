@@ -1,5 +1,7 @@
 # SinGluten
 
+**Iteración 24 · Fotos del producto:** miniaturas del SKU/GTIN junto a nombre, formato y precio, también en las referencias desplegadas y aportaciones públicas que las incluyen. Si falta o falla una imagen aparece «Sin foto». Catálogo actualizado con 1.368 URLs de foto admitidas; fuentes y límites en [Fotos de productos](docs/FOTOS_PRODUCTOS.md).
+
 **Iteración 22 · Interfaz más accesible:** titulares de sistema, búsqueda sin recuadro redundante y filas con supermercado/precio alineados. Menos texto secundario, foco de teclado visible, campo inválido identificado y resultados anunciados; controles grandes y navegación más legible. [Cambios y límites de validación](docs/INTERFAZ_ACCESIBLE.md).
 
 **Iteración 21 · Buscar y comparar sin salir de la app:** buscador en Inicio y Comparar, sugerencias de productos y una tarjeta por supermercado con precio, envase, fecha y condiciones. Los demás precios se despliegan dentro de cada tarjeta; se retiran los enlaces externos del comparador. Filtros, cesta y anotaciones quedan como opciones secundarias. [Uso](docs/USO_SENCILLO.md) · [Contrato y límites](docs/COMPARADOR_SENCILLO.md).

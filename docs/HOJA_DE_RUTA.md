@@ -6,6 +6,8 @@ Actualizada el **04-11-2026**. Este documento fija el orden de entrega vigente. 
 
 ## Enfoque acordado
 
+**Entrega 24:** [fotos para identificar productos](FOTOS_PRODUCTOS.md). Miniaturas de la referencia concreta, nunca de un producto parecido, con nombre/formato y separación del importe por envase y por unidad. Mantener fallback, accesibilidad y carga de secciones bajo petición; las imágenes no resuelven equivalencia de formatos o evidencia de gluten.
+
 **Corrección 23:** buscar «arroz» separa el arroz seco de vasitos y preparados identificados; «Por envase» y «Equivalente» aclaran los importes. [Causa y regresión](IMPLEMENTACION.md). Extender la clasificación de tipos/estados y comparar formatos equivalentes requiere evidencia por producto, sin límites de precio arbitrarios ni agrupaciones que mezclen alimentos distintos.
 
 **Entrega 22:** [interfaz más clara y accesible](INTERFAZ_ACCESIBLE.md), por petición del propietario. Mantener Mesa, reducir peso visual y texto repetido, priorizar precios y facilitar teclado/texto ampliado. La siguiente validación debe incluir uso real y lector de pantalla en teléfono; no añadir más controles al recorrido principal para ampliar cobertura.

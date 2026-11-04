@@ -39,7 +39,7 @@ test('Caprabo exige coincidencia entre el importe visible y el metadato de ese p
   assert.deepEqual(caprabo(capraboPage({ currency: 'USD' }), at, group), []);
   assert.deepEqual(caprabo(capraboPage({ promo: 'Segunda unidad al 50%' }), at, group), []);
 });
-test('Ametller conserva formato y fuente, sin imágenes ni datos ajenos al precio', () => {
+test('Ametller conserva formato y fuente sin incorporar campos ajenos al producto', () => {
   const [p] = ametller(ametllerPage(), at, group);
   assert.equal(p.quantity, '6uds.');
   assert.equal(p.image, undefined);
@@ -55,6 +55,23 @@ test('Ametller conserva formato y fuente, sin imágenes ni datos ajenos al preci
     [],
   );
   assert.deepEqual(ametller(ametllerPage({ url: 'https://evil.test/p' }), at, group), []);
+});
+test('DIA y Ametller conservan únicamente la foto asociada al producto', () => {
+  assert.equal(
+    dia(diaPage([diaItem({ image: '/product_images/1/1.jpg' })]), at, group)[0].imageUrl,
+    'https://www.dia.es/product_images/1/1.jpg',
+  );
+  const photo =
+    'https://www.ametllerorigen.com/dw/image/v2/BLZV_PRD/on/demandware.static/-/Sites-mastercatalog_AMETLLER/default/dw1/images/products/1/1.jpg';
+  assert.equal(ametller(ametllerPage({ image: photo }), at, group)[0].imageUrl, photo);
+});
+test('Caprabo lee la foto de su bloque de producto, sin confundirla con un sello', () => {
+  const photo = 'https://www.capraboacasa.com//images/1.jpg';
+  const page = capraboPage().replace(
+    '<a class="product-title-link"',
+    `<img src="https://evil.test/seal.jpg" class="badge"/><img src="${photo}" class="product-img"/><a class="product-title-link"`,
+  );
+  assert.equal(caprabo(page, at, group)[0].imageUrl, photo);
 });
 test('Mercadona Barcelona tiene identidad propia; no cambia la etiqueta de una observación de Valencia', () => {
   const payload = {

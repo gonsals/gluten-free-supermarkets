@@ -5,6 +5,7 @@ export interface NamedProduct {
   name: string;
   brands: string;
   quantity: string;
+  imageUrl?: string;
 }
 export interface CatalogPricePage {
   products: NamedProduct[];

@@ -9,6 +9,7 @@ import { Disclosure } from '@/src/shared/Disclosure';
 import { useCatalogSearch } from './useCatalogSearch';
 import { RetailResults } from './RetailResults';
 import { retailerNames } from '@/src/domain/retailSources';
+import { ProductPhoto } from './ProductPhoto';
 
 export function CatalogSearch() {
   const router = useRouter();
@@ -176,11 +177,17 @@ export function CatalogSearch() {
           {remote.error ? <Notice error>{remote.error}</Notice> : null}
           {hits.slice(0, limit).map(({ product, quote }) => (
             <Card key={`${product.barcode}:${quote.id}`}>
-              <Copy>{product.name}</Copy>
-              {product.brands ? <Copy muted>{product.brands}</Copy> : null}
-              <Copy muted>
-                Formato: {product.quantity || 'no indicado; compruébalo en la ficha o el envase'}.
-              </Copy>
+              <View style={{ flexDirection: 'row', alignItems: 'flex-start', gap: 12 }}>
+                <ProductPhoto uri={product.imageUrl} name={product.name} />
+                <View style={{ flex: 1, minWidth: 0, gap: 4 }}>
+                  <Copy>{product.name}</Copy>
+                  {product.brands ? <Copy muted>{product.brands}</Copy> : null}
+                  <Copy muted>
+                    Formato:{' '}
+                    {product.quantity || 'no indicado; compruébalo en la ficha o el envase'}.
+                  </Copy>
+                </View>
+              </View>
               <Copy>
                 {quoteMoney(quote.amountMilli)} por envase · {quote.store}
               </Copy>

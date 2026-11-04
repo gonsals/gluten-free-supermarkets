@@ -12,6 +12,8 @@ Actualizado el **03-11-2026**, conforme al enfoque acordado. La [hoja de ruta](H
 
 ## Base y siguiente entrega
 
+**Iteración 24:** reconocimiento visual en BUS-01/SUP-02 mediante fotos de la referencia concreta, fallback, URLs validadas y descarga al abrir secciones. [Contrato y comprobaciones](FOTOS_PRODUCTOS.md). No sustituye la validación de identidad, formato, zona o precio.
+
 **Iteración 22:** evolución visual y de accesibilidad de BUS-01/SUP-02: resúmenes compactos, navegación legible, foco visible, estado de búsqueda accesible y prueba de texto al 200 % en móvil estrecho. [Contrato y límites](INTERFAZ_ACCESIBLE.md). La validación física permanece en CAL-02; no se declara realizada por las comprobaciones web.
 
 **Iteración 21:** la petición de sencillez se aplica al recorrido de BUS-01/SUP-02: buscador en Inicio, resumen por cadena, variantes dentro de la app y retirada de enlaces externos del comparador. [Contrato actualizado y criterios](COMPARADOR_SENCILLO.md). Las futuras ampliaciones conservarán un solo campo inicial y funciones avanzadas secundarias.

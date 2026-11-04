@@ -13,6 +13,7 @@ import { quoteMoney } from '@/src/domain/comparison';
 import { Action, Card, Copy, Heading, Notice } from '@/src/shared/ui';
 import { Disclosure } from '@/src/shared/Disclosure';
 import { usePalette } from '@/src/shared/theme';
+import { ProductPhoto } from './ProductPhoto';
 
 // These are general source notices, not requirements to receive a particular price.
 // Unknown conditions and all promotion requirements remain visible in the summary.
@@ -41,8 +42,15 @@ function PriceDetails({
   const Body = summary ? Meta : Copy;
   return (
     <View style={{ gap: 4 }}>
-      <Copy>{p.name}</Copy>
-      <Body muted>{p.quantity ? `Formato publicado: ${p.quantity}.` : 'Formato sin indicar.'}</Body>
+      <View style={{ flexDirection: 'row', gap: 12, alignItems: 'flex-start' }}>
+        <ProductPhoto uri={p.imageUrl} name={p.name} />
+        <View style={{ flex: 1, minWidth: 0, gap: 4 }}>
+          <Copy>{p.name}</Copy>
+          <Body muted>
+            {p.quantity ? `Formato publicado: ${p.quantity}.` : 'Formato sin indicar.'}
+          </Body>
+        </View>
+      </View>
       {p.unitPrice ? (
         <Body muted>
           Equivalente: {quoteMoney(p.unitPrice.amountMilli)} / {p.unitPrice.unit}

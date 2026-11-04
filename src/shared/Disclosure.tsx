@@ -1,6 +1,9 @@
-import { useState, type PropsWithChildren } from 'react';
+import { createContext, useContext, useState, type PropsWithChildren } from 'react';
 import { View } from 'react-native';
 import { Action } from './ui';
+
+const DisclosureVisibility = createContext(true);
+export const useDisclosureVisible = () => useContext(DisclosureVisibility);
 
 /** Keep drafts and selections mounted while hiding secondary controls. */
 export function Disclosure({
@@ -10,6 +13,7 @@ export function Disclosure({
   children,
 }: PropsWithChildren<{ title: string; accessibilityLabel?: string; compact?: boolean }>) {
   const [expanded, setExpanded] = useState(false);
+  const parentVisible = useDisclosureVisible();
   return (
     <View style={{ gap: compact ? 4 : 16 }}>
       <Action
@@ -26,7 +30,9 @@ export function Disclosure({
         accessibilityElementsHidden={!expanded}
         importantForAccessibility={expanded ? 'auto' : 'no-hide-descendants'}
       >
-        {children}
+        <DisclosureVisibility.Provider value={parentVisible && expanded}>
+          {children}
+        </DisclosureVisibility.Provider>
       </View>
     </View>
   );

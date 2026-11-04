@@ -40,6 +40,22 @@ const response = (items: unknown[], size = 20, extra = {}) =>
       JSON.stringify({ items, size, page: 1, pages: 1, total: items.length, ...extra }),
   }) as unknown as Response;
 
+test('conserva solo fotos de producto de Open Food Facts sin alterar precios o metadatos privados', async () => {
+  for (const [url, accepted] of [
+    ['https://images.openfoodfacts.org/images/products/001/740/011/2530/front_en.5.400.jpg', true],
+    ['https://evil.test/photo.jpg', false],
+  ] as const) {
+    const fetcher = jest
+      .fn()
+      .mockResolvedValueOnce(response([catalog({ image_url: url })]))
+      .mockResolvedValueOnce(response([price()], 50));
+    const result = await createOpenPricesClient({ fetcher }).searchCatalog('Huevos', '');
+    expect(result.products[0].imageUrl).toBe(accepted ? url : undefined);
+    expect(result.quotes[0].amountMilli).toBe(1995);
+    expect(JSON.stringify(result)).not.toContain('not-for-app');
+  }
+});
+
 test('busca nombres y luego precios en dos GET acotados sin enviar el filtro de tienda o datos privados', async () => {
   const fetcher = jest
     .fn()

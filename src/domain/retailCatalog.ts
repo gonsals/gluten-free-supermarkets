@@ -1,4 +1,5 @@
 import { fold } from './comparison';
+import { productImageUrl } from './productImages';
 
 import {
   retailerNames,
@@ -16,6 +17,7 @@ export interface RetailPrice {
   group: string;
   name: string;
   quantity: string;
+  imageUrl?: string;
   amountMilli: number;
   scope: string;
   sourceUrl: string;
@@ -166,6 +168,7 @@ export function parseRetailCatalog(input: unknown): RetailCatalog {
       if (!['kg', 'l', 'ud', 'dz', 'unidad'].includes(unit)) throw new Error('invalid_catalog');
       unitPrice = { amountMilli: money(u.amountMilli), unit };
     }
+    const imageUrl = productImageUrl(r, p.imageUrl);
     return {
       id,
       retailer: r,
@@ -173,6 +176,7 @@ export function parseRetailCatalog(input: unknown): RetailCatalog {
       group,
       name: string(p.name),
       quantity: string(p.quantity, 300, true),
+      ...(imageUrl ? { imageUrl } : {}),
       amountMilli: money(p.amountMilli),
       scope: string(p.scope),
       sourceUrl,

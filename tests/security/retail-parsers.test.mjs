@@ -96,6 +96,30 @@ test('Mercadona fixed packages use SKU, warehouse scope and exact unit amounts',
   assert.equal(row.barcode, undefined);
   assert.deepEqual(row.unitPrice, { amountMilli: 332, unit: 'ud' });
 });
+test('las fotos proceden del registro de ese producto, no del certificado o categoría', () => {
+  const photo = 'https://prod-mercadona.imgix.net/images/rice.jpg?fit=crop&h=300&w=300';
+  assert.equal(mercadona(m({ thumbnail: photo }), checkedAt)[0].imageUrl, photo);
+  const aldiPhoto = 'https://s7g10.scene7.com/is/image/aldinord/rice';
+  assert.equal(
+    aldi(
+      a({
+        assets: [
+          { type: 'certificate', url: 'https://evil.test/seal.jpg' },
+          { type: 'primary', url: aldiPhoto, isAiGenerated: false },
+        ],
+      }),
+      checkedAt,
+    )[0].imageUrl,
+    aldiPhoto,
+  );
+  assert.equal(
+    aldi(a({ assets: [{ type: 'primary', url: aldiPhoto, isAiGenerated: true }] }), checkedAt)[0]
+      .imageUrl,
+    undefined,
+  );
+  const lidlPhoto = 'https://www.lidl.es/assets/rice.png';
+  assert.equal(lidl(l(lp, 0.99, { image: lidlPhoto }), checkedAt)[0].imageUrl, lidlPhoto);
+});
 test('variable-weight, unpublished, unavailable and off-origin Mercadona products are excluded', () => {
   for (const price of [{ approx_size: true }, { selling_method: 1 }, { bunch_selector: true }])
     assert.deepEqual(mercadona(m({}, price), checkedAt), []);

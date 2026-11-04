@@ -1,5 +1,7 @@
 # Usar la app
 
+Ahora puedes reconocer el envase por su foto junto al nombre y formato. Al abrir otros precios de una cadena, cada producto muestra la suya. «Sin foto» significa que no hay imagen disponible o no se ha podido cargar; el precio sigue siendo consultable. [Fotos y límites](FOTOS_PRODUCTOS.md).
+
 La [interfaz de la iteración 22](INTERFAZ_ACCESIBLE.md) presenta supermercado y precio juntos, con menos texto secundario. Inicio conserva el buscador como acción principal; «Tu compra y biblioteca» reúne la actividad personal y la pestaña «Escanear» da acceso directo a la cámara. Los campos y botones marcan el foco cuando usas teclado.
 
 1. **Busca lo que necesitas.** En Inicio o Comparar escribe «huevos», «leche» o «arroz» y pulsa «Buscar precios». También puedes tocar una sugerencia.
