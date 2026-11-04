@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, type PropsWithChildren } from 'react';
 import { Text, View } from 'react-native';
 import {
   groupRetailPrices,
@@ -14,29 +14,55 @@ import { Action, Card, Copy, Heading, Notice } from '@/src/shared/ui';
 import { Disclosure } from '@/src/shared/Disclosure';
 import { usePalette } from '@/src/shared/theme';
 
-function PriceDetails({ price: p, now }: { price: RetailPrice; now: number }) {
+// These are general source notices, not requirements to receive a particular price.
+// Unknown conditions and all promotion requirements remain visible in the summary.
+const generalNotices = new Set([
+  'Confirma precio y disponibilidad para tu dirección.',
+  'Confirma precio, cobertura y promociones para tu dirección.',
+  'Precio simple publicado; confirma tienda, cobertura y existencias.',
+]);
+
+function Meta({ children, muted = true }: PropsWithChildren<{ muted?: boolean }>) {
+  const c = usePalette();
   return (
-    <View style={{ gap: 6 }}>
+    <Text style={{ color: muted ? c.muted : c.ink, fontSize: 14, lineHeight: 20 }}>{children}</Text>
+  );
+}
+
+function PriceDetails({
+  price: p,
+  now,
+  summary = false,
+}: {
+  price: RetailPrice;
+  now: number;
+  summary?: boolean;
+}) {
+  const Body = summary ? Meta : Copy;
+  return (
+    <View style={{ gap: 4 }}>
       <Copy>{p.name}</Copy>
-      <Copy muted>
-        Formato publicado: {p.quantity || 'no indicado; confirma el contenido del envase'}.
-      </Copy>
+      <Body muted>{p.quantity ? `Formato publicado: ${p.quantity}.` : 'Formato sin indicar.'}</Body>
       {p.unitPrice ? (
-        <Copy muted>
+        <Body muted>
           {quoteMoney(p.unitPrice.amountMilli)} / {p.unitPrice.unit}
-        </Copy>
+        </Body>
       ) : null}
       {p.isOffer ? (
-        <Copy>
+        <Body muted={false}>
           Oferta publicada
           {p.endsAt
             ? ` · hasta ${new Date(p.endsAt).toLocaleDateString('es-ES', { timeZone: 'Europe/Madrid' })}`
             : ''}
           .
-        </Copy>
+        </Body>
       ) : null}
-      {p.conditions ? <Copy>{p.conditions}</Copy> : null}
-      <Copy muted>Web oficial · consultado el {p.checkedAt.slice(0, 10)}</Copy>
+      {p.conditions && (!summary || !generalNotices.has(p.conditions)) ? (
+        <Body muted={false}>{p.conditions}</Body>
+      ) : null}
+      <Body muted>
+        {summary ? 'Consultado' : 'Web oficial · consultado el'} {p.checkedAt.slice(0, 10)}
+      </Body>
       {now - Date.parse(p.checkedAt) > RETAIL_MAX_AGE ? (
         <Notice>Precio anterior; el importe actual puede haber cambiado.</Notice>
       ) : null}
@@ -50,17 +76,35 @@ function StorePrices({ prices, now }: { prices: RetailPrice[]; now: number }) {
   const first = prices[0];
   const name = retailerNames[first.retailer];
   return (
-    <Card style={{ gap: 10, padding: 16 }}>
-      <Text style={{ color: c.accent, fontSize: 24, fontWeight: '700' }}>
-        Desde {quoteMoney(first.amountMilli)} · {name}
-      </Text>
-      <PriceDetails price={first} now={now} />
+    <Card style={{ gap: 8, padding: 14 }}>
+      <View
+        style={{
+          flexDirection: 'row',
+          flexWrap: 'wrap',
+          alignItems: 'baseline',
+          justifyContent: 'space-between',
+          gap: 8,
+        }}
+      >
+        <Text style={{ color: c.ink, fontSize: 18, fontWeight: '700', flexShrink: 1 }}>{name}</Text>
+        <Text
+          accessibilityLabel={`Desde ${quoteMoney(first.amountMilli)} · ${name}`}
+          style={{ color: c.accent, fontSize: 24, fontWeight: '700' }}
+        >
+          <Text style={{ fontSize: 14, fontWeight: '400' }}>Desde </Text>
+          {quoteMoney(first.amountMilli)}
+        </Text>
+      </View>
+      <PriceDetails price={first} now={now} summary />
       <Disclosure
+        compact
         title={
           prices.length > 1 ? `Ver los ${prices.length} precios de ${name}` : `Detalles de ${name}`
         }
       >
         <Copy muted>{first.scope}</Copy>
+        <Copy muted>Web oficial · consultado el {first.checkedAt.slice(0, 10)}</Copy>
+        {generalNotices.has(first.conditions) ? <Copy muted>{first.conditions}</Copy> : null}
         {prices.slice(1, limit).map((p) => (
           <View
             key={p.id}
@@ -104,6 +148,7 @@ export function RetailResults({
   now: number;
   loading: boolean;
 }) {
+  const c = usePalette();
   const hits = retailPrices(catalog, { text, store, onlyOffers, includeOlder, now });
   const groups = groupRetailPrices(hits);
   const missing = Object.entries(retailerNames).filter(
@@ -113,12 +158,16 @@ export function RetailResults({
   );
   return (
     <>
-      <Heading>Supermercados</Heading>
-      <Copy muted>
-        El precio más bajo disponible de cada cadena. Los envases pueden ser distintos. Precios
-        online de referencia para Barcelona; pueden variar según tu tienda.
-      </Copy>
-      {loading ? <Copy muted>Actualizando precios…</Copy> : null}
+      <Heading compact>Supermercados</Heading>
+      <Meta>Compara el envase: los tamaños pueden variar. Referencia online · Barcelona.</Meta>
+      <Text
+        accessibilityLiveRegion="polite"
+        style={{ color: c.muted, fontSize: 14, lineHeight: 20 }}
+      >
+        {loading
+          ? 'Actualizando precios…'
+          : `${groups.length} ${groups.length === 1 ? 'supermercado con precios' : 'supermercados con precios'}`}
+      </Text>
       {groups.map(({ retailer, prices }) => (
         <StorePrices
           key={`${text}:${store}:${onlyOffers}:${includeOlder}:${retailer}`}
@@ -137,7 +186,7 @@ export function RetailResults({
           vendan el producto.
         </Copy>
       ) : null}
-      <Disclosure title="Sobre estos precios">
+      <Disclosure title="Sobre estos precios" compact>
         {offline ? (
           <Copy muted>
             No se ha podido actualizar el catálogo. Se conserva la última copia disponible con sus

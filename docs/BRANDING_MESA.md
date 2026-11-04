@@ -1,5 +1,7 @@
 # Mesa · Sistema visual aplicado
 
+**Actualización de interfaz, 04-11-2026:** se conserva esta paleta y el símbolo. La [iteración 22](INTERFAZ_ACCESIBLE.md) sustituye los titulares serif por sans de sistema, compacta los precios, refuerza foco/bordes y reduce controles secundarios. Las evidencias del 25-10-2026 que siguen abajo corresponden a la aplicación original de Mesa, no a una nueva prueba física.
+
 > **Planificación actualizada 26-10-2026.** Evidencia de Mesa aplicada (paso 2 del plan anterior). El nuevo enfoque conserva esta dirección; MAR-01 revisa el nombre comercial y CAL-02 la validación física. [Hoja de ruta vigente](HOJA_DE_RUTA.md) · [Backlog](PLAN_MEJORAS.md).
 
 **Dirección B · Mesa elegida por el propietario el 25 de octubre de 2026.** Se aplica al producto real como paso 2 de la [hoja de ruta anterior](historico/HOJA_DE_RUTA_ANTES_DEL_COMPARADOR.md). Sustituye a la primera identidad de hoja y verde, que no convencía al propietario. Las tres exploraciones iniciales permanecen en [Branding](BRANDING.md).
@@ -17,9 +19,9 @@
 | Superficie suave | `#F3E5D4` | `#49342B` |
 | Borde | `#DDCDBD` | `#685043` |
 
-Los tokens viven en `src/shared/theme.ts`. Los titulares utilizan Georgia en iOS/web y la familia `serif` del sistema en Android; texto de lectura, formularios y acciones conservan la sans de sistema. No se descargan fuentes ni se añaden dependencias. La apariencia exacta de la serif puede variar entre sistemas; la decisión preserva el carácter editorial y permite arrancar sin red.
+Los colores viven en `src/shared/theme.ts`. Desde la iteración 22, titulares, lectura, formularios y acciones usan la sans del sistema. Los titulares normales son de 28 puntos y las secciones compactas de 20. No se descargan fuentes ni se añaden dependencias; el cambio facilita una jerarquía visual más sencilla y el arranque sin red.
 
-Botones y campos: radio de 6 puntos, altura mínima de 50 y texto adaptable. Tarjetas: radio de 10 y padding de 20. Contenido centrado hasta 640 puntos. Inicio con cabecera de marca, titular editorial, arco de arena, accesos a escáner/entrada manual y biblioteca con datos reales. Escáner, biblioteca, precios, ajustes y confirmaciones heredan los componentes compartidos.
+Botones de al menos 50 puntos y campos de 54, radio de 12 y texto adaptable. Tarjetas con radio de 16 y padding de 16, o 14 en resúmenes de supermercado. Contenido centrado hasta 640 puntos con margen móvil de 16. Inicio muestra marca compacta, buscador y sugerencias; la actividad personal se despliega. Los componentes compartidos mantienen el sistema en precios, biblioteca y ajustes.
 
 ## Estados independientes de la marca
 

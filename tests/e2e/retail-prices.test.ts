@@ -107,7 +107,7 @@ test('Mercadona, Aldi y Lidl aparecen con precios ordenados, formatos, ámbito y
   await page.goto('/prices');
   await search(page, 'patatas');
   await expect(page.getByText('Patatas de ensayo Lidl', { exact: true })).toBeVisible();
-  const prices = page.getByText(/€ · (Mercadona|Aldi|Lidl)$/);
+  const prices = page.getByLabel(/€ · (Mercadona|Aldi|Lidl)$/);
   await expect(prices).toHaveCount(3);
   await expect(prices.nth(0)).toContainText('1,19');
   await expect(prices.nth(1)).toContainText('1,55');
@@ -125,7 +125,7 @@ test('Mercadona, Aldi y Lidl aparecen con precios ordenados, formatos, ámbito y
   await expect(page.getByText('Patatas de ensayo Mercadona', { exact: true })).toHaveCount(0);
   await search(page, 'patatas', 'Aldi');
   await expect(prices).toHaveCount(1);
-  await expect(prices).toContainText('Aldi');
+  await expect(prices).toHaveAttribute('aria-label', /Aldi$/);
   expect(requests).toEqual([raw]);
 });
 test('el catálogo incluido funciona aunque las fuentes remotas fallen, sin alterar su fecha', async ({
@@ -194,7 +194,7 @@ test('desde inicio busca con un toque y abre todos los precios de una cadena sin
   await page.getByRole('button', { name: 'Huevos', exact: true }).click();
   await expect(page.getByText('Huevos pequeños Mercadona', { exact: true })).toBeVisible();
   await expect(page.getByText('Huevos grandes Mercadona', { exact: true })).not.toBeVisible();
-  await expect(page.getByText(/^Desde .*€ · /)).toHaveCount(2);
+  await expect(page.getByLabel(/^Desde .*€ · /)).toHaveCount(2);
   await expandSection(page, 'Ver los 2 precios de Mercadona');
   await expect(page.getByText('Huevos grandes Mercadona', { exact: true })).toBeVisible();
   await expect(page.getByText('Formato publicado: 12 unidades.', { exact: true })).toBeVisible();
@@ -218,3 +218,81 @@ test('desde inicio busca con un toque y abre todos los precios de una cadena sin
   ).toBeVisible();
   await expect(page.getByText('Huevos pequeños Mercadona', { exact: true })).toBeVisible();
 });
+
+for (const colorScheme of ['light', 'dark'] as const) {
+  test(`buscador y precios accesibles con teclado y texto al 200 % en 320 px (${colorScheme})`, async ({
+    page,
+  }) => {
+    await page.setViewportSize({ width: 320, height: 640 });
+    await page.emulateMedia({ colorScheme });
+    await prepare(page);
+    await page.route(raw, (route) => route.fulfill({ json: catalog() }));
+    await page.goto('/');
+    for (const name of ['Inicio', 'Comparar', 'Escanear', 'Biblioteca', 'Ajustes']) {
+      const label = page.getByRole('tab', { name, exact: true }).getByText(name, { exact: true });
+      expect(
+        await label.evaluate(
+          (node) =>
+            node.getBoundingClientRect().height / parseFloat(getComputedStyle(node).lineHeight),
+        ),
+      ).toBeLessThanOrEqual(1.05);
+    }
+    const input = page.getByRole('textbox', { name: 'Buscar productos', exact: true });
+    await input.press('Enter');
+    await expect(input).toHaveAttribute('aria-invalid', 'true');
+    await input.fill('patatas');
+    await expect(input).toHaveCSS('outline-style', 'solid');
+    await input.press('Enter');
+    await expect(page.getByLabel(/^Desde .*€ · /)).toHaveCount(3);
+    await expect(input).not.toHaveAttribute('aria-invalid', 'true');
+    await expect(page.getByText('3 supermercados con precios', { exact: true })).toHaveAttribute(
+      'aria-live',
+      'polite',
+    );
+    await page.getByRole('button', { name: 'Buscar precios', exact: true }).focus();
+    await page.keyboard.press('Tab');
+    const filters = page.getByRole('button', { name: 'Filtrar precios y ofertas', exact: true });
+    await expect(filters).toBeFocused();
+    await expect(filters).toHaveCSS('outline-width', '3px');
+    await page.keyboard.press('Enter');
+    await expect(filters).toHaveAttribute('aria-expanded', 'true');
+    await page.keyboard.press('Enter');
+    await expect(filters).toHaveAttribute('aria-expanded', 'false');
+    await page.evaluate(() => {
+      const sizes = [...document.querySelectorAll<HTMLElement>('body *')]
+        .filter((element) =>
+          [...element.childNodes].some(
+            (node) => node.nodeType === Node.TEXT_NODE && node.textContent?.trim(),
+          ),
+        )
+        .map((element) => {
+          const style = getComputedStyle(element);
+          const font = parseFloat(style.fontSize);
+          return { element, font, line: parseFloat(style.lineHeight) || font * 1.4 };
+        });
+      for (const { element, font, line } of sizes) {
+        element.style.fontSize = `${font * 2}px`;
+        element.style.lineHeight = `${line * 2}px`;
+      }
+    });
+    const details = page.getByRole('button', { name: 'Detalles de Lidl', exact: true });
+    await details.scrollIntoViewIfNeeded();
+    const bounds = await details.boundingBox();
+    expect(bounds!.width).toBeGreaterThanOrEqual(48);
+    expect(bounds!.height).toBeGreaterThanOrEqual(48);
+    await details.focus();
+    await page.keyboard.press('Enter');
+    await expect(details).toHaveAttribute('aria-expanded', 'true');
+    await expect(
+      page.getByText('Zona de precio 1 de Lidl · confirma tu tienda', { exact: true }),
+    ).toBeVisible();
+    await expect(page.getByText('Requiere Lidl Plus', { exact: true })).toBeVisible();
+    expect(await page.evaluate(() => document.documentElement.scrollWidth > innerWidth)).toBe(
+      false,
+    );
+    await page.getByLabel(/€ · Lidl$/).scrollIntoViewIfNeeded();
+    await page.screenshot({
+      path: test.info().outputPath(`precios-accesibles-${colorScheme}.png`),
+    });
+  });
+}

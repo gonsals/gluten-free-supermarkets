@@ -87,7 +87,7 @@ test('compara seis cadenas de Barcelona, separa Valencia y permite elegir DIA si
   await page.getByRole('button', { name: 'Buscar precios', exact: true }).click();
   await expect(page.getByText('Huevos de ensayo Ametller Origen', { exact: true })).toBeVisible();
   await expect(
-    page.getByText(/€ · (Mercadona|DIA|Caprabo|Ametller Origen|Aldi|Lidl)$/),
+    page.getByLabel(/€ · (Mercadona|DIA|Caprabo|Ametller Origen|Aldi|Lidl)$/),
   ).toHaveCount(6);
   await expect(page.getByText('Huevos antiguos de Valencia', { exact: true })).toHaveCount(0);
   await expandSection(page, 'Detalles de Mercadona');
@@ -97,8 +97,8 @@ test('compara seis cadenas de Barcelona, separa Valencia y permite elegir DIA si
   await expandSection(page, 'Elegir supermercado');
   await page.getByRole('button', { name: 'DIA', exact: true }).click();
   await expandSection(page, 'Sobre estos precios');
-  await expect(page.getByText(/€ · DIA$/)).toHaveCount(1);
-  await expect(page.getByText(/€ · Mercadona$/)).toHaveCount(0);
+  await expect(page.getByLabel(/€ · DIA$/)).toHaveCount(1);
+  await expect(page.getByLabel(/€ · Mercadona$/)).toHaveCount(0);
   expect(downloads).toBe(1);
   expect(communityRequests).toBe(1);
 });
@@ -115,7 +115,7 @@ test('DIA sigue disponible con la copia incluida y las cadenas pendientes se ide
   await page.getByRole('button', { name: 'DIA', exact: true }).click();
   await expandSection(page, 'Sobre estos precios');
   await expect(page.getByText(/No se ha podido actualizar el catálogo/)).toBeVisible();
-  await expect(page.getByText(/€ · DIA$/).first()).toBeVisible();
+  await expect(page.getByLabel(/€ · DIA$/).first()).toBeVisible();
   await expandSection(page, 'Sobre estos precios');
   await expect(page.getByText(/todavía no tienen precios integrados/)).toBeVisible();
   await expect(page.getByRole('button', { name: /^Consultar / })).toHaveCount(0);

@@ -1,5 +1,7 @@
 # Usar la app
 
+La [interfaz de la iteración 22](INTERFAZ_ACCESIBLE.md) presenta supermercado y precio juntos, con menos texto secundario. Inicio conserva el buscador como acción principal; «Tu compra y biblioteca» reúne la actividad personal y la pestaña «Escanear» da acceso directo a la cámara. Los campos y botones marcan el foco cuando usas teclado.
+
 1. **Busca lo que necesitas.** En Inicio o Comparar escribe «huevos», «leche» o «arroz» y pulsa «Buscar precios». También puedes tocar una sugerencia.
 2. **Mira los supermercados.** Cada tarjeta muestra el precio desde el que hay una referencia disponible, el producto concreto, su envase y la fecha. Los demás precios se abren dentro de esa tarjeta, sin salir de la app. Revisa las condiciones de las ofertas, como Lidl Plus.
 3. **Ajusta solo si lo necesitas.** «Filtrar precios y ofertas» permite elegir cadena, consultar ofertas o incluir datos anteriores. Las anotaciones y funciones avanzadas están en «Mis productos y precios», dentro de Comparar.

@@ -8,9 +8,9 @@ export function Brand() {
       <Image
         source={require('../../assets/images/brand-mark.png')}
         accessible={false}
-        style={{ width: 38, height: 38 }}
+        style={{ width: 30, height: 30 }}
       />
-      <Text style={{ color: c.ink, fontWeight: '700', fontSize: 23, letterSpacing: -0.7 }}>
+      <Text style={{ color: c.ink, fontWeight: '700', fontSize: 20, letterSpacing: -0.5 }}>
         SinGluten
       </Text>
       <Text style={{ color: c.muted, fontSize: 12, marginLeft: 'auto' }}>Sin cuenta</Text>

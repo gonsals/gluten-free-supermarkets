@@ -1,5 +1,9 @@
 # Implementación y verificación
 
+## Iteración 22 · Claridad y accesibilidad
+
+Se renuevan titulares y componentes compartidos, con foco visible, campos contrastados y controles adaptables. Los resúmenes presentan supermercado e importe alineados, con precio, formato, fecha y requisitos de promoción visibles. Los avisos generales pasan al detalle; las funciones personales se despliegan en Inicio. Se añaden recorridos de teclado y texto al 200 % en 320 px en ambos temas. [Alcance y límites](INTERFAZ_ACCESIBLE.md).
+
 ## Iteración 21 · Comparador sencillo
 
 Inicio y Comparar reutilizan el buscador por nombre, con un campo y sugerencias. Los resultados agrupan cada cadena con su mínimo publicado, producto, formato, fecha y condiciones; las variantes se despliegan dentro de la app. Se retiran los enlaces externos del buscador y de la comparación por código. Las herramientas privadas y de escaneo se conservan en opciones secundarias. [Contrato y límites de la entrega](COMPARADOR_SENCILLO.md).

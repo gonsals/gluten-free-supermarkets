@@ -1,5 +1,5 @@
 import Ionicons from '@expo/vector-icons/Ionicons';
-import type { ComponentProps, PropsWithChildren } from 'react';
+import { useState, type ComponentProps, type PropsWithChildren } from 'react';
 import {
   ActivityIndicator,
   Platform,
@@ -13,7 +13,7 @@ import {
   type ViewStyle,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { typography, usePalette } from './theme';
+import { usePalette } from './theme';
 
 export function Screen({ children, scroll = true }: PropsWithChildren<{ scroll?: boolean }>) {
   const colors = usePalette();
@@ -33,10 +33,11 @@ export function Heading({
   children,
   eyebrow,
   hero = false,
-}: PropsWithChildren<{ eyebrow?: string; hero?: boolean }>) {
+  compact = false,
+}: PropsWithChildren<{ eyebrow?: string; hero?: boolean; compact?: boolean }>) {
   const c = usePalette();
   return (
-    <View style={{ gap: 8, marginBottom: 8 }}>
+    <View style={{ gap: 6 }}>
       {eyebrow ? (
         <Text style={{ color: c.accent, fontWeight: '700', fontSize: 12, letterSpacing: 1.4 }}>
           {eyebrow.toUpperCase()}
@@ -46,11 +47,10 @@ export function Heading({
         accessibilityRole="header"
         style={{
           color: c.ink,
-          fontFamily: typography.editorial,
-          fontWeight: '400',
-          fontSize: hero ? 42 : 32,
-          lineHeight: hero ? 48 : 40,
-          letterSpacing: -0.6,
+          fontWeight: '700',
+          fontSize: compact ? 20 : hero ? 34 : 28,
+          lineHeight: compact ? 28 : hero ? 42 : 36,
+          letterSpacing: -0.4,
         }}
       >
         {children}
@@ -84,6 +84,8 @@ export function Action({
   selected,
   expanded,
   accessibilityLabel,
+  quiet = false,
+  style,
 }: {
   title: string;
   onPress: () => void;
@@ -96,13 +98,18 @@ export function Action({
   selected?: boolean;
   expanded?: boolean;
   accessibilityLabel?: string;
+  quiet?: boolean;
+  style?: ViewStyle;
 }) {
   const c = usePalette();
-  const foreground = secondary ? (danger ? c.danger : c.ink) : c.onAccent;
+  const [focused, setFocused] = useState(false);
+  const foreground = quiet ? c.accent : secondary ? (danger ? c.danger : c.ink) : c.onAccent;
   return (
     <Pressable
       accessibilityRole="button"
       accessibilityLabel={accessibilityLabel ?? title}
+      onFocus={() => setFocused(true)}
+      onBlur={() => setFocused(false)}
       accessibilityState={{
         disabled: disabled || busy,
         busy,
@@ -120,10 +127,27 @@ export function Action({
       style={({ pressed }) => [
         styles.action,
         {
-          backgroundColor: secondary ? (danger ? c.dangerBg : c.surface) : c.accent,
-          borderColor: secondary ? (danger ? c.dangerBorder : c.border) : c.accent,
+          backgroundColor: quiet
+            ? 'transparent'
+            : secondary
+              ? danger
+                ? c.dangerBg
+                : c.surface
+              : c.accent,
+          borderColor: quiet
+            ? 'transparent'
+            : secondary
+              ? danger
+                ? c.dangerBorder
+                : c.border
+              : c.accent,
           opacity: disabled || busy ? 0.5 : pressed ? 0.75 : 1,
         },
+        quiet ? { paddingHorizontal: 4, paddingVertical: 8, justifyContent: 'flex-start' } : null,
+        focused
+          ? { outlineColor: c.accent, outlineWidth: 3, outlineStyle: 'solid', outlineOffset: 2 }
+          : null,
+        style,
       ]}
     >
       {busy ? (
@@ -157,16 +181,33 @@ export function Field({
   ...props
 }: TextInputProps & { label: string; error?: boolean }) {
   const c = usePalette();
+  const [focused, setFocused] = useState(false);
   return (
     <View style={{ gap: 6 }}>
       <Text style={{ color: c.ink, fontWeight: '600', fontSize: 14 }}>{label}</Text>
       <TextInput
         {...props}
+        onFocus={(event) => {
+          setFocused(true);
+          props.onFocus?.(event);
+        }}
+        onBlur={(event) => {
+          setFocused(false);
+          props.onBlur?.(event);
+        }}
         accessibilityLabel={props.accessibilityLabel ?? label}
+        {...(Platform.OS === 'web' ? { 'aria-invalid': error || undefined } : {})}
         placeholderTextColor={c.muted}
         style={[
           styles.input,
-          { color: c.ink, backgroundColor: c.surface, borderColor: error ? c.danger : c.border },
+          {
+            color: c.ink,
+            backgroundColor: c.surface,
+            borderColor: error ? c.danger : focused ? c.accent : c.muted,
+          },
+          focused
+            ? { outlineColor: c.accent, outlineWidth: 2, outlineStyle: 'solid', outlineOffset: 2 }
+            : null,
           props.style,
         ]}
       />
@@ -193,12 +234,12 @@ export function Notice({ children, error = false }: PropsWithChildren<{ error?: 
   );
 }
 export const styles = StyleSheet.create({
-  page: { flexGrow: 1, padding: 22, paddingTop: 28, paddingBottom: 40 },
-  content: { width: '100%', maxWidth: 640, alignSelf: 'center', gap: 20 },
-  card: { padding: 20, borderRadius: 10, borderWidth: 1, gap: 16 },
+  page: { flexGrow: 1, padding: 16, paddingTop: 20, paddingBottom: 32 },
+  content: { width: '100%', maxWidth: 640, alignSelf: 'center', gap: 16 },
+  card: { padding: 16, borderRadius: 16, borderWidth: 1, gap: 14 },
   action: {
     minHeight: 50,
-    borderRadius: 6,
+    borderRadius: 12,
     borderWidth: 1,
     paddingVertical: 13,
     paddingHorizontal: 16,
@@ -207,6 +248,6 @@ export const styles = StyleSheet.create({
     justifyContent: 'center',
     gap: 9,
   },
-  input: { borderWidth: 1, borderRadius: 6, minHeight: 50, padding: 13, fontSize: 16 },
+  input: { borderWidth: 1, borderRadius: 12, minHeight: 54, padding: 14, fontSize: 16 },
   row: { flexDirection: 'row', gap: 10, alignItems: 'center', flexWrap: 'wrap' },
 });

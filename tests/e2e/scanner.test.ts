@@ -46,7 +46,7 @@ test('una respuesta tardía de permisos después de cambiar de pestaña no conta
   await page.getByRole('tab', { name: 'Biblioteca', exact: true }).click();
   await expect(page.getByRole('heading', { name: 'Tu biblioteca', exact: true })).toBeVisible();
   await page.evaluate(() => Reflect.get(window, '__denyCameraPermission')());
-  await page.getByRole('tab', { name: 'Consultar', exact: true }).click();
+  await page.getByRole('tab', { name: 'Escanear', exact: true }).click();
   await expect(start).toBeEnabled();
   await expect(page.getByText(/No se ha concedido acceso/)).toHaveCount(0);
   await expect(page.getByRole('textbox', { name: 'Código de barras', exact: true })).toBeEditable();

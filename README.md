@@ -1,5 +1,7 @@
 # SinGluten
 
+**Iteración 22 · Interfaz más accesible:** titulares de sistema, búsqueda sin recuadro redundante y filas con supermercado/precio alineados. Menos texto secundario, foco de teclado visible, campo inválido identificado y resultados anunciados; controles grandes y navegación más legible. [Cambios y límites de validación](docs/INTERFAZ_ACCESIBLE.md).
+
 **Iteración 21 · Buscar y comparar sin salir de la app:** buscador en Inicio y Comparar, sugerencias de productos y una tarjeta por supermercado con precio, envase, fecha y condiciones. Los demás precios se despliegan dentro de cada tarjeta; se retiran los enlaces externos del comparador. Filtros, cesta y anotaciones quedan como opciones secundarias. [Uso](docs/USO_SENCILLO.md) · [Contrato y límites](docs/COMPARADOR_SENCILLO.md).
 
 App de compra en **Expo 58, React 19 y React Native 0.88**, enfocada en comparar precios por producto y tienda con aportaciones públicas de Open Prices y anotaciones privadas. Conserva información sobre gluten como función adicional, escaneo y biblioteca sin conexión.

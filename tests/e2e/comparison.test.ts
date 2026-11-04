@@ -156,7 +156,7 @@ test('el inicio prioriza comparar y conserva el filtro adicional sobre gluten', 
 }) => {
   await routes(page);
   await page.goto('/');
-  await page.getByRole('button', { name: 'Comparar precios', exact: true }).click();
+  await page.getByRole('tab', { name: 'Comparar', exact: true }).click();
   await expect(page.getByRole('heading', { name: 'Comparar precios', exact: true })).toBeVisible();
   await expandSection(page, 'Mis productos guardados');
   await expandSection(page, 'Filtrar productos guardados');

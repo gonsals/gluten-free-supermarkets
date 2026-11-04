@@ -6,15 +6,17 @@ import { Action } from './ui';
 export function Disclosure({
   title,
   accessibilityLabel,
+  compact = false,
   children,
-}: PropsWithChildren<{ title: string; accessibilityLabel?: string }>) {
+}: PropsWithChildren<{ title: string; accessibilityLabel?: string; compact?: boolean }>) {
   const [expanded, setExpanded] = useState(false);
   return (
-    <View style={{ gap: 16 }}>
+    <View style={{ gap: compact ? 4 : 16 }}>
       <Action
         title={title}
         accessibilityLabel={accessibilityLabel}
         secondary
+        quiet={compact}
         expanded={expanded}
         icon={expanded ? 'chevron-up-outline' : 'chevron-down-outline'}
         onPress={() => setExpanded((value) => !value)}

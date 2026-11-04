@@ -49,9 +49,10 @@ export function CatalogSearch() {
   };
   return (
     <>
-      <Card>
+      <View style={{ gap: 12 }}>
         <Field
           label="Buscar productos"
+          error={Boolean(remote.inputError)}
           placeholder="Huevos, leche, arroz…"
           value={text}
           onChangeText={setText}
@@ -68,6 +69,7 @@ export function CatalogSearch() {
                 key={name}
                 title={name}
                 secondary
+                style={{ borderRadius: 24, paddingHorizontal: 16 }}
                 disabled={remote.loading}
                 onPress={() => {
                   Keyboard.dismiss();
@@ -82,10 +84,10 @@ export function CatalogSearch() {
         {remote.loading ? (
           <Action title="Cancelar búsqueda de precios" secondary onPress={remote.cancel} />
         ) : null}
-      </Card>
+      </View>
       {remote.submitted ? (
         <>
-          <Heading>Precios para «{remote.submitted.text}»</Heading>
+          <Heading compact>Precios para «{remote.submitted.text}»</Heading>
           {store || onlyOffers || includeOlder ? (
             <Copy muted>
               {remote.submitted.store || 'Todas las tiendas'} ·{' '}
@@ -97,12 +99,10 @@ export function CatalogSearch() {
             <Copy muted>Pulsa «Buscar precios» para aplicar los cambios del buscador.</Copy>
           ) : null}
         </>
-      ) : (
-        <Copy muted>Busca un producto y compara sus precios sin salir de la app.</Copy>
-      )}
+      ) : null}
       {remote.cancelled ? <Notice>Búsqueda cancelada. Puedes volver a buscar.</Notice> : null}
       {!remote.submitted && remote.error ? <Notice error>{remote.error}</Notice> : null}
-      <Disclosure title="Filtrar precios y ofertas">
+      <Disclosure title="Filtrar precios y ofertas" compact>
         <Copy muted>
           El nombre se consulta en las webs integradas y en Open Prices. Tus anotaciones y el filtro
           de tienda no se envían.
@@ -172,7 +172,7 @@ export function CatalogSearch() {
         />
       ) : null}
       {remote.submitted ? (
-        <Disclosure title="Otras aportaciones y mis precios">
+        <Disclosure title="Otras aportaciones y mis precios" compact>
           {remote.error ? <Notice error>{remote.error}</Notice> : null}
           {hits.slice(0, limit).map(({ product, quote }) => (
             <Card key={`${product.barcode}:${quote.id}`}>

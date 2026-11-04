@@ -1,5 +1,7 @@
 # Iteración 21 · Buscar y ver precios dentro de la app
 
+> La presentación se actualiza en la [iteración 22](INTERFAZ_ACCESIBLE.md): tipografía sans, supermercado e importe alineados, controles secundarios discretos y mejoras de teclado/texto ampliado. Se mantiene este contrato de datos y navegación interna; las advertencias generales repetidas pasan al detalle de cada cadena.
+
 Petición del propietario, **04-11-2026**: simplificar la app a un buscador de productos cotidianos, con precios por supermercado y sin enviar al usuario a páginas externas.
 
 ## Recorrido actual

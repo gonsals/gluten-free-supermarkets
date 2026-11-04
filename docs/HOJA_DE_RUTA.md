@@ -6,6 +6,8 @@ Actualizada el **04-11-2026**. Este documento fija el orden de entrega vigente. 
 
 ## Enfoque acordado
 
+**Entrega 22:** [interfaz más clara y accesible](INTERFAZ_ACCESIBLE.md), por petición del propietario. Mantener Mesa, reducir peso visual y texto repetido, priorizar precios y facilitar teclado/texto ampliado. La siguiente validación debe incluir uso real y lector de pantalla en teléfono; no añadir más controles al recorrido principal para ampliar cobertura.
+
 **Entrega 21:** [comparador sencillo dentro de la app](COMPARADOR_SENCILLO.md). Prioridad del propietario: buscar productos cotidianos desde Inicio y ver precios por supermercado, sin abrir webs externas. Una tarjeta por cadena, variantes desplegables y herramientas avanzadas secundarias. La siguiente ampliación debe conservar este recorrido, mejorar formatos equivalentes y demostrar cobertura por CP; no añadir complejidad a la búsqueda básica.
 
 **Entrega 20:** [SUP-02, supermercados de Barcelona](PRECIOS_BARCELONA.md): seis cadenas con precios/ofertas, selector y referencia Mercadona solicitada `bcn1`. Cinco cadenas adicionales quedan identificadas sin datos inventados. Próximo tramo de cobertura: CP comprobado y acceso mantenible a las cadenas pendientes; SEG-01 sigue siendo el bloqueo de distribución.

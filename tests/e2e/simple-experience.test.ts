@@ -36,9 +36,9 @@ test('muestra primero la comparación y conserva los filtros al cerrar sus opcio
     }),
   );
   await page.goto('/');
-  await expect(page.getByRole('button', { name: 'Comparar precios', exact: true })).toBeVisible();
+  await expect(page.getByRole('textbox', { name: 'Buscar productos', exact: true })).toBeVisible();
   await page.screenshot({ path: test.info().outputPath('inicio-simple.png'), fullPage: true });
-  await page.getByRole('button', { name: 'Comparar precios', exact: true }).click();
+  await page.getByRole('tab', { name: 'Comparar', exact: true }).click();
   await expect(page.getByRole('textbox', { name: 'Precio en euros', exact: true })).toHaveCount(0);
   await expect(
     page.getByRole('button', { name: 'Solo productos con declaración sin gluten', exact: true }),
