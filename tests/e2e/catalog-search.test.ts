@@ -50,10 +50,14 @@ const pageBody = (rows: unknown[], size: number, extra = {}) => ({
 });
 async function search(page: Page, name = 'huevos', store = '') {
   await page.getByRole('textbox', { name: 'Buscar productos', exact: true }).fill(name);
-  await page
-    .getByRole('textbox', { name: 'Tienda o localidad (opcional)', exact: true })
-    .fill(store);
+  if (store) {
+    await expandSection(page, 'Filtrar precios y ofertas');
+    await page
+      .getByRole('textbox', { name: 'Tienda o localidad (opcional)', exact: true })
+      .fill(store);
+  }
   await page.getByRole('button', { name: 'Buscar precios', exact: true }).click();
+  await expandSection(page, 'Otras aportaciones y mis precios');
 }
 
 test('buscar huevos ordena los envases, recupera ofertas con condiciones y filtra tienda sin subir datos', async ({
@@ -176,9 +180,7 @@ test('un fallo público conserva la búsqueda privada y las copias no incorporan
   expect(copy.products).toEqual([]);
 });
 
-test('precios antiguos se abren expresamente y las ofertas oficiales son enlaces separados', async ({
-  page,
-}) => {
+test('precios antiguos se abren expresamente sin enlaces externos', async ({ page }) => {
   await page.route('https://prices.openfoodfacts.org/api/v1/**', (route) =>
     route.fulfill({
       json: route.request().url().includes('/products?')
@@ -195,11 +197,9 @@ test('precios antiguos se abren expresamente y las ofertas oficiales son enlaces
     .click();
   await expect(page.getByText(/Incluyes precios antiguos/)).toBeVisible();
   await expect(page.getByText(/observado el 2020-01-01/)).toBeVisible();
-  await expandSection(page, 'Ver ofertas oficiales de supermercados');
   await expect(
-    page.getByRole('button', { name: 'Ofertas oficiales de Lidl', exact: true }),
-  ).toBeVisible();
-  await expect(page.getByText(/Las cadenas integradas tienen una muestra/)).toBeVisible();
+    page.getByRole('button', { name: /Ofertas oficiales|Ver precio en la fuente/ }),
+  ).toHaveCount(0);
   await page.getByRole('button', { name: 'Comparar Huevos de ensayo', exact: true }).click();
   await expect(page.getByText(/^Menor precio entre los datos comparables:/)).toContainText('2,28');
   await expect(page.getByText(/Todas las fechas/)).toBeVisible();

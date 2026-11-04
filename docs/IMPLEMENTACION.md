@@ -1,5 +1,9 @@
 # Implementación y verificación
 
+## Iteración 21 · Comparador sencillo
+
+Inicio y Comparar reutilizan el buscador por nombre, con un campo y sugerencias. Los resultados agrupan cada cadena con su mínimo publicado, producto, formato, fecha y condiciones; las variantes se despliegan dentro de la app. Se retiran los enlaces externos del buscador y de la comparación por código. Las herramientas privadas y de escaneo se conservan en opciones secundarias. [Contrato y límites de la entrega](COMPARADOR_SENCILLO.md).
+
 ## Iteración 20 · Más cadenas para Barcelona
 
 [SUP-02](PRECIOS_BARCELONA.md): primera copia de 1.364 referencias en seis cadenas. Se añaden DIA, Caprabo y Ametller; Mercadona solicita `bcn1` sin renombrar datos de Valencia. Selector de supermercado, aviso de referencia web sin CP confirmado y cinco cadenas pendientes con enlace externo. Parsers compartidos y validación por grupos, con 44 páginas máximas de actualización. Se verifican páginas DIA L1/L2, SKU de multipack, comparación de precio visible/metadatos de Caprabo, JSON-LD de Ametller y exclusión de precios condicionales ambiguos. No se activan backend, cuentas o servicios de pago; no se reconstruye la APK congelada de iteración 15.

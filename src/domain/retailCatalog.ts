@@ -213,6 +213,10 @@ export function retailPrices(
         (!otherGroups.some((g) => g.retailer === p.retailer) ||
           otherGroups.some((g) => g.retailer === p.retailer && g.group === p.group)) &&
         words.every((word) => fold(p.name).includes(word)) &&
+        // A generic egg search should start with whole hen eggs. Explicit queries
+        // such as «claras de huevo» or «huevos de codorniz» still find those products.
+        (!(words.length === 1 && words[0] === 'huevo') ||
+          !/clara|codorniz|cocid|chocolate|liquid|hilad/.test(fold(p.name))) &&
         retailStore(`${retailerNames[p.retailer]} ${p.scope}`).includes(
           retailStore(options.store),
         ) &&
@@ -224,4 +228,23 @@ export function retailPrices(
       );
     })
     .sort((a, b) => a.amountMilli - b.amountMilli || a.id.localeCompare(b.id));
+}
+
+/** Minimum published package price per chain, not an equivalent-format ranking. */
+export function groupRetailPrices(prices: readonly RetailPrice[]) {
+  const groups = new Map<Retailer, RetailPrice[]>();
+  for (const price of prices) {
+    const rows = groups.get(price.retailer) ?? [];
+    rows.push(price);
+    groups.set(price.retailer, rows);
+  }
+  return [...groups.entries()]
+    .map(([retailer, rows]) => ({
+      retailer,
+      prices: rows.sort((a, b) => a.amountMilli - b.amountMilli || a.id.localeCompare(b.id)),
+    }))
+    .sort(
+      (a, b) =>
+        a.prices[0].amountMilli - b.prices[0].amountMilli || a.retailer.localeCompare(b.retailer),
+    );
 }

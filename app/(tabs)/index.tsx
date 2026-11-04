@@ -5,6 +5,7 @@ import { ProductRow } from '@/src/features/library/ProductRow';
 import { Action, Card, Copy, Heading, Notice, Screen } from '@/src/shared/ui';
 import { usePalette } from '@/src/shared/theme';
 import { Brand } from '@/src/shared/Brand';
+import { CatalogSearch } from '@/src/features/prices/CatalogSearch';
 
 export default function HomeScreen() {
   const router = useRouter();
@@ -13,10 +14,8 @@ export default function HomeScreen() {
   return (
     <Screen>
       <Brand />
-      <Heading eyebrow="Compara antes de comprar">Tu compra, mejor de precio.</Heading>
-      <Copy muted>
-        Busca un producto y compara su precio. O prepara tu cesta para comparar la compra.
-      </Copy>
+      <Heading>¿Qué quieres comprar?</Heading>
+      <CatalogSearch />
       <View style={{ gap: 12 }}>
         <Action
           title="Comparar precios"

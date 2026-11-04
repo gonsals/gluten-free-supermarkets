@@ -1,5 +1,9 @@
 # Arquitectura · Comparador local y evolución a cesta
 
+## Iteración 21 · Agrupación y navegación interna
+
+`CatalogSearch` se reutiliza en Inicio y Comparar. `groupRetailPrices` resume los resultados filtrados por cadena conservando variantes, formato y condiciones; no mezcla SKU con GTIN. `RetailResults` despliega las referencias de cada supermercado dentro de la app, con paginación por tarjeta. El comparador deja de invocar enlaces externos. Las funciones privadas y por código permanecen accesibles en opciones secundarias, con esquema/copias v4 intactos. [Contrato de presentación](COMPARADOR_SENCILLO.md).
+
 ## Iteración 20 · Registro y grupos de proveedores
 
 [SUP-02](PRECIOS_BARCELONA.md) centraliza seis cadenas y páginas aprobadas en `retailSources`. `retailCatalog` exige fuente declarada, dominio/ruta y grupo conocido; admite SKU alfanuméricos de DIA. Mercadona Barcelona usa identidad `:bcn1` y grupo `@bcn1`; las filas legacy de Valencia no entran en la nueva búsqueda. Los adaptadores nuevos leen datos embebidos, sin ejecutar scripts, enviar analítica o crear cuentas. El actualizador valida/sustituye por grupo y conserva fechas de grupos fallidos; detiene la cadena ante 403/429. La consulta móvil limita a dos categorías por nuevo proveedor y mantiene caché/cancelación. Copias privadas v4, GTIN y nube permanecen independientes.

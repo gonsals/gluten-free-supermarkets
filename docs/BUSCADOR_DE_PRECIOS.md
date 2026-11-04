@@ -1,5 +1,7 @@
 # Buscar productos, tiendas y ofertas
 
+> **Interfaz vigente, iteración 21:** buscador en Inicio y Comparar, precios agrupados por cadena y variantes dentro de la app. Los enlaces externos descritos en entregas anteriores se han retirado del comparador; las aportaciones Open Prices y precios privados se consultan en «Otras aportaciones y mis precios». [Recorrido actual](COMPARADOR_SENCILLO.md).
+
 > **Actualización, iteración 19:** el buscador también incorpora precios web de Mercadona y ofertas de Aldi/Lidl mediante adaptadores independientes. [Contrato actual de supermercados](PRECIOS_SUPERMERCADOS.md). Este documento conserva el contrato de las aportaciones Open Prices de la iteración 18; la limitación original de huevos antiguos corresponde a esa fuente, no al catálogo nuevo.
 
 **Iteración 18 · 03-11-2026.** Petición del propietario: escribir «huevos», encontrar precios por tienda y consultar ofertas sin necesitar el código. El buscador ocupa ahora la entrada principal de Comparar. [Guía breve](USO_SENCILLO.md).

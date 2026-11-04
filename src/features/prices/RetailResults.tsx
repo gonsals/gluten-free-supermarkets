@@ -1,14 +1,89 @@
 import { useState } from 'react';
-import { Linking } from 'react-native';
+import { Text, View } from 'react-native';
 import {
+  groupRetailPrices,
   retailPrices,
   retailerNames,
   RETAIL_MAX_AGE,
   retailStore,
   type RetailCatalog,
+  type RetailPrice,
 } from '@/src/domain/retailCatalog';
 import { quoteMoney } from '@/src/domain/comparison';
 import { Action, Card, Copy, Heading, Notice } from '@/src/shared/ui';
+import { Disclosure } from '@/src/shared/Disclosure';
+import { usePalette } from '@/src/shared/theme';
+
+function PriceDetails({ price: p, now }: { price: RetailPrice; now: number }) {
+  return (
+    <View style={{ gap: 6 }}>
+      <Copy>{p.name}</Copy>
+      <Copy muted>
+        Formato publicado: {p.quantity || 'no indicado; confirma el contenido del envase'}.
+      </Copy>
+      {p.unitPrice ? (
+        <Copy muted>
+          {quoteMoney(p.unitPrice.amountMilli)} / {p.unitPrice.unit}
+        </Copy>
+      ) : null}
+      {p.isOffer ? (
+        <Copy>
+          Oferta publicada
+          {p.endsAt
+            ? ` · hasta ${new Date(p.endsAt).toLocaleDateString('es-ES', { timeZone: 'Europe/Madrid' })}`
+            : ''}
+          .
+        </Copy>
+      ) : null}
+      {p.conditions ? <Copy>{p.conditions}</Copy> : null}
+      <Copy muted>Web oficial · consultado el {p.checkedAt.slice(0, 10)}</Copy>
+      {now - Date.parse(p.checkedAt) > RETAIL_MAX_AGE ? (
+        <Notice>Precio anterior; el importe actual puede haber cambiado.</Notice>
+      ) : null}
+    </View>
+  );
+}
+
+function StorePrices({ prices, now }: { prices: RetailPrice[]; now: number }) {
+  const [limit, setLimit] = useState(10);
+  const c = usePalette();
+  const first = prices[0];
+  const name = retailerNames[first.retailer];
+  return (
+    <Card style={{ gap: 10, padding: 16 }}>
+      <Text style={{ color: c.accent, fontSize: 24, fontWeight: '700' }}>
+        Desde {quoteMoney(first.amountMilli)} · {name}
+      </Text>
+      <PriceDetails price={first} now={now} />
+      <Disclosure
+        title={
+          prices.length > 1 ? `Ver los ${prices.length} precios de ${name}` : `Detalles de ${name}`
+        }
+      >
+        <Copy muted>{first.scope}</Copy>
+        {prices.slice(1, limit).map((p) => (
+          <View
+            key={p.id}
+            style={{ borderTopWidth: 1, borderColor: c.border, paddingTop: 12, gap: 6 }}
+          >
+            <Copy>
+              {quoteMoney(p.amountMilli)} · {name}
+            </Copy>
+            <PriceDetails price={p} now={now} />
+            {p.scope !== first.scope ? <Copy muted>{p.scope}</Copy> : null}
+          </View>
+        ))}
+        {prices.length > limit ? (
+          <Action
+            title={`Ver más precios de ${name}`}
+            secondary
+            onPress={() => setLimit((n) => n + 10)}
+          />
+        ) : null}
+      </Disclosure>
+    </Card>
+  );
+}
 
 export function RetailResults({
   catalog,
@@ -29,102 +104,62 @@ export function RetailResults({
   now: number;
   loading: boolean;
 }) {
-  const [limit, setLimit] = useState(20);
-  const [error, setError] = useState('');
   const hits = retailPrices(catalog, { text, store, onlyOffers, includeOlder, now });
-  const related = catalog.entries.filter(
-    (p) =>
-      !store || retailStore(`${retailerNames[p.retailer]} ${p.scope}`).includes(retailStore(store)),
+  const groups = groupRetailPrices(hits);
+  const missing = Object.entries(retailerNames).filter(
+    ([key, name]) =>
+      !groups.some((group) => group.retailer === key) &&
+      (!store || retailStore(name).includes(retailStore(store))),
   );
-  const stale =
-    related.length > 0 && related.every((p) => now - Date.parse(p.checkedAt) > RETAIL_MAX_AGE);
   return (
     <>
       <Heading>Supermercados</Heading>
       <Copy muted>
-        Muestra de precios web, ordenados por importe publicado. Compara el formato y confirma tu
-        tienda.
+        El precio más bajo disponible de cada cadena. Los envases pueden ser distintos. Precios
+        online de referencia para Barcelona; pueden variar según tu tienda.
       </Copy>
-      {offline ? (
-        <Copy muted>
-          No se ha podido actualizar el catálogo. Se conserva la última copia disponible con sus
-          fechas.
-        </Copy>
-      ) : null}
-      {catalog.sources.some((s) => s.status === 'failed') ? (
-        <Copy muted>
-          No se pudo renovar:{' '}
-          {catalog.sources
-            .filter((s) => s.status === 'failed')
-            .map((s) => retailerNames[s.retailer])
-            .join(', ')}
-          . Los datos conservan su fecha original.
-        </Copy>
-      ) : null}
-      {stale ? (
+      {loading ? <Copy muted>Actualizando precios…</Copy> : null}
+      {groups.map(({ retailer, prices }) => (
+        <StorePrices
+          key={`${text}:${store}:${onlyOffers}:${includeOlder}:${retailer}`}
+          prices={prices}
+          now={now}
+        />
+      ))}
+      {!hits.length && !loading ? (
         <Notice>
-          El catálogo de estas tiendas lleva más de 3 días sin actualizarse. Puedes consultar los
-          datos anteriores desde los filtros.
+          No hay precios disponibles para esta búsqueda. Prueba otro nombre o cambia los filtros.
         </Notice>
       ) : null}
-      {hits.slice(0, limit).map((p) => (
-        <Card key={p.id}>
-          <Copy>{p.name}</Copy>
-          <Copy>
-            {quoteMoney(p.amountMilli)} · {retailerNames[p.retailer]}
-          </Copy>
-          <Copy muted>
-            Formato publicado:{' '}
-            {p.quantity || 'no indicado; confirma si es por unidad, peso o envase'}.
-          </Copy>
-          {p.unitPrice ? (
-            <Copy muted>
-              {quoteMoney(p.unitPrice.amountMilli)} / {p.unitPrice.unit}
-            </Copy>
-          ) : null}
-          <Copy muted>{p.scope}</Copy>
-          <Copy muted>Web oficial · consultado el {p.checkedAt.slice(0, 10)}</Copy>
-          {now - Date.parse(p.checkedAt) > RETAIL_MAX_AGE ? (
-            <Notice>Precio anterior; confirma el importe actual en la fuente.</Notice>
-          ) : null}
-          {p.isOffer ? (
-            <Copy>
-              Oferta publicada
-              {p.endsAt
-                ? ` · hasta ${new Date(p.endsAt).toLocaleDateString('es-ES', { timeZone: 'Europe/Madrid' })}`
-                : ''}
-              .
-            </Copy>
-          ) : null}
-          {p.conditions ? <Copy>{p.conditions}</Copy> : null}
-          <Action
-            title={`Ver ${p.name} en ${retailerNames[p.retailer]}`}
-            secondary
-            icon="open-outline"
-            onPress={() => {
-              void Linking.openURL(p.sourceUrl).catch(() =>
-                setError('No se ha podido abrir la tienda.'),
-              );
-            }}
-          />
-        </Card>
-      ))}
-      {hits.length > limit ? (
-        <Action
-          title="Ver más precios de supermercados"
-          secondary
-          onPress={() => setLimit((n) => n + 20)}
-        />
-      ) : null}
-      {!hits.length && loading ? <Copy muted>Consultando precios de supermercados…</Copy> : null}
-      {!hits.length && !loading ? (
+      {missing.length && !loading ? (
         <Copy muted>
-          No hay precios publicados que cumplan estos filtros en el catálogo cargado. Las cadenas
-          incluyen una muestra de categorías o sus ofertas semanales. Una tienda sin resultados
-          puede vender el producto.
+          Sin precio disponible: {missing.map(([, name]) => name).join(', ')}. No significa que no
+          vendan el producto.
         </Copy>
       ) : null}
-      {error ? <Notice error>{error}</Notice> : null}
+      <Disclosure title="Sobre estos precios">
+        {offline ? (
+          <Copy muted>
+            No se ha podido actualizar el catálogo. Se conserva la última copia disponible con sus
+            fechas.
+          </Copy>
+        ) : null}
+        {catalog.sources.some((s) => s.status === 'failed') ? (
+          <Copy muted>
+            No se pudo renovar:{' '}
+            {catalog.sources
+              .filter((s) => s.status === 'failed')
+              .map((s) => retailerNames[s.retailer])
+              .join(', ')}
+            . Los datos conservan su fecha original.
+          </Copy>
+        ) : null}
+        <Copy muted>
+          Consultamos una muestra de productos y ofertas de seis cadenas, no todo su catálogo.
+          Bonpreu / Esclat, Condis, Consum, Carrefour y Alcampo todavía no tienen precios
+          integrados. Los datos y detalles se consultan aquí, sin salir de la app.
+        </Copy>
+      </Disclosure>
     </>
   );
 }

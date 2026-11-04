@@ -55,119 +55,124 @@ export default function PricesScreen() {
   return (
     <Screen>
       <Heading eyebrow="Tu compra, mejor de precio">Comparar precios</Heading>
-      <Action
-        title={`Mi cesta (${data.basket.length})`}
-        secondary
-        icon="basket-outline"
-        onPress={() => router.push('/basket')}
-      />
       <CatalogSearch />
-      <Disclosure title="Buscar por código o escanear">
-        <Card>
-          <Field
-            label="Código para comparar precios"
-            value={code}
-            onChangeText={setCode}
-            keyboardType="number-pad"
-            maxLength={24}
-          />
-          <Action title="Comparar este código" onPress={compare} />
-          <Action
-            title="Escanear un producto para comparar"
-            secondary
-            icon="scan-outline"
-            onPress={() => router.navigate('/scan')}
-          />
-          {message ? <Notice error>{message}</Notice> : null}
-        </Card>
-      </Disclosure>
-      <Disclosure title="Mis productos guardados">
-        <Field
-          label="Buscar productos guardados"
-          value={query}
-          onChangeText={(value) => {
-            setQuery(value);
-            setLimit(20);
-          }}
-          placeholder="Nombre, marca o código"
+      <Disclosure title="Mis productos y precios">
+        <Action
+          title={`Mi cesta (${data.basket.length})`}
+          secondary
+          icon="basket-outline"
+          onPress={() => router.push('/basket')}
         />
-        <Disclosure title="Filtrar productos guardados">
-          <Action
-            title="Solo productos con declaración sin gluten"
-            selected={glutenFreeOnly}
-            secondary={!glutenFreeOnly}
-            onPress={() => {
-              setGlutenFreeOnly((value) => !value);
+        <Disclosure title="Buscar por código o escanear">
+          <Card>
+            <Field
+              label="Código para comparar precios"
+              value={code}
+              onChangeText={setCode}
+              keyboardType="number-pad"
+              maxLength={24}
+            />
+            <Action title="Comparar este código" onPress={compare} />
+            <Action
+              title="Escanear un producto para comparar"
+              secondary
+              icon="scan-outline"
+              onPress={() => router.navigate('/scan')}
+            />
+            {message ? <Notice error>{message}</Notice> : null}
+          </Card>
+        </Disclosure>
+        <Disclosure title="Mis productos guardados">
+          <Field
+            label="Buscar productos guardados"
+            value={query}
+            onChangeText={(value) => {
+              setQuery(value);
               setLimit(20);
             }}
+            placeholder="Nombre, marca o código"
           />
+          <Disclosure title="Filtrar productos guardados">
+            <Action
+              title="Solo productos con declaración sin gluten"
+              selected={glutenFreeOnly}
+              secondary={!glutenFreeOnly}
+              onPress={() => {
+                setGlutenFreeOnly((value) => !value);
+                setLimit(20);
+              }}
+            />
+            {glutenFreeOnly ? (
+              <Copy muted>
+                Este filtro describe una declaración de la fuente; comprueba trazas y envase. No
+                certifica aptitud.
+              </Copy>
+            ) : null}
+          </Disclosure>
           {glutenFreeOnly ? (
-            <Copy muted>
-              Este filtro describe una declaración de la fuente; comprueba trazas y envase. No
-              certifica aptitud.
-            </Copy>
+            <Copy muted>Filtro activo: productos con declaración sin gluten.</Copy>
+          ) : null}
+          {matching.slice(0, limit).map((item) => {
+            const quotes = compareQuotes(localQuotes, { barcode: item.barcode, recentOnly: true });
+            return (
+              <Card key={item.barcode}>
+                <Copy>{item.name}</Copy>
+                <Copy muted>
+                  {glutenCopy[item.state].title} · {item.barcode}
+                </Copy>
+                <Copy>
+                  {quotes.length
+                    ? `Desde ${quoteMoney(quotes[0].amountMilli)} en tus anotaciones recientes sin condiciones.`
+                    : 'Todavía no hay un precio privado reciente comparable.'}
+                </Copy>
+                <Action
+                  title={`Comparar ${item.name}`}
+                  secondary
+                  onPress={() =>
+                    router.push({
+                      pathname: '/prices/[barcode]',
+                      params: { barcode: item.barcode },
+                    })
+                  }
+                />
+                <AddToBasket barcode={item.barcode} label={item.name} />
+              </Card>
+            );
+          })}
+          {matching.length > limit ? (
+            <Action
+              title="Mostrar 20 productos más"
+              secondary
+              onPress={() => setLimit((value) => value + 20)}
+            />
+          ) : null}
+          {!matching.length ? (
+            <Notice>
+              {glutenFreeOnly
+                ? 'No hay productos guardados que cumplan este filtro.'
+                : 'Escanea o introduce un código para empezar. También puedes anotar precios manualmente.'}
+            </Notice>
           ) : null}
         </Disclosure>
-        {glutenFreeOnly ? (
-          <Copy muted>Filtro activo: productos con declaración sin gluten.</Copy>
-        ) : null}
-        {matching.slice(0, limit).map((item) => {
-          const quotes = compareQuotes(localQuotes, { barcode: item.barcode, recentOnly: true });
-          return (
-            <Card key={item.barcode}>
-              <Copy>{item.name}</Copy>
-              <Copy muted>
-                {glutenCopy[item.state].title} · {item.barcode}
-              </Copy>
-              <Copy>
-                {quotes.length
-                  ? `Desde ${quoteMoney(quotes[0].amountMilli)} en tus anotaciones recientes sin condiciones.`
-                  : 'Todavía no hay un precio privado reciente comparable.'}
-              </Copy>
-              <Action
-                title={`Comparar ${item.name}`}
-                secondary
-                onPress={() =>
-                  router.push({ pathname: '/prices/[barcode]', params: { barcode: item.barcode } })
-                }
-              />
-              <AddToBasket barcode={item.barcode} label={item.name} />
-            </Card>
-          );
-        })}
-        {matching.length > limit ? (
-          <Action
-            title="Mostrar 20 productos más"
-            secondary
-            onPress={() => setLimit((value) => value + 20)}
+        <Disclosure title="Anotar un precio sin buscar el producto">
+          <PriceForm />
+        </Disclosure>
+        <Disclosure title={`Mis precios guardados (${data.prices.length})`}>
+          <Field
+            label="Filtrar mis precios"
+            placeholder="Código, tienda o localidad"
+            value={priceQuery}
+            onChangeText={setPriceQuery}
           />
-        ) : null}
-        {!matching.length ? (
-          <Notice>
-            {glutenFreeOnly
-              ? 'No hay productos guardados que cumplan este filtro.'
-              : 'Escanea o introduce un código para empezar. También puedes anotar precios manualmente.'}
-          </Notice>
-        ) : null}
-      </Disclosure>
-      <Disclosure title="Anotar un precio sin buscar el producto">
-        <PriceForm />
-      </Disclosure>
-      <Disclosure title={`Mis precios guardados (${data.prices.length})`}>
-        <Field
-          label="Filtrar mis precios"
-          placeholder="Código, tienda o localidad"
-          value={priceQuery}
-          onChangeText={setPriceQuery}
-        />
-        <PriceList
-          prices={data.prices.filter((x) =>
-            `${x.barcode} ${x.store} ${x.location}`
-              .toLocaleLowerCase('es')
-              .includes(priceQuery.trim().toLocaleLowerCase('es')),
-          )}
-          onDelete={(id) => repository.deletePrice(id)}
-        />
+          <PriceList
+            prices={data.prices.filter((x) =>
+              `${x.barcode} ${x.store} ${x.location}`
+                .toLocaleLowerCase('es')
+                .includes(priceQuery.trim().toLocaleLowerCase('es')),
+            )}
+            onDelete={(id) => repository.deletePrice(id)}
+          />
+        </Disclosure>
       </Disclosure>
     </Screen>
   );

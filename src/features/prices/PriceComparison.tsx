@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import { Linking } from 'react-native';
 import { compareQuotes, privateQuotes, quoteMoney } from '@/src/domain/comparison';
 import type { PriceObservation } from '@/src/domain/price';
 import { Action, Card, Copy, Field, Heading, Notice } from '@/src/shared/ui';
@@ -23,7 +22,6 @@ export function PriceComparison({
   const [recentOnly, setRecentOnly] = useState(initialRecentOnly);
   const [offers, setOffers] = useState(initialOffers);
   const [spainOnly, setSpainOnly] = useState(true);
-  const [message, setMessage] = useState('');
   const [limit, setLimit] = useState(20);
   const quotes = [...privateQuotes(prices), ...(remote.result?.quotes ?? [])];
   const comparison = compareQuotes(quotes, {
@@ -36,13 +34,6 @@ export function PriceComparison({
   const cheapest = comparison[0];
   const difference =
     cheapest && comparison.length > 1 ? comparison.at(-1)!.amountMilli - cheapest.amountMilli : 0;
-  async function open(url: string) {
-    try {
-      await Linking.openURL(url);
-    } catch {
-      setMessage('No se ha podido abrir la fuente.');
-    }
-  }
   return (
     <>
       <Heading eyebrow="Mismo código, mismo envase">Dónde sale mejor</Heading>
@@ -154,14 +145,6 @@ export function PriceComparison({
           {quote.offerEndsAt ? (
             <Copy muted>Oferta hasta {quote.offerEndsAt.slice(0, 10)}.</Copy>
           ) : null}
-          {quote.sourceUrl ? (
-            <Action
-              title={`Ver fuente de ${quote.store}`}
-              secondary
-              icon="open-outline"
-              onPress={() => void open(quote.sourceUrl!)}
-            />
-          ) : null}
         </Card>
       ))}
       {comparison.length > limit ? (
@@ -226,12 +209,7 @@ export function PriceComparison({
             busy={remote.loading}
           />
         ) : null}
-        <Action
-          title="Acerca de Open Prices y sus datos"
-          secondary
-          onPress={() => void open('https://prices.openfoodfacts.org/about')}
-        />
-        {message ? <Notice error>{message}</Notice> : null}
+        <Copy muted>Open Prices es la fuente colaborativa de estas aportaciones.</Copy>
       </Card>
     </>
   );

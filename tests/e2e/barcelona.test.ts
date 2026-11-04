@@ -90,11 +90,13 @@ test('compara seis cadenas de Barcelona, separa Valencia y permite elegir DIA si
     page.getByText(/€ · (Mercadona|DIA|Caprabo|Ametller Origen|Aldi|Lidl)$/),
   ).toHaveCount(6);
   await expect(page.getByText('Huevos antiguos de Valencia', { exact: true })).toHaveCount(0);
+  await expandSection(page, 'Detalles de Mercadona');
   await expect(page.getByText('Referencia bcn1 (Barcelona)', { exact: true })).toBeVisible();
   await page.getByText('Huevos de ensayo DIA', { exact: true }).scrollIntoViewIfNeeded();
   await page.screenshot({ path: test.info().outputPath('barcelona.png') });
   await expandSection(page, 'Elegir supermercado');
   await page.getByRole('button', { name: 'DIA', exact: true }).click();
+  await expandSection(page, 'Sobre estos precios');
   await expect(page.getByText(/€ · DIA$/)).toHaveCount(1);
   await expect(page.getByText(/€ · Mercadona$/)).toHaveCount(0);
   expect(downloads).toBe(1);
@@ -111,12 +113,10 @@ test('DIA sigue disponible con la copia incluida y las cadenas pendientes se ide
   await page.getByRole('textbox', { name: 'Buscar productos', exact: true }).fill('huevos');
   await expandSection(page, 'Elegir supermercado');
   await page.getByRole('button', { name: 'DIA', exact: true }).click();
+  await expandSection(page, 'Sobre estos precios');
   await expect(page.getByText(/No se ha podido actualizar el catálogo/)).toBeVisible();
   await expect(page.getByText(/€ · DIA$/).first()).toBeVisible();
-  await expandSection(page, 'Otras cadenas de Barcelona');
-  await expect(page.getByText(/Sus precios todavía no están integrados/)).toBeVisible();
-  for (const name of ['Bonpreu / Esclat', 'Condis', 'Consum', 'Carrefour', 'Alcampo'])
-    await expect(
-      page.getByRole('button', { name: `Consultar ${name}`, exact: true }),
-    ).toBeVisible();
+  await expandSection(page, 'Sobre estos precios');
+  await expect(page.getByText(/todavía no tienen precios integrados/)).toBeVisible();
+  await expect(page.getByRole('button', { name: /^Consultar / })).toHaveCount(0);
 });

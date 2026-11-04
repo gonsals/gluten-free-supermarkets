@@ -6,6 +6,8 @@ Actualizada el **04-11-2026**. Este documento fija el orden de entrega vigente. 
 
 ## Enfoque acordado
 
+**Entrega 21:** [comparador sencillo dentro de la app](COMPARADOR_SENCILLO.md). Prioridad del propietario: buscar productos cotidianos desde Inicio y ver precios por supermercado, sin abrir webs externas. Una tarjeta por cadena, variantes desplegables y herramientas avanzadas secundarias. La siguiente ampliación debe conservar este recorrido, mejorar formatos equivalentes y demostrar cobertura por CP; no añadir complejidad a la búsqueda básica.
+
 **Entrega 20:** [SUP-02, supermercados de Barcelona](PRECIOS_BARCELONA.md): seis cadenas con precios/ofertas, selector y referencia Mercadona solicitada `bcn1`. Cinco cadenas adicionales quedan identificadas sin datos inventados. Próximo tramo de cobertura: CP comprobado y acceso mantenible a las cadenas pendientes; SEG-01 sigue siendo el bloqueo de distribución.
 
 **Entrega 19:** [SUP-01](PRECIOS_SUPERMERCADOS.md) añade precios web de Mercadona y ofertas Aldi/Lidl, con consulta móvil y copia web/offline. La muestra no resuelve la cobertura por sucursal; validar zona, correspondencias SKU/GTIN y operación del refresco web antes de ampliar la promesa.

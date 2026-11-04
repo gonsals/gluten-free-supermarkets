@@ -1,6 +1,7 @@
 import snapshot from '@/data/retail-prices.es.json';
 import {
   parseRetailCatalog,
+  groupRetailPrices,
   retailPrices,
   type RetailCatalog,
   type RetailPrice,
@@ -114,6 +115,33 @@ test('datos conservados en fallo no recuperan frescura por la fecha global', () 
   const old = { ...row, checkedAt: '2026-10-25T10:00:00.000Z' };
   expect(retailPrices(feed([old]), options)).toEqual([]);
   expect(retailPrices(feed([old]), { ...options, includeOlder: true })).toEqual([old]);
+});
+test('agrupa por cadena sin mezclar formatos, condiciones ni modificar la entrada', () => {
+  const larger = { ...row, id: 'large', amountMilli: 3500, quantity: '6 kg' };
+  const other = {
+    ...row,
+    id: 'other',
+    retailer: 'lidl' as const,
+    amountMilli: 1500,
+    conditions: 'Lidl Plus',
+  };
+  const input = [larger, row, other];
+  const groups = groupRetailPrices(input);
+  expect(groups.map((g) => g.retailer)).toEqual(['lidl', 'aldi']);
+  expect(groups[0].prices[0].conditions).toBe('Lidl Plus');
+  expect(groups[1].prices).toEqual([row, larger]);
+  expect(groups[1].prices.map((p) => p.quantity)).toEqual(['3 kg', '6 kg']);
+  expect(input).toEqual([larger, row, other]);
+  expect(groupRetailPrices([])).toEqual([]);
+});
+test('huevos prioriza huevos enteros y permite buscar claras y codorniz expresamente', () => {
+  const eggs = { ...row, name: 'Huevos grandes L' };
+  const whites = { ...row, id: 'whites', name: 'Claras de huevo líquidas', amountMilli: 1000 };
+  const quail = { ...row, id: 'quail', name: 'Huevos de codorniz', amountMilli: 900 };
+  const catalog = feed([whites, quail, eggs]);
+  expect(retailPrices(catalog, { ...options, text: 'huevos' })).toEqual([eggs]);
+  expect(retailPrices(catalog, { ...options, text: 'claras de huevo' })).toEqual([whites]);
+  expect(retailPrices(catalog, { ...options, text: 'huevos de codorniz' })).toEqual([quail]);
 });
 test('excluye observaciones futuras incluso al ampliar fechas y respeta solo ofertas', () => {
   expect(

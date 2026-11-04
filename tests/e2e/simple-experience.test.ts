@@ -73,6 +73,7 @@ test('conserva el borrador al plegar opciones y exporta el precio con su formato
 }) => {
   await page.setViewportSize({ width: 320, height: 568 });
   await page.goto('/prices');
+  await expandSection(page, 'Mis productos y precios');
   const form = page.getByRole('button', {
     name: 'Anotar un precio sin buscar el producto',
     exact: true,

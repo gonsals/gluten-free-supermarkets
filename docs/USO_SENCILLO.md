@@ -1,23 +1,19 @@
 # Usar la app
 
-La app se centra en tres pasos:
+1. **Busca lo que necesitas.** En Inicio o Comparar escribe «huevos», «leche» o «arroz» y pulsa «Buscar precios». También puedes tocar una sugerencia.
+2. **Mira los supermercados.** Cada tarjeta muestra el precio desde el que hay una referencia disponible, el producto concreto, su envase y la fecha. Los demás precios se abren dentro de esa tarjeta, sin salir de la app. Revisa las condiciones de las ofertas, como Lidl Plus.
+3. **Ajusta solo si lo necesitas.** «Filtrar precios y ofertas» permite elegir cadena, consultar ofertas o incluir datos anteriores. Las anotaciones y funciones avanzadas están en «Mis productos y precios», dentro de Comparar.
 
-Para Barcelona se han añadido DIA, Caprabo y Ametller Origen, además de Mercadona, Aldi y Lidl. En Comparar, «Elegir supermercado» permite seleccionar una cadena sin escribirla. Los precios son referencias web: revisa la zona y confirma tu CP en la tienda. «Otras cadenas de Barcelona» identifica las que todavía no tienen precios integrados. [Cobertura actual](PRECIOS_BARCELONA.md).
+Mercadona, DIA, Caprabo, Ametller Origen, Aldi y Lidl tienen una muestra integrada. «Sin precio disponible» indica que faltan datos para esa búsqueda, no que la tienda no venda el producto. «Sobre estos precios» explica la cobertura y el estado de actualización.
 
-1. **Busca un producto.** En Comparar escribe, por ejemplo, «huevos» y pulsa «Buscar precios». Puedes indicar una tienda o localidad. También siguen disponibles el código, el escáner y los productos guardados.
-2. **Compara o anota su precio.** Verás los precios disponibles por tienda. Para añadir uno, indica importe, supermercado y sucursal. Se guarda con la fecha de hoy; puedes cambiarla en «Fecha, formato y condiciones».
-3. **Prepara tu cesta.** Añade productos y ajusta los envases con «−» y «+»: se guardan al pulsar. Si escribes otra cantidad, pulsa «Guardar cantidad». Después, usa «Comparar total por tienda». Si faltan precios, la app lo indica y separa el subtotal de las compras completas.
+Los envases pueden ser distintos: un precio menor por envase no siempre significa menos coste por kilo o unidad. Son referencias online para Barcelona, sin CP o sucursal confirmados. Comprueba fecha y zona; los importes pueden cambiar. [Cobertura actual](PRECIOS_BARCELONA.md).
 
-Los precios disponibles pueden cambiar. Una tienda sin datos no se considera más barata.
+«Otras aportaciones y mis precios» conserva tus anotaciones y los datos colaborativos de Open Prices. Desde allí puedes comparar el mismo código y envase dentro de la app. «Solo ofertas» y «Incluir precios anteriores» son opciones expresas; las promociones conocidas futuras o vencidas siguen excluidas.
 
-En «Supermercados» aparecen precios web de Mercadona y ofertas de Aldi y Lidl. Puedes escribir el nombre de la cadena en el filtro de tienda. Revisa formato, zona y fecha; Lidl Plus se indica cuando hace falta. En móvil la consulta se renueva al buscar, con caché breve; sin conexión se conserva una copia con su fecha. [Cobertura y actualización](PRECIOS_SUPERMERCADOS.md).
+Para anotar un precio, abre Comparar → Mis productos y precios → Anotar un precio sin buscar el producto. Indica código, importe, supermercado y sucursal. «Fecha, formato y condiciones» permite completar el detalle. Cerrar las opciones conserva tu borrador.
 
-«Solo ofertas» filtra descuentos observados; comprueba condiciones y fecha. Si no hay precios recientes, puedes abrir los anteriores con su aviso o consultar los enlaces de ofertas oficiales. Los formatos pueden ser distintos: compara también el contenido del envase. [Alcance del buscador](BUSCADOR_DE_PRECIOS.md).
-
-Los filtros, formatos, ofertas y notas siguen disponibles al abrir sus opciones. Cerrarlas conserva lo que estabas escribiendo. El resumen de filtros permanece visible para que sepas qué estás comparando. La información sobre gluten se puede consultar en la ficha del producto.
-
-En la ficha, las acciones de comparar, añadir a la cesta y guardar como favorito aparecen primero. El estado sobre gluten, las trazas y la fecha siguen visibles. Puedes abrir «Ingredientes y etiquetado» o «Ver fuente y detalles de la ficha» para consultar más información. En cada producto de la cesta, «Opciones» permite compararlo, abrir su ficha o quitarlo con confirmación.
+La cesta permite añadir productos, ajustar envases con «−» y «+» y comparar el total por tienda. Si faltan precios, muestra un subtotal y los productos pendientes. La información sobre gluten, ingredientes y trazas permanece en la ficha; el filtro de productos guardados sigue disponible.
 
 No necesitas cuenta ni activar Firebase. Tus anotaciones y cesta se guardan en este dispositivo; puedes hacer una copia desde Ajustes.
 
-La simplificación corresponde a las iteraciones 16–17 y el buscador por nombre a la 18, por petición del propietario del 03-11-2026. Se mantienen Mesa, el contrato de precios/copias y las reglas de cálculo. La APK de iteración 15 conserva su interfaz anterior; los cambios se sirven en Expo Go y en la exportación web. No se declara una nueva validación física.
+Este recorrido corresponde a la [iteración 21](COMPARADOR_SENCILLO.md). Se sirve en Expo Go y en la exportación web. La APK de iteración 15 conserva su interfaz anterior; no se declara una nueva validación física.

@@ -12,6 +12,7 @@ export function useCatalogSearch() {
   const [submitted, setSubmitted] = useState<{ text: string; store: string } | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [inputError, setInputError] = useState('');
   const [cancelled, setCancelled] = useState(false);
   const [retailCatalog, setRetailCatalog] = useState(bundledRetailCatalog);
   const [retailOffline, setRetailOffline] = useState(false);
@@ -39,11 +40,12 @@ export function useCatalogSearch() {
   );
   async function search(text: string, store: string, page = 1) {
     if (pending.current) return;
+    setInputError('');
     let input: { text: string; store: string };
     try {
       input = { text: searchText(text), store: store.trim() ? searchText(store, 1, 100) : '' };
     } catch {
-      setError('Escribe entre 2 y 80 caracteres para buscar un producto.');
+      setInputError('Escribe entre 2 y 80 caracteres para buscar un producto.');
       return;
     }
     const token = ++generation.current,
@@ -110,6 +112,7 @@ export function useCatalogSearch() {
     result,
     submitted,
     loading,
+    inputError,
     error: error || (result?.priceError ? publicPriceError(new Error(result.priceError)) : ''),
     cancelled,
     retailCatalog,

@@ -12,6 +12,8 @@ Actualizado el **03-11-2026**, conforme al enfoque acordado. La [hoja de ruta](H
 
 ## Base y siguiente entrega
 
+**Iteración 21:** la petición de sencillez se aplica al recorrido de BUS-01/SUP-02: buscador en Inicio, resumen por cadena, variantes dentro de la app y retirada de enlaces externos del comparador. [Contrato actualizado y criterios](COMPARADOR_SENCILLO.md). Las futuras ampliaciones conservarán un solo campo inicial y funciones avanzadas secundarias.
+
 **SUP-02 · P1 / piloto técnico de la iteración 20:** [Barcelona y seis cadenas](PRECIOS_BARCELONA.md). Depende de SUP-01; añade DIA, Caprabo y Ametller, referencia Mercadona `bcn1`, selección de cadena y actualización por grupos. La comprobación por CP, cinco cadenas sin adaptador y la validación física siguen pendientes; no equivale a cobertura completa de Barcelona.
 
 | ID | Prioridad / estado | Dependencias | Trabajo y aceptación |

@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react';
 import { useRouter } from 'expo-router';
-import { Linking } from 'react-native';
+import { Keyboard, View } from 'react-native';
 import { useLibrary } from '@/src/features/library/useLibrary';
 import { namedPrices, type NamedProduct } from '@/src/domain/catalogSearch';
 import { privateQuotes, quoteMoney } from '@/src/domain/comparison';
@@ -8,7 +8,7 @@ import { Action, Card, Copy, Field, Heading, Notice } from '@/src/shared/ui';
 import { Disclosure } from '@/src/shared/Disclosure';
 import { useCatalogSearch } from './useCatalogSearch';
 import { RetailResults } from './RetailResults';
-import { retailerNames, externalBarcelonaStores } from '@/src/domain/retailSources';
+import { retailerNames } from '@/src/domain/retailSources';
 
 export function CatalogSearch() {
   const router = useRouter();
@@ -18,8 +18,7 @@ export function CatalogSearch() {
     [store, setStore] = useState('');
   const [onlyOffers, setOnlyOffers] = useState(false),
     [includeOlder, setIncludeOlder] = useState(false);
-  const [limit, setLimit] = useState(20),
-    [linkError, setLinkError] = useState('');
+  const [limit, setLimit] = useState(20);
   const local = useMemo(() => {
     const products = new Map<string, NamedProduct>();
     for (const p of [
@@ -43,23 +42,14 @@ export function CatalogSearch() {
     remote.submitted &&
     (text.trim().replace(/\s+/g, ' ') !== remote.submitted.text ||
       store.trim().replace(/\s+/g, ' ') !== remote.submitted.store);
-  async function open(url: string) {
-    try {
-      await Linking.openURL(url);
-    } catch {
-      setLinkError('No se ha podido abrir el enlace.');
-    }
-  }
   const search = () => {
+    Keyboard.dismiss();
     setLimit(20);
     void remote.search(text, store);
   };
   return (
     <>
       <Card>
-        <Copy muted>
-          Barcelona · precios web de referencia. Confirma tu código postal en la tienda.
-        </Copy>
         <Field
           label="Buscar productos"
           placeholder="Huevos, leche, arroz…"
@@ -69,6 +59,54 @@ export function CatalogSearch() {
           returnKeyType="search"
           onSubmitEditing={search}
         />
+        <Action title="Buscar precios" icon="search" onPress={search} busy={remote.loading} />
+        {remote.inputError ? <Notice error>{remote.inputError}</Notice> : null}
+        {!remote.submitted ? (
+          <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 8 }}>
+            {['Huevos', 'Leche', 'Arroz'].map((name) => (
+              <Action
+                key={name}
+                title={name}
+                secondary
+                disabled={remote.loading}
+                onPress={() => {
+                  Keyboard.dismiss();
+                  setText(name);
+                  setLimit(20);
+                  void remote.search(name, store);
+                }}
+              />
+            ))}
+          </View>
+        ) : null}
+        {remote.loading ? (
+          <Action title="Cancelar búsqueda de precios" secondary onPress={remote.cancel} />
+        ) : null}
+      </Card>
+      {remote.submitted ? (
+        <>
+          <Heading>Precios para «{remote.submitted.text}»</Heading>
+          {store || onlyOffers || includeOlder ? (
+            <Copy muted>
+              {remote.submitted.store || 'Todas las tiendas'} ·{' '}
+              {onlyOffers ? 'Solo ofertas' : 'Precios y ofertas'}
+              {includeOlder ? ' · Incluye precios anteriores' : ''}
+            </Copy>
+          ) : null}
+          {dirty ? (
+            <Copy muted>Pulsa «Buscar precios» para aplicar los cambios del buscador.</Copy>
+          ) : null}
+        </>
+      ) : (
+        <Copy muted>Busca un producto y compara sus precios sin salir de la app.</Copy>
+      )}
+      {remote.cancelled ? <Notice>Búsqueda cancelada. Puedes volver a buscar.</Notice> : null}
+      {!remote.submitted && remote.error ? <Notice error>{remote.error}</Notice> : null}
+      <Disclosure title="Filtrar precios y ofertas">
+        <Copy muted>
+          El nombre se consulta en las webs integradas y en Open Prices. Tus anotaciones y el filtro
+          de tienda no se envían.
+        </Copy>
         <Field
           label="Tienda o localidad (opcional)"
           placeholder="Ej. Mercadona o Madrid"
@@ -78,7 +116,6 @@ export function CatalogSearch() {
           returnKeyType="search"
           onSubmitEditing={search}
         />
-        <Action title="Buscar precios" icon="search" onPress={search} busy={remote.loading} />
         <Disclosure title="Elegir supermercado">
           {['Todas las cadenas', ...Object.values(retailerNames)].map((name, index) => (
             <Action
@@ -96,37 +133,7 @@ export function CatalogSearch() {
             />
           ))}
         </Disclosure>
-        <Copy muted>
-          Consulta Mercadona, DIA, Caprabo, Ametller Origen, Aldi y Lidl. Open Prices recibe el
-          nombre para buscar otras aportaciones. Tus anotaciones y el filtro de tienda no se envían.
-        </Copy>
-        {remote.loading ? (
-          <Action title="Cancelar búsqueda de precios" secondary onPress={remote.cancel} />
-        ) : null}
-      </Card>
-      {remote.submitted ? (
-        <>
-          <Heading>Precios para «{remote.submitted.text}»</Heading>
-          <Copy muted>
-            España (datos públicos) · {remote.submitted.store || 'Todas las tiendas'} ·{' '}
-            {includeOlder
-              ? 'Incluye precios anteriores'
-              : 'Catálogo web: 3 días · aportaciones: 7 días'}{' '}
-            · {onlyOffers ? 'Solo ofertas' : 'Precios y ofertas'}
-          </Copy>
-          {dirty ? (
-            <Copy muted>Pulsa «Buscar precios» para aplicar los cambios del buscador.</Copy>
-          ) : null}
-        </>
-      ) : (
-        <Copy muted>
-          Busca por nombre para ver precios anotados por tienda y descuentos observados. La
-          cobertura pública puede ser limitada.
-        </Copy>
-      )}
-      {remote.error ? <Notice error>{remote.error}</Notice> : null}
-      {remote.cancelled ? <Notice>Búsqueda cancelada. Puedes volver a buscar.</Notice> : null}
-      <Disclosure title="Filtrar precios y ofertas">
+
         <Action
           title="Solo ofertas"
           selected={onlyOffers}
@@ -164,172 +171,127 @@ export function CatalogSearch() {
           loading={remote.loading}
         />
       ) : null}
-      {remote.submitted ? <Heading>Otros precios</Heading> : null}
-      {hits.slice(0, limit).map(({ product, quote }) => (
-        <Card key={`${product.barcode}:${quote.id}`}>
-          <Copy>{product.name}</Copy>
-          {product.brands ? <Copy muted>{product.brands}</Copy> : null}
-          <Copy muted>
-            Formato: {product.quantity || 'no indicado; compruébalo en la ficha o el envase'}.
-          </Copy>
-          <Copy>
-            {quoteMoney(quote.amountMilli)} por envase · {quote.store}
-          </Copy>
-          <Copy muted>
-            {quote.location} · observado el {quote.observedAt.slice(0, 10)}
-          </Copy>
-          <Copy muted>
-            {quote.source === 'private'
-              ? 'Tu anotación privada'
-              : 'Open Prices · aportación pública'}
-          </Copy>
-          {quote.isOffer ? (
-            <Notice>Oferta observada. Confirma su vigencia y condiciones en la tienda.</Notice>
-          ) : null}
-          {quote.conditional ? (
-            <Copy>{quote.conditions || 'Precio con condiciones; consulta el detalle.'}</Copy>
-          ) : null}
-          {quote.offerEndsAt ? (
-            <Copy muted>Fin de oferta anotado: {quote.offerEndsAt.slice(0, 10)}.</Copy>
-          ) : null}
-          <Action
-            title={`Comparar ${product.name}`}
-            secondary
-            onPress={() =>
-              router.push({
-                pathname: '/prices/[barcode]',
-                params: {
-                  barcode: product.barcode,
-                  name: product.name,
-                  offers: quote.conditional ? '1' : undefined,
-                  older: includeOlder ? '1' : undefined,
-                },
-              })
-            }
-          />
-          {quote.sourceUrl ? (
+      {remote.submitted ? (
+        <Disclosure title="Otras aportaciones y mis precios">
+          {remote.error ? <Notice error>{remote.error}</Notice> : null}
+          {hits.slice(0, limit).map(({ product, quote }) => (
+            <Card key={`${product.barcode}:${quote.id}`}>
+              <Copy>{product.name}</Copy>
+              {product.brands ? <Copy muted>{product.brands}</Copy> : null}
+              <Copy muted>
+                Formato: {product.quantity || 'no indicado; compruébalo en la ficha o el envase'}.
+              </Copy>
+              <Copy>
+                {quoteMoney(quote.amountMilli)} por envase · {quote.store}
+              </Copy>
+              <Copy muted>
+                {quote.location} · observado el {quote.observedAt.slice(0, 10)}
+              </Copy>
+              <Copy muted>
+                {quote.source === 'private'
+                  ? 'Tu anotación privada'
+                  : 'Open Prices · aportación pública'}
+              </Copy>
+              {quote.isOffer ? (
+                <Notice>Oferta observada. Confirma su vigencia y condiciones en la tienda.</Notice>
+              ) : null}
+              {quote.conditional ? (
+                <Copy>{quote.conditions || 'Precio con condiciones; consulta el detalle.'}</Copy>
+              ) : null}
+              {quote.offerEndsAt ? (
+                <Copy muted>Fin de oferta anotado: {quote.offerEndsAt.slice(0, 10)}.</Copy>
+              ) : null}
+              <Action
+                title={`Comparar ${product.name}`}
+                secondary
+                onPress={() =>
+                  router.push({
+                    pathname: '/prices/[barcode]',
+                    params: {
+                      barcode: product.barcode,
+                      name: product.name,
+                      offers: quote.conditional ? '1' : undefined,
+                      older: includeOlder ? '1' : undefined,
+                    },
+                  })
+                }
+              />
+            </Card>
+          ))}
+          {hits.length > limit ? (
             <Action
-              title={`Ver precio en la fuente de ${quote.store}`}
+              title="Mostrar más precios encontrados"
               secondary
-              icon="open-outline"
-              onPress={() => void open(quote.sourceUrl!)}
+              onPress={() => setLimit((value) => value + 20)}
             />
           ) : null}
-        </Card>
-      ))}
-      {hits.length > limit ? (
-        <Action
-          title="Mostrar más precios encontrados"
-          secondary
-          onPress={() => setLimit((value) => value + 20)}
-        />
+          {remote.submitted &&
+          !remote.loading &&
+          !remote.error &&
+          !remote.cancelled &&
+          !hits.length ? (
+            <Notice>
+              {onlyOffers
+                ? 'No hay ofertas que cumplan estos filtros entre los datos cargados.'
+                : 'No hay precios recientes que cumplan esta búsqueda en la muestra disponible. No significa que el producto no se venda.'}
+            </Notice>
+          ) : null}
+          {remote.submitted &&
+          !includeOlder &&
+          !remote.loading &&
+          !hits.length &&
+          Boolean(remote.result?.quotes.length) ? (
+            <Action
+              title="Ver precios anteriores de esta búsqueda"
+              secondary
+              onPress={() => setIncludeOlder(true)}
+            />
+          ) : null}
+          {remote.result ? (
+            <Copy muted>
+              {remote.result.products.length} productos cargados de {remote.result.total}{' '}
+              coincidencias públicas.{' '}
+              {remote.result.pricesLimited
+                ? 'Se ha alcanzado el límite de precios de esta página; pueden faltar tiendas.'
+                : ''}{' '}
+              {remote.result.skipped ? `${remote.result.skipped} registros no utilizados.` : ''}
+            </Copy>
+          ) : null}
+          {remote.result?.more && remote.submitted ? (
+            <Action
+              title="Buscar más productos coincidentes"
+              secondary
+              busy={remote.loading}
+              onPress={() =>
+                void remote.search(
+                  remote.submitted!.text,
+                  remote.submitted!.store,
+                  remote.result!.page + 1,
+                )
+              }
+            />
+          ) : null}
+          {remote.result?.page === 3 && remote.result.products.length < remote.result.total ? (
+            <Notice>
+              La búsqueda ha alcanzado su límite. Puede haber más productos en la fuente; prueba con
+              un nombre más concreto.
+            </Notice>
+          ) : null}
+          {remote.submitted && remote.error ? (
+            <Action
+              title="Reintentar búsqueda pública"
+              secondary
+              disabled={remote.loading}
+              onPress={() => void remote.search(remote.submitted!.text, remote.submitted!.store)}
+            />
+          ) : null}
+          <Copy muted>
+            Aportaciones públicas: Open Prices/ODbL · ubicaciones: © OpenStreetMap
+            contributors/ODbL. Son aportaciones públicas; no un catálogo completo ni precios
+            garantizados de cada supermercado.
+          </Copy>
+        </Disclosure>
       ) : null}
-      {remote.submitted && !remote.loading && !remote.error && !remote.cancelled && !hits.length ? (
-        <Notice>
-          {onlyOffers
-            ? 'No hay ofertas que cumplan estos filtros entre los datos cargados.'
-            : 'No hay precios recientes que cumplan esta búsqueda en la muestra disponible. No significa que el producto no se venda.'}
-        </Notice>
-      ) : null}
-      {remote.submitted &&
-      !includeOlder &&
-      !remote.loading &&
-      !hits.length &&
-      Boolean(remote.result?.quotes.length) ? (
-        <Action
-          title="Ver precios anteriores de esta búsqueda"
-          secondary
-          onPress={() => setIncludeOlder(true)}
-        />
-      ) : null}
-      {remote.result ? (
-        <Copy muted>
-          {remote.result.products.length} productos cargados de {remote.result.total} coincidencias
-          públicas.{' '}
-          {remote.result.pricesLimited
-            ? 'Se ha alcanzado el límite de precios de esta página; pueden faltar tiendas.'
-            : ''}{' '}
-          {remote.result.skipped ? `${remote.result.skipped} registros no utilizados.` : ''}
-        </Copy>
-      ) : null}
-      {remote.result?.more && remote.submitted ? (
-        <Action
-          title="Buscar más productos coincidentes"
-          secondary
-          busy={remote.loading}
-          onPress={() =>
-            void remote.search(
-              remote.submitted!.text,
-              remote.submitted!.store,
-              remote.result!.page + 1,
-            )
-          }
-        />
-      ) : null}
-      {remote.result?.page === 3 && remote.result.products.length < remote.result.total ? (
-        <Notice>
-          La búsqueda ha alcanzado su límite. Puede haber más productos en la fuente; prueba con un
-          nombre más concreto.
-        </Notice>
-      ) : null}
-      {remote.submitted && remote.error ? (
-        <Action
-          title="Reintentar búsqueda pública"
-          secondary
-          disabled={remote.loading}
-          onPress={() => void remote.search(remote.submitted!.text, remote.submitted!.store)}
-        />
-      ) : null}
-      <Disclosure title="Ver ofertas oficiales de supermercados">
-        <Copy muted>
-          Abre la web del supermercado para consultar promociones vigentes. Puede pedirte una tienda
-          o un código postal. Las cadenas integradas tienen una muestra de precios arriba.
-        </Copy>
-        <Action
-          title="Tienda oficial de Mercadona"
-          secondary
-          icon="open-outline"
-          onPress={() => void open('https://tienda.mercadona.es/')}
-        />
-        <Action
-          title="Ofertas oficiales de Aldi"
-          secondary
-          icon="open-outline"
-          onPress={() => void open('https://www.aldi.es/ofertas.html')}
-        />
-        <Action
-          title="Ofertas oficiales de Lidl"
-          secondary
-          icon="open-outline"
-          onPress={() => void open('https://www.lidl.es/c/store/ofertas-semanales/a10089449')}
-        />
-        <Action
-          title="Ofertas oficiales de Carrefour"
-          secondary
-          icon="open-outline"
-          onPress={() => void open('https://www.carrefour.es/supermercado/c/cat20009/c')}
-        />
-      </Disclosure>
-      <Disclosure title="Otras cadenas de Barcelona">
-        <Copy muted>
-          Sus precios todavía no están integrados. Consulta la web oficial para tu zona.
-        </Copy>
-        {externalBarcelonaStores.map((chain) => (
-          <Action
-            key={chain.name}
-            title={`Consultar ${chain.name}`}
-            secondary
-            icon="open-outline"
-            onPress={() => void open(chain.url)}
-          />
-        ))}
-      </Disclosure>
-      {linkError ? <Notice error>{linkError}</Notice> : null}
-      <Copy muted>
-        Aportaciones públicas: Open Prices/ODbL · ubicaciones: © OpenStreetMap contributors/ODbL.
-        Son aportaciones públicas; no un catálogo completo ni precios garantizados de cada
-        supermercado.
-      </Copy>
     </>
   );
 }

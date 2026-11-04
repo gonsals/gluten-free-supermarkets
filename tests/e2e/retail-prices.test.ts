@@ -87,9 +87,12 @@ async function prepare(page: Page) {
 }
 async function search(page: Page, text: string, store = '') {
   await page.getByRole('textbox', { name: 'Buscar productos', exact: true }).fill(text);
-  await page
-    .getByRole('textbox', { name: 'Tienda o localidad (opcional)', exact: true })
-    .fill(store);
+  if (store) {
+    await expandSection(page, 'Filtrar precios y ofertas');
+    await page
+      .getByRole('textbox', { name: 'Tienda o localidad (opcional)', exact: true })
+      .fill(store);
+  }
   await page.getByRole('button', { name: 'Buscar precios', exact: true }).click();
 }
 test('Mercadona, Aldi y Lidl aparecen con precios ordenados, formatos, ámbito y condiciones', async ({
@@ -111,6 +114,7 @@ test('Mercadona, Aldi y Lidl aparecen con precios ordenados, formatos, ámbito y
   await expect(prices.nth(2)).toContainText('2,85');
   await expect(page.getByText('Formato publicado: 3 kg.', { exact: true })).toBeVisible();
   await expect(page.getByText('Requiere Lidl Plus', { exact: true })).toBeVisible();
+  await expandSection(page, 'Detalles de Mercadona');
   await expect(page.getByText('Online · almacén bcn1 (Barcelona)', { exact: true })).toBeVisible();
   expect(requests).toEqual([raw]);
   await page.getByRole('heading', { name: 'Supermercados', exact: true }).scrollIntoViewIfNeeded();
@@ -133,11 +137,14 @@ test('el catálogo incluido funciona aunque las fuentes remotas fallen, sin alte
   await page.route(raw, (route) => route.fulfill({ status: 503, json: {} }));
   await page.goto('/prices');
   await search(page, 'huevos', 'Mercadona');
+  await expandSection(page, 'Sobre estos precios');
   await expect(page.getByText(/No se ha podido actualizar el catálogo/)).toBeVisible();
   await expandSection(page, 'Filtrar precios y ofertas');
   await page.getByRole('button', { name: 'Incluir precios anteriores', exact: true }).click();
+  await page.getByRole('button', { name: /Ver los \d+ precios de Mercadona/ }).click();
   await expect(page.getByText('Huevos grandes L', { exact: true }).first()).toBeVisible();
   await expect(page.getByText(/Web oficial · consultado el/).first()).toBeVisible();
+  await expandSection(page, 'Otras aportaciones y mis precios');
   await expect(
     page.getByText('Open Prices no está disponible en este momento.', { exact: true }),
   ).toBeVisible();
@@ -156,4 +163,58 @@ test('las ofertas futuras o vencidas no aparecen al ampliar el histórico', asyn
   await page.getByRole('button', { name: 'Incluir precios anteriores', exact: true }).click();
   await expect(page.getByText('Patatas de ensayo Mercadona', { exact: true })).toHaveCount(0);
   await expect(page.getByText('Patatas de ensayo Aldi', { exact: true })).toHaveCount(0);
+});
+
+test('desde inicio busca con un toque y abre todos los precios de una cadena sin salir de la app', async ({
+  page,
+  context,
+}) => {
+  await prepare(page);
+  const feed = catalog();
+  feed.entries = [
+    { ...feed.entries[0], name: 'Huevos pequeños Mercadona', quantity: '6 unidades' },
+    {
+      ...feed.entries[0],
+      sku: '5',
+      id: 'mercadona:5:bcn1',
+      name: 'Huevos grandes Mercadona',
+      quantity: '12 unidades',
+      amountMilli: 2900,
+    },
+    { ...feed.entries[1], name: 'Huevos de ensayo Aldi' },
+  ].map((p) => ({ ...p, group: p.retailer === 'mercadona' ? 'category:77@bcn1' : p.group }));
+  await page.route(raw, (route) => route.fulfill({ json: feed }));
+  const navigations: string[] = [];
+  page.on('framenavigated', (frame) => {
+    if (frame === page.mainFrame()) navigations.push(frame.url());
+  });
+  await page.goto('/');
+  await expect(page.getByRole('textbox')).toHaveCount(1);
+  await expect(page.getByRole('button', { name: 'Solo ofertas', exact: true })).toHaveCount(0);
+  await page.getByRole('button', { name: 'Huevos', exact: true }).click();
+  await expect(page.getByText('Huevos pequeños Mercadona', { exact: true })).toBeVisible();
+  await expect(page.getByText('Huevos grandes Mercadona', { exact: true })).not.toBeVisible();
+  await expect(page.getByText(/^Desde .*€ · /)).toHaveCount(2);
+  await expandSection(page, 'Ver los 2 precios de Mercadona');
+  await expect(page.getByText('Huevos grandes Mercadona', { exact: true })).toBeVisible();
+  await expect(page.getByText('Formato publicado: 12 unidades.', { exact: true })).toBeVisible();
+  await expect(page.getByText('2,90 € · Mercadona', { exact: true })).toBeVisible();
+  await expect(page.getByText(/Sin precio disponible:.*Lidl/)).toBeVisible();
+  await expect(
+    page.getByRole('button', {
+      name: /Ver .* en |Consultar |Tienda oficial|Ofertas oficiales|Ver precio en la fuente/,
+    }),
+  ).toHaveCount(0);
+  expect(context.pages()).toHaveLength(1);
+  expect([...new Set(navigations)]).toEqual([page.url()]);
+  expect(new URL(page.url()).pathname).toBe('/');
+  await page.getByRole('button', { name: 'Ver los 2 precios de Mercadona', exact: true }).click();
+  await page.getByRole('heading', { name: 'Supermercados', exact: true }).scrollIntoViewIfNeeded();
+  await page.screenshot({ path: test.info().outputPath('comparador-simple.png') });
+  await page.getByRole('textbox', { name: 'Buscar productos', exact: true }).fill('');
+  await page.getByRole('button', { name: 'Buscar precios', exact: true }).click();
+  await expect(
+    page.getByText('Escribe entre 2 y 80 caracteres para buscar un producto.', { exact: true }),
+  ).toBeVisible();
+  await expect(page.getByText('Huevos pequeños Mercadona', { exact: true })).toBeVisible();
 });
