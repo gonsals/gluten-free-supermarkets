@@ -219,6 +219,57 @@ test('desde inicio busca con un toque y abre todos los precios de una cadena sin
   await expect(page.getByText('Huevos pequeños Mercadona', { exact: true })).toBeVisible();
 });
 
+test('arroz muestra el paquete seco y separa su importe del equivalente por kilo del arroz cocido', async ({
+  page,
+}) => {
+  await prepare(page);
+  const base = catalog();
+  const rice = (
+    sku: string,
+    name: string,
+    quantity: string,
+    amountMilli: number,
+    reference: number,
+  ) => ({
+    ...base.entries[0],
+    id: `mercadona:${sku}:bcn1`,
+    sku,
+    group: 'category:118@bcn1',
+    sourceUrl: `https://tienda.mercadona.es/product/${sku}/arroz`,
+    name,
+    quantity,
+    amountMilli,
+    unitPrice: { amountMilli: reference, unit: 'kg' },
+  });
+  const feed = {
+    ...base,
+    entries: [
+      rice('22281', 'Arroz cocido integral Sabroz', '0.25 kg', 1050, 4200),
+      rice('5044', 'Arroz redondo Hacendado', '1 kg', 1150, 1150),
+      { ...base.entries[1], name: 'Vasitos de arroz redondo', amountMilli: 500 },
+    ],
+  };
+  await page.route(raw, (route) => route.fulfill({ json: feed }));
+  await page.goto('/');
+  await page.getByRole('button', { name: 'Arroz', exact: true }).click();
+  const headline = page.getByLabel(/€ · Mercadona$/);
+  await expect(headline).toContainText('1,15');
+  await expect(page.getByText('Por envase', { exact: true })).toHaveCount(1);
+  await expect(page.getByText('Formato publicado: 1 kg.', { exact: true })).toBeVisible();
+  await expect(page.getByText('Equivalente: 1,15 € / kg', { exact: true })).toBeVisible();
+  await expect(page.getByText('Arroz cocido integral Sabroz', { exact: true })).toHaveCount(0);
+  await expect(page.getByText('Vasitos de arroz redondo', { exact: true })).toHaveCount(0);
+  await search(page, 'arroz cocido');
+  await expect(headline).toContainText('1,05');
+  await expect(page.getByText('Arroz cocido integral Sabroz', { exact: true })).toBeVisible();
+  await expect(page.getByText('Equivalente: 4,20 € / kg', { exact: true })).toBeVisible();
+  await expect(page.getByText('Formato publicado: 0.25 kg.', { exact: true })).toBeVisible();
+  // A chain without dry rice must stay without a price for the generic query.
+  await search(page, 'arroz', 'Aldi');
+  await expect(page.getByLabel(/^Desde .*€ · /)).toHaveCount(0);
+  await expect(page.getByText(/No hay precios disponibles para esta búsqueda/)).toBeVisible();
+});
+
 for (const colorScheme of ['light', 'dark'] as const) {
   test(`buscador y precios accesibles con teclado y texto al 200 % en 320 px (${colorScheme})`, async ({
     page,

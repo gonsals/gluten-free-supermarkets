@@ -10,6 +10,8 @@ Mercadona, DIA, Caprabo, Ametller Origen, Aldi y Lidl tienen una muestra integra
 
 Los envases pueden ser distintos: un precio menor por envase no siempre significa menos coste por kilo o unidad. Son referencias online para Barcelona, sin CP o sucursal confirmados. Comprueba fecha y zona; los importes pueden cambiar. [Cobertura actual](PRECIOS_BARCELONA.md).
 
+El importe principal se identifica como «Por envase» y el precio por kilo/litro/unidad como «Equivalente». Al buscar solamente «arroz», se buscan referencias de arroz seco; para consultar vasitos, escribe «arroz cocido». Así se evita presentar el equivalente por kilo de un preparado como referencia del arroz habitual. [Corrección y límites](IMPLEMENTACION.md).
+
 «Otras aportaciones y mis precios» conserva tus anotaciones y los datos colaborativos de Open Prices. Desde allí puedes comparar el mismo código y envase dentro de la app. «Solo ofertas» y «Incluir precios anteriores» son opciones expresas; las promociones conocidas futuras o vencidas siguen excluidas.
 
 Para anotar un precio, abre Comparar → Mis productos y precios → Anotar un precio sin buscar el producto. Indica código, importe, supermercado y sucursal. «Fecha, formato y condiciones» permite completar el detalle. Cerrar las opciones conserva tu borrador.

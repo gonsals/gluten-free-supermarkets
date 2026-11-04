@@ -45,7 +45,7 @@ function PriceDetails({
       <Body muted>{p.quantity ? `Formato publicado: ${p.quantity}.` : 'Formato sin indicar.'}</Body>
       {p.unitPrice ? (
         <Body muted>
-          {quoteMoney(p.unitPrice.amountMilli)} / {p.unitPrice.unit}
+          Equivalente: {quoteMoney(p.unitPrice.amountMilli)} / {p.unitPrice.unit}
         </Body>
       ) : null}
       {p.isOffer ? (
@@ -87,13 +87,16 @@ function StorePrices({ prices, now }: { prices: RetailPrice[]; now: number }) {
         }}
       >
         <Text style={{ color: c.ink, fontSize: 18, fontWeight: '700', flexShrink: 1 }}>{name}</Text>
-        <Text
-          accessibilityLabel={`Desde ${quoteMoney(first.amountMilli)} · ${name}`}
-          style={{ color: c.accent, fontSize: 24, fontWeight: '700' }}
-        >
-          <Text style={{ fontSize: 14, fontWeight: '400' }}>Desde </Text>
-          {quoteMoney(first.amountMilli)}
-        </Text>
+        <View style={{ alignItems: 'flex-end' }}>
+          <Text
+            accessibilityLabel={`Desde ${quoteMoney(first.amountMilli)} · ${name}`}
+            style={{ color: c.accent, fontSize: 24, fontWeight: '700' }}
+          >
+            <Text style={{ fontSize: 14, fontWeight: '400' }}>Desde </Text>
+            {quoteMoney(first.amountMilli)}
+          </Text>
+          <Meta>Por envase</Meta>
+        </View>
       </View>
       <PriceDetails price={first} now={now} summary />
       <Disclosure
@@ -113,6 +116,7 @@ function StorePrices({ prices, now }: { prices: RetailPrice[]; now: number }) {
             <Copy>
               {quoteMoney(p.amountMilli)} · {name}
             </Copy>
+            <Meta>Por envase</Meta>
             <PriceDetails price={p} now={now} />
             {p.scope !== first.scope ? <Copy muted>{p.scope}</Copy> : null}
           </View>

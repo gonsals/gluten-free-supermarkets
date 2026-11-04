@@ -116,6 +116,63 @@ test('datos conservados en fallo no recuperan frescura por la fecha global', () 
   expect(retailPrices(feed([old]), options)).toEqual([]);
   expect(retailPrices(feed([old]), { ...options, includeOlder: true })).toEqual([old]);
 });
+test('arroz genérico compara arroz seco, no el vasito cocido más barato ni sus derivados', () => {
+  const rice = {
+    ...row,
+    id: 'dry',
+    name: 'Arroz redondo Hacendado',
+    retailer: 'mercadona' as const,
+    group: 'category:118@bcn1',
+    quantity: '1 kg',
+    amountMilli: 1150,
+    unitPrice: { amountMilli: 1150, unit: 'kg' },
+  };
+  const cooked = {
+    ...rice,
+    id: 'cooked',
+    name: 'Arroz cocido integral Sabroz',
+    quantity: '0.25 kg',
+    amountMilli: 1050,
+    unitPrice: { amountMilli: 4200, unit: 'kg' },
+  };
+  const catalog = feed([
+    cooked,
+    rice,
+    ...[
+      'Vasitos de arroz redondo',
+      'Vasos de arroz integral',
+      'Bebida de arroz',
+      'Harina de arroz',
+      'Tortitas de arroz',
+      'Arroz con leche',
+      'Arroz tres delicias',
+    ].map((name, index) => ({ ...row, id: `other-${index}`, name, amountMilli: 500 })),
+  ]);
+  const generic = retailPrices(catalog, { ...options, text: 'arroz' });
+  expect(generic).toEqual([rice]);
+  expect(groupRetailPrices(generic)[0].prices[0]).toMatchObject({
+    amountMilli: 1150,
+    quantity: '1 kg',
+  });
+  expect(retailPrices(catalog, { ...options, text: 'arroz cocido' })).toEqual([cooked]);
+  expect(retailPrices(catalog, { ...options, text: 'bebida de arroz' })).toHaveLength(1);
+  expect(retailPrices(catalog, { ...options, text: 'arroz con leche' })).toHaveLength(1);
+});
+test('arroz conserva variedades secas caras y envases pequeños sin imponer un precio máximo', () => {
+  const entries = [
+    'Arroz bomba premium',
+    'Arroz para paella',
+    'Arroz risotto',
+    'Arroz basmati',
+  ].map((name, i) => ({
+    ...row,
+    id: `rice-${i}`,
+    name,
+    amountMilli: 6000 + i,
+    quantity: i ? '1 kg' : '500 g',
+  }));
+  expect(retailPrices(feed(entries), { ...options, text: 'arroz' })).toEqual(entries);
+});
 test('agrupa por cadena sin mezclar formatos, condiciones ni modificar la entrada', () => {
   const larger = { ...row, id: 'large', amountMilli: 3500, quantity: '6 kg' };
   const other = {

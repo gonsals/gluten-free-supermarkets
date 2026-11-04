@@ -6,6 +6,8 @@ Actualizada el **04-11-2026**. Este documento fija el orden de entrega vigente. 
 
 ## Enfoque acordado
 
+**Corrección 23:** buscar «arroz» separa el arroz seco de vasitos y preparados identificados; «Por envase» y «Equivalente» aclaran los importes. [Causa y regresión](IMPLEMENTACION.md). Extender la clasificación de tipos/estados y comparar formatos equivalentes requiere evidencia por producto, sin límites de precio arbitrarios ni agrupaciones que mezclen alimentos distintos.
+
 **Entrega 22:** [interfaz más clara y accesible](INTERFAZ_ACCESIBLE.md), por petición del propietario. Mantener Mesa, reducir peso visual y texto repetido, priorizar precios y facilitar teclado/texto ampliado. La siguiente validación debe incluir uso real y lector de pantalla en teléfono; no añadir más controles al recorrido principal para ampliar cobertura.
 
 **Entrega 21:** [comparador sencillo dentro de la app](COMPARADOR_SENCILLO.md). Prioridad del propietario: buscar productos cotidianos desde Inicio y ver precios por supermercado, sin abrir webs externas. Una tarjeta por cadena, variantes desplegables y herramientas avanzadas secundarias. La siguiente ampliación debe conservar este recorrido, mejorar formatos equivalentes y demostrar cobertura por CP; no añadir complejidad a la búsqueda básica.

@@ -217,6 +217,12 @@ export function retailPrices(
         // such as «claras de huevo» or «huevos de codorniz» still find those products.
         (!(words.length === 1 && words[0] === 'huevo') ||
           !/clara|codorniz|cocid|chocolate|liquid|hilad/.test(fold(p.name))) &&
+        // Plain «arroz» means dry rice. A cheaper cooked cup must not become
+        // the chain's headline rice price; explicit searches keep finding it.
+        (!(words.length === 1 && words[0] === 'arroz') ||
+          !/\b(cocid[oa]s?|precocid[oa]s?|vasos?|vasitos?|microondas|bebidas?|harinas?|tortitas?|galletas?|noodles|fideos|cereales|papillas?)\b|\barroz\s+(con\s+leche|(?:tres|3)\s+delicias|a\s+banda|de\s+marisco)\b/.test(
+            fold(p.name),
+          )) &&
         retailStore(`${retailerNames[p.retailer]} ${p.scope}`).includes(
           retailStore(options.store),
         ) &&

@@ -1,5 +1,15 @@
 # Implementación y verificación
 
+## Corrección 23 · Arroz seco frente a arroz cocido
+
+Incidencia del propietario, 04-11-2026: buscar «arroz» destacaba un vasito cocido de 250 g, con envase de 1,05 € y equivalente de 4,20 €/kg, por delante del arroz seco de 1 kg. No era un error de conversión: el mínimo por envase mezclaba productos distintos. La consulta oficial de Mercadona, categoría 118 para Barcelona, confirma el SKU 22281 cocido y el SKU 5044 redondo seco, este último a 1,15 € por 1 kg en esa comprobación. Los importes son evidencia fechada, no tarifas garantizadas.
+
+La búsqueda genérica «arroz» excluye referencias identificadas como cocidas, vasitos y derivados evidentes; las búsquedas explícitas como «arroz cocido» o «bebida de arroz» siguen pudiendo encontrarlas dentro de las fuentes disponibles. No se descartan variedades secas por ser caras ni se imponen precios máximos. Las tarjetas distinguen «Por envase» del «Equivalente» por kilo/litro/unidad. No se modifica a mano el catálogo, el parser monetario, los GTIN ni las reglas de cesta.
+
+Se añaden pruebas de regresión de dominio y navegador: arroz seco frente al vasito más barato, variantes secas sin umbral de importe, búsquedas explícitas y tienda sin arroz seco que permanece sin precio. La clasificación por nombre sigue siendo acotada; una taxonomía más completa y la comparación entre formatos equivalentes quedan como mejoras futuras.
+
+Verificación: 262 pruebas de app y 15 recorridos web de supermercados/buscador correctos; tipos, lint y revisión de secretos correctos. Consulta real desde Inicio con fuentes HTTP 200: el resumen de Mercadona muestra el arroz redondo seco de 1 kg y separa 1,15 € por envase de 1,15 €/kg. Es evidencia fechada, sin prueba física del teléfono ni promesa de precio por sucursal.
+
 ## Iteración 22 · Claridad y accesibilidad
 
 Se renuevan titulares y componentes compartidos, con foco visible, campos contrastados y controles adaptables. Los resúmenes presentan supermercado e importe alineados, con precio, formato, fecha y requisitos de promoción visibles. Los avisos generales pasan al detalle; las funciones personales se despliegan en Inicio. Se añaden recorridos de teclado y texto al 200 % en 320 px en ambos temas. [Alcance y límites](INTERFAZ_ACCESIBLE.md).
