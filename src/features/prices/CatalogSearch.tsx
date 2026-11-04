@@ -8,6 +8,7 @@ import { Action, Card, Copy, Field, Heading, Notice } from '@/src/shared/ui';
 import { Disclosure } from '@/src/shared/Disclosure';
 import { useCatalogSearch } from './useCatalogSearch';
 import { RetailResults } from './RetailResults';
+import { retailerNames, externalBarcelonaStores } from '@/src/domain/retailSources';
 
 export function CatalogSearch() {
   const router = useRouter();
@@ -56,6 +57,9 @@ export function CatalogSearch() {
   return (
     <>
       <Card>
+        <Copy muted>
+          Barcelona · precios web de referencia. Confirma tu código postal en la tienda.
+        </Copy>
         <Field
           label="Buscar productos"
           placeholder="Huevos, leche, arroz…"
@@ -75,9 +79,26 @@ export function CatalogSearch() {
           onSubmitEditing={search}
         />
         <Action title="Buscar precios" icon="search" onPress={search} busy={remote.loading} />
+        <Disclosure title="Elegir supermercado">
+          {['Todas las cadenas', ...Object.values(retailerNames)].map((name, index) => (
+            <Action
+              key={name}
+              title={name}
+              secondary
+              disabled={remote.loading}
+              selected={store === (index ? name : '')}
+              onPress={() => {
+                const next = index ? name : '';
+                setStore(next);
+                setLimit(20);
+                if (text.trim().length >= 2) void remote.search(text, next);
+              }}
+            />
+          ))}
+        </Disclosure>
         <Copy muted>
-          Consulta precios web de Mercadona y ofertas de Aldi y Lidl. Open Prices recibe el nombre
-          para buscar otras aportaciones. Tus anotaciones y el filtro de tienda no se envían.
+          Consulta Mercadona, DIA, Caprabo, Ametller Origen, Aldi y Lidl. Open Prices recibe el
+          nombre para buscar otras aportaciones. Tus anotaciones y el filtro de tienda no se envían.
         </Copy>
         {remote.loading ? (
           <Action title="Cancelar búsqueda de precios" secondary onPress={remote.cancel} />
@@ -262,8 +283,7 @@ export function CatalogSearch() {
       <Disclosure title="Ver ofertas oficiales de supermercados">
         <Copy muted>
           Abre la web del supermercado para consultar promociones vigentes. Puede pedirte una tienda
-          o un código postal. Mercadona, Aldi y Lidl tienen una muestra importada arriba; Carrefour
-          se consulta en su web.
+          o un código postal. Las cadenas integradas tienen una muestra de precios arriba.
         </Copy>
         <Action
           title="Tienda oficial de Mercadona"
@@ -289,6 +309,20 @@ export function CatalogSearch() {
           icon="open-outline"
           onPress={() => void open('https://www.carrefour.es/supermercado/c/cat20009/c')}
         />
+      </Disclosure>
+      <Disclosure title="Otras cadenas de Barcelona">
+        <Copy muted>
+          Sus precios todavía no están integrados. Consulta la web oficial para tu zona.
+        </Copy>
+        {externalBarcelonaStores.map((chain) => (
+          <Action
+            key={chain.name}
+            title={`Consultar ${chain.name}`}
+            secondary
+            icon="open-outline"
+            onPress={() => void open(chain.url)}
+          />
+        ))}
       </Disclosure>
       {linkError ? <Notice error>{linkError}</Notice> : null}
       <Copy muted>

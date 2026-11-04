@@ -1,4 +1,9 @@
 import {
+  categoryPages,
+  retailerNames,
+  retailStore as storeFilter,
+} from '@/src/domain/retailSources';
+import {
   parseRetailCatalog,
   mercadonaCategories,
   retailStore,
@@ -13,7 +18,11 @@ export { mercadonaCategories } from '@/src/domain/retailCatalog';
 // eslint-disable-next-line @typescript-eslint/no-require-imports
 const parsers = require('../../../scripts/lib/retail-parsers.cjs') as Record<
   Retailer,
-  (payload: unknown, checkedAt: string) => RetailPrice[]
+  (
+    payload: unknown,
+    checkedAt: string,
+    context?: { group: string; warehouse?: string },
+  ) => RetailPrice[]
 >;
 async function page(url: string, transport: typeof fetch, parent: AbortSignal): Promise<string> {
   if (parent.aborted) throw new Error('cancelled');
@@ -57,13 +66,13 @@ export function createLiveRetailClient(transport: typeof fetch = fetch) {
       !filter ||
       'mercadona'.includes(filter) ||
       filter.includes('mercadona') ||
-      filter.includes('valencia')
+      filter.includes('barcelona')
     ) {
       for (const id of mercadonaCategories(query))
         jobs.push({
           retailer: 'mercadona',
-          group: `category:${id}`,
-          url: `https://tienda.mercadona.es/api/categories/${id}/?wh=vlc1`,
+          group: `category:${id}@bcn1`,
+          url: `https://tienda.mercadona.es/api/categories/${id}/?wh=bcn1`,
         });
     }
     if (!filter || 'aldi'.includes(filter) || filter.includes('peninsula'))
@@ -74,7 +83,29 @@ export function createLiveRetailClient(transport: typeof fetch = fetch) {
         group: 'weekly',
         url: 'https://www.lidl.es/c/store/ofertas-semanales/a10089449',
       });
+    const perSource = new Map<Retailer, number>();
+    jobs.push(
+      ...categoryPages(query).filter((job) => {
+        if (filter && !storeFilter(retailerNames[job.retailer]).includes(filter)) return false;
+        const count = perSource.get(job.retailer) ?? 0;
+        perSource.set(job.retailer, count + 1);
+        return count < 2;
+      }),
+    );
     const checkedAt = new Date().toISOString();
+    base = {
+      ...base,
+      sources: [
+        ...base.sources,
+        ...Object.keys(retailerNames)
+          .filter((r) => !base.sources.some((s) => s.retailer === r))
+          .map((r) => ({
+            retailer: r as Retailer,
+            status: 'failed' as const,
+            attemptedAt: checkedAt,
+          })),
+      ],
+    };
     const results = await Promise.all(
       jobs.map(async (job) => {
         const key = `${job.retailer}:${job.group}`,
@@ -86,6 +117,7 @@ export function createLiveRetailClient(transport: typeof fetch = fetch) {
           const rows = parsers[job.retailer](
             job.retailer === 'mercadona' ? JSON.parse(body) : body,
             checkedAt,
+            { group: job.group, ...(job.retailer === 'mercadona' ? { warehouse: 'bcn1' } : {}) },
           );
           if (rows.some((row) => row.group !== job.group)) throw new Error('unexpected_category');
           // An empty/changed source is uncertain, never evidence to erase the last known catalog.

@@ -4,6 +4,8 @@ Actualizada el **04-11-2026**. Este documento fija el orden de entrega vigente. 
 
 ## Enfoque acordado
 
+**Entrega 20:** [SUP-02, supermercados de Barcelona](PRECIOS_BARCELONA.md): seis cadenas con precios/ofertas, selector y referencia Mercadona solicitada `bcn1`. Cinco cadenas adicionales quedan identificadas sin datos inventados. Próximo tramo de cobertura: CP comprobado y acceso mantenible a las cadenas pendientes; SEG-01 sigue siendo el bloqueo de distribución.
+
 **Entrega 19:** [SUP-01](PRECIOS_SUPERMERCADOS.md) añade precios web de Mercadona y ofertas Aldi/Lidl, con consulta móvil y copia web/offline. La muestra no resuelve la cobertura por sucursal; validar zona, correspondencias SKU/GTIN y operación del refresco web antes de ampliar la promesa.
 
 Ayudar a decidir **dónde hacer la compra con el menor coste entre las opciones que tienen datos comparables**. La comparación de precios es el núcleo; la información sobre gluten sigue disponible como función complementaria para consultar evidencia y contrastar alternativas.

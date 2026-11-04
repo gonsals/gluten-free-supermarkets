@@ -6,6 +6,7 @@ import vm from 'node:vm';
 import { Buffer } from 'node:buffer';
 import { createRequire } from 'node:module';
 const require = createRequire(import.meta.url);
+const { diaPage, capraboPage, ametllerPage } = require('../fixtures/retail-pages.cjs');
 const root = path.resolve(import.meta.dirname, '../..');
 const source = fs.readFileSync(path.join(root, 'scripts/update-retail-prices.cjs'), 'utf8');
 const original = JSON.parse(fs.readFileSync(path.join(root, 'data/retail-prices.es.json'), 'utf8'));
@@ -90,12 +91,18 @@ async function run({ fail = [], invalidLidl = false } = {}) {
       throw new Error('Unexpected import ' + name);
     },
     async fetch(input, options) {
-      const url = new URL(input),
-        retailer = url.hostname.includes('mercadona')
-          ? 'mercadona'
-          : url.hostname.includes('aldi')
-            ? 'aldi'
-            : 'lidl';
+      const url = new URL(input);
+      const retailer = url.hostname.includes('mercadona')
+        ? 'mercadona'
+        : url.hostname.includes('aldi')
+          ? 'aldi'
+          : url.hostname.includes('dia.es')
+            ? 'dia'
+            : url.hostname.includes('caprabo')
+              ? 'caprabo'
+              : url.hostname.includes('ametller')
+                ? 'ametller'
+                : 'lidl';
       calls.push({ url: input, options });
       let body;
       if (retailer === 'mercadona') {
@@ -123,7 +130,17 @@ async function run({ fail = [], invalidLidl = false } = {}) {
             },
           ],
         });
-      } else body = retailer === 'aldi' ? aldi : lidl(invalidLidl);
+      } else
+        body =
+          retailer === 'aldi'
+            ? aldi
+            : retailer === 'dia'
+              ? diaPage()
+              : retailer === 'caprabo'
+                ? capraboPage()
+                : retailer === 'ametller'
+                  ? ametllerPage()
+                  : lidl(invalidLidl);
       return {
         ok: !fail.includes(retailer),
         status: fail.includes(retailer) ? 429 : 200,
@@ -136,14 +153,17 @@ async function run({ fail = [], invalidLidl = false } = {}) {
   await promise;
   return { calls, writes, moves, exitCode: process.exitCode };
 }
-test('actualizador completo: 19 lecturas fijas sin sesiones y escritura atómica solo del catálogo', async () => {
+test('actualizador completo: 44 lecturas fijas sin sesiones y escritura atómica solo del catálogo', async () => {
   const result = await run();
-  assert.equal(result.calls.length, 19);
+  assert.equal(result.calls.length, 44);
   assert.equal(result.writes.length, 1);
   assert.equal(result.moves.length, 1);
   assert.equal(result.exitCode, 0);
-  assert.equal(result.writes[0].data.entries.length, 18);
-  assert.equal(result.writes[0].data.entries.filter((p) => p.id === 'mercadona:10077').length, 1);
+  assert.equal(result.writes[0].data.entries.length, 21);
+  assert.equal(
+    result.writes[0].data.entries.filter((p) => p.id === 'mercadona:10077:bcn1').length,
+    1,
+  );
   assert.ok(result.writes[0].file.endsWith('retail-prices.es.json.tmp'));
   assert.ok(result.moves[0].to.endsWith('retail-prices.es.json'));
   for (const { options } of result.calls) assert.equal(options.credentials, 'omit');
@@ -159,9 +179,9 @@ test('fallo parcial: conserva los datos y fechas originales de esa cadena y devu
   assert.equal(feed.sources.find((s) => s.retailer === 'aldi').status, 'failed');
 });
 test('si fallan todas las fuentes no escribe ni reintenta ni sustituye el archivo', async () => {
-  const result = await run({ fail: ['mercadona', 'aldi', 'lidl'] });
+  const result = await run({ fail: ['mercadona', 'aldi', 'lidl', 'dia', 'caprabo', 'ametller'] });
   assert.equal(result.exitCode, 1);
-  assert.equal(result.calls.length, 3);
+  assert.equal(result.calls.length, 6);
   assert.equal(result.writes.length, 0);
   assert.equal(result.moves.length, 0);
 });

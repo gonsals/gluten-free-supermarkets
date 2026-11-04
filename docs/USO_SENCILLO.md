@@ -2,6 +2,8 @@
 
 La app se centra en tres pasos:
 
+Para Barcelona se han añadido DIA, Caprabo y Ametller Origen, además de Mercadona, Aldi y Lidl. En Comparar, «Elegir supermercado» permite seleccionar una cadena sin escribirla. Los precios son referencias web: revisa la zona y confirma tu CP en la tienda. «Otras cadenas de Barcelona» identifica las que todavía no tienen precios integrados. [Cobertura actual](PRECIOS_BARCELONA.md).
+
 1. **Busca un producto.** En Comparar escribe, por ejemplo, «huevos» y pulsa «Buscar precios». Puedes indicar una tienda o localidad. También siguen disponibles el código, el escáner y los productos guardados.
 2. **Compara o anota su precio.** Verás los precios disponibles por tienda. Para añadir uno, indica importe, supermercado y sucursal. Se guarda con la fecha de hoy; puedes cambiarla en «Fecha, formato y condiciones».
 3. **Prepara tu cesta.** Añade productos y ajusta los envases con «−» y «+»: se guardan al pulsar. Si escribes otra cantidad, pulsa «Guardar cantidad». Después, usa «Comparar total por tienda». Si faltan precios, la app lo indica y separa el subtotal de las compras completas.

@@ -1,5 +1,11 @@
 # Calidad y operación · Comparador de compra
 
+## Iteración 20 · Barcelona y seis cadenas
+
+[Contrato SUP-02](PRECIOS_BARCELONA.md). 258 pruebas de app/25 suites, 58 de seguridad y 62 recorridos web correctos. Dos casos web nuevos verifican las seis cadenas, selector DIA/caché, copia sin red, ausencia de Valencia en resultados Barcelona y cinco cadenas sin precios integrados. Nuevas pruebas de parsers cubren L1/L2 de DIA, multipack alfanumérico, precio de socios/peso variable, precio visible frente al metadato, Ametller sin imágenes/configuraciones e identidad independiente de Barcelona. Presupuesto máximo móvil de once GET y enfriamiento de fallos contrastados; actualizador limitado a 44 lecturas y parada de cadena ante 403/429.
+
+Prueba real con el cliente implementado: seis respuestas HTTP 200 y 55 coincidencias para huevos, sin credenciales. Primera copia de 1.364 referencias y las seis fuentes en estado correcto. No se declara prueba física o tarifa confirmada por CP. Tipos y lint correctos; los bloqueos de SEG-01, el cron fuera de main y la revisión para distribución comercial siguen pendientes.
+
 ## Iteración 19 · Precios de supermercados
 
 [Contrato y límites SUP-01](PRECIOS_SUPERMERCADOS.md). 255 pruebas de app/25 suites, 53 controles de seguridad y 60 recorridos web correctos. Tras el ajuste final de texto y estado de consulta se repiten los nueve recorridos de catálogo/supermercados, todos correctos. Tipos y lint correctos. Se contrastan moneda/SKU/URL, grupos renovados, ofertas futuras/caducadas, copia antigua sin fecha renovada por error, caché, cancelación, Lidl Plus, descarte de descuentos de segunda unidad/compra múltiple, orden, tienda y datos privados excluidos de la copia pública. Cuatro casos adicionales ejecutan el actualizador completo sin red: éxito, fallo parcial, fallo total sin escritura y fuente con contrato normalizado inválido. Los primeros fallos web fueron una expectativa antigua sobre enlaces y una fixture futura con fin anterior al inicio; se corrigieron las expectativas/fechas sin relajar la validación.

@@ -119,9 +119,9 @@ export function RetailResults({
       {!hits.length && loading ? <Copy muted>Consultando precios de supermercados…</Copy> : null}
       {!hits.length && !loading ? (
         <Copy muted>
-          No hay precios publicados que cumplan estos filtros en el catálogo cargado. Mercadona
-          incluye categorías básicas; Aldi y Lidl, las ofertas de su página semanal. Una tienda sin
-          resultados puede vender el producto.
+          No hay precios publicados que cumplan estos filtros en el catálogo cargado. Las cadenas
+          incluyen una muestra de categorías o sus ofertas semanales. Una tienda sin resultados
+          puede vender el producto.
         </Copy>
       ) : null}
       {error ? <Notice error>{error}</Notice> : null}

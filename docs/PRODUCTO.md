@@ -1,5 +1,7 @@
 # Producto · Comparar precios para decidir la compra
 
+**Iteración 20, foco Barcelona:** [SUP-02](PRECIOS_BARCELONA.md) incorpora DIA, Caprabo y Ametller, selector de cadena y referencia Mercadona solicitada `bcn1`, separada de Valencia. Seis cadenas con datos y cinco con consulta externa; no se promete tarifa local confirmada, surtido completo ni correspondencia automática con GTIN/cesta/gluten.
+
 Especificación actualizada el **03-11-2026**. Sustituye el enfoque inicial centrado en consulta de gluten. [Hoja de ruta](HOJA_DE_RUTA.md) para orden de entrega; [backlog](PLAN_MEJORAS.md) para estados; [comparador actual](COMPARADOR_DE_PRECIOS.md) para el contrato implementado.
 
 ## Propuesta y público inicial

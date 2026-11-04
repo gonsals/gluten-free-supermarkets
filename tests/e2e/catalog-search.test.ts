@@ -199,7 +199,7 @@ test('precios antiguos se abren expresamente y las ofertas oficiales son enlaces
   await expect(
     page.getByRole('button', { name: 'Ofertas oficiales de Lidl', exact: true }),
   ).toBeVisible();
-  await expect(page.getByText(/Carrefour se consulta en su web/)).toBeVisible();
+  await expect(page.getByText(/Las cadenas integradas tienen una muestra/)).toBeVisible();
   await page.getByRole('button', { name: 'Comparar Huevos de ensayo', exact: true }).click();
   await expect(page.getByText(/^Menor precio entre los datos comparables:/)).toContainText('2,28');
   await expect(page.getByText(/Todas las fechas/)).toBeVisible();

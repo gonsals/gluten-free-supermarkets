@@ -1,5 +1,9 @@
 # Implementación y verificación
 
+## Iteración 20 · Más cadenas para Barcelona
+
+[SUP-02](PRECIOS_BARCELONA.md): primera copia de 1.364 referencias en seis cadenas. Se añaden DIA, Caprabo y Ametller; Mercadona solicita `bcn1` sin renombrar datos de Valencia. Selector de supermercado, aviso de referencia web sin CP confirmado y cinco cadenas pendientes con enlace externo. Parsers compartidos y validación por grupos, con 44 páginas máximas de actualización. Se verifican páginas DIA L1/L2, SKU de multipack, comparación de precio visible/metadatos de Caprabo, JSON-LD de Ametller y exclusión de precios condicionales ambiguos. No se activan backend, cuentas o servicios de pago; no se reconstruye la APK congelada de iteración 15.
+
 ## Iteración 19 · Mercadona, Aldi y Lidl
 
 [SUP-01](PRECIOS_SUPERMERCADOS.md) incorpora un catálogo acotado de tres cadenas, consulta directa móvil y copia estática web/offline. Los mismos parsers normalizan lecturas de app y actualizador; el esquema compartido valida la salida antes de sustituir datos. Mantiene SKU, cantidades, zonas, fechas y condiciones sin vincularlos automáticamente a GTIN, gluten o cesta. Excluye ofertas futuras/caducadas y promociones de cantidad ambiguas. Consulta real del adaptador: tres HTTP 200 y dieciséis resultados para «patata»; es evidencia técnica, no compra física. Interfaz revisada para mostrar los precios con menos texto introductorio. La APK de iteración 15 no se reconstruye.

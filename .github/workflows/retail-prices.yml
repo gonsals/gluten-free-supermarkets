@@ -7,6 +7,9 @@ on:
       - scripts/lib/retail-parsers.cjs
       - .github/workflows/retail-prices.yml
       - src/domain/retailCatalog.ts
+      - src/domain/retailSources.ts
+      - tests/security/barcelona-parsers.test.mjs
+      - tests/fixtures/retail-pages.cjs
       - tests/security/retail-parsers.test.mjs
       - tests/security/retail-updater.test.mjs
   # GitHub only runs schedules on the default branch. See docs/PRECIOS_SUPERMERCADOS.md.
@@ -31,7 +34,7 @@ jobs:
           node-version-file: .nvmrc
           cache: npm
       - run: npm ci --ignore-scripts --no-audit
-      - run: node --test tests/security/retail-parsers.test.mjs tests/security/retail-updater.test.mjs
+      - run: node --test tests/security/retail-parsers.test.mjs tests/security/barcelona-parsers.test.mjs tests/security/retail-updater.test.mjs
       - id: refresh
         continue-on-error: true
         run: node scripts/update-retail-prices.cjs

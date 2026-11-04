@@ -1,6 +1,14 @@
 import { fold } from './comparison';
 
-export type Retailer = 'mercadona' | 'aldi' | 'lidl';
+import {
+  retailerNames,
+  retailerHosts as hosts,
+  knownRetailGroup,
+  categoryPages,
+  retailStore,
+  type Retailer,
+} from './retailSources';
+export { retailerNames, retailStore, type Retailer } from './retailSources';
 export interface RetailPrice {
   id: string;
   retailer: Retailer;
@@ -24,16 +32,6 @@ export interface RetailCatalog {
   sources: { retailer: Retailer; status: 'ok' | 'failed'; attemptedAt: string }[];
   entries: RetailPrice[];
 }
-export const retailerNames: Record<Retailer, string> = {
-  mercadona: 'Mercadona',
-  aldi: 'Aldi',
-  lidl: 'Lidl',
-};
-const hosts: Record<Retailer, string> = {
-  mercadona: 'tienda.mercadona.es',
-  aldi: 'www.aldi.es',
-  lidl: 'www.lidl.es',
-};
 const categoryWords: [RegExp, number[]][] = [
   [/huevo|clara/, [77]],
   [/leche|bebida vegetal|avena|soja/, [72]],
@@ -61,7 +59,6 @@ export function mercadonaCategories(query: string): number[] {
 }
 
 export const RETAIL_MAX_AGE = 3 * 24 * 60 * 60 * 1000;
-export const retailStore = (value: string): string => fold(value).replace(/\blidel\b/g, 'lidl');
 function record(value: unknown): Record<string, unknown> {
   if (!value || typeof value !== 'object' || Array.isArray(value))
     throw new Error('invalid_catalog');
@@ -99,7 +96,8 @@ export function parseRetailCatalog(input: unknown): RetailCatalog {
     !Array.isArray(data.entries) ||
     data.entries.length > 5000 ||
     !Array.isArray(data.sources) ||
-    data.sources.length !== 3
+    data.sources.length < 3 ||
+    data.sources.length > Object.keys(hosts).length
   )
     throw new Error('invalid_catalog');
   const sources = data.sources.map((input): RetailCatalog['sources'][number] => {
@@ -107,7 +105,11 @@ export function parseRetailCatalog(input: unknown): RetailCatalog {
     if (s.status !== 'ok' && s.status !== 'failed') throw new Error('invalid_catalog');
     return { retailer: retailer(s.retailer), status: s.status, attemptedAt: date(s.attemptedAt) };
   });
-  if (new Set(sources.map((s) => s.retailer)).size !== 3) throw new Error('invalid_catalog');
+  if (
+    new Set(sources.map((s) => s.retailer)).size !== sources.length ||
+    !['mercadona', 'aldi', 'lidl'].every((r) => sources.some((s) => s.retailer === r))
+  )
+    throw new Error('invalid_catalog');
   const ids = new Set<string>();
   const entries = data.entries.map((input): RetailPrice => {
     const p = record(input),
@@ -116,11 +118,16 @@ export function parseRetailCatalog(input: unknown): RetailCatalog {
       id = string(p.id, 120),
       sourceUrl = string(p.sourceUrl, 500),
       group = string(p.group, 30);
-    if (!(r === 'mercadona' ? /^category:\d+$/.test(group) : group === 'weekly'))
+    if (!knownRetailGroup(r, group) || !sources.some((s) => s.retailer === r))
       throw new Error('invalid_catalog');
     if (
       !/^[\w-]+$/.test(sku) ||
-      ![`${r}:${sku}`, `${r}:${sku}:regular`, `${r}:${sku}:plus`].includes(id) ||
+      ![
+        `${r}:${sku}`,
+        `${r}:${sku}:regular`,
+        `${r}:${sku}:plus`,
+        ...(r === 'mercadona' ? [`${r}:${sku}:bcn1`] : []),
+      ].includes(id) ||
       ids.has(id)
     )
       throw new Error('invalid_catalog');
@@ -131,7 +138,13 @@ export function parseRetailCatalog(input: unknown): RetailCatalog {
         ? /^\/product\/\d+\/[\w-]+$/
         : r === 'aldi'
           ? /^\/producto\/[\w-]+\.html$/
-          : /^\/p\/[\w-]+\/p\d+$/;
+          : r === 'lidl'
+            ? /^\/p\/[\w-]+\/p\d+$/
+            : r === 'dia'
+              ? /^\/[\w/-]+\/p\/[A-Za-z0-9]+$/
+              : r === 'caprabo'
+                ? /^\/es\/productdetail\/\d+-[^/?#]+\/$/
+                : /^\/es\/[^/?#]+\/\d+\.html$/;
     if (
       url.protocol !== 'https:' ||
       url.host !== hosts[r] ||
@@ -184,7 +197,8 @@ export function retailPrices(
   },
 ): RetailPrice[] {
   const now = options.now ?? Date.now();
-  const groups = mercadonaCategories(options.text).map((id) => `category:${id}`);
+  const groups = mercadonaCategories(options.text).map((id) => `category:${id}@bcn1`);
+  const otherGroups = categoryPages(options.text);
   const words = fold(options.text)
     .split(' ')
     .filter(Boolean)
@@ -194,7 +208,10 @@ export function retailPrices(
     .filter((p) => {
       const age = now - Date.parse(p.checkedAt);
       return (
-        (p.retailer !== 'mercadona' || !groups.length || groups.includes(p.group)) &&
+        (p.retailer !== 'mercadona' ||
+          (p.group.endsWith('@bcn1') && (!groups.length || groups.includes(p.group)))) &&
+        (!otherGroups.some((g) => g.retailer === p.retailer) ||
+          otherGroups.some((g) => g.retailer === p.retailer && g.group === p.group)) &&
         words.every((word) => fold(p.name).includes(word)) &&
         retailStore(`${retailerNames[p.retailer]} ${p.scope}`).includes(
           retailStore(options.store),

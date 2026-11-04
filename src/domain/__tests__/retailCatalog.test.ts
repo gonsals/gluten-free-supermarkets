@@ -39,8 +39,39 @@ const options = { text: 'patatas', store: '', onlyOffers: false, includeOlder: f
 
 test('el catálogo incluido es válido y cada cadena tiene precios reales y fuente oficial', () => {
   const catalog = parseRetailCatalog(snapshot);
-  for (const retailer of ['mercadona', 'aldi', 'lidl'])
+  for (const retailer of ['mercadona', 'aldi', 'lidl', 'dia', 'caprabo', 'ametller'])
     expect(catalog.entries.some((p) => p.retailer === retailer)).toBe(true);
+});
+test('Barcelona no reutiliza precios de Valencia aunque el producto y el importe coincidan', () => {
+  const bcn = {
+    ...row,
+    retailer: 'mercadona' as const,
+    group: 'category:77@bcn1',
+    name: 'Huevos L',
+  };
+  const old = { ...bcn, id: 'legacy', group: 'category:77', amountMilli: 800 };
+  expect(
+    retailPrices(feed([old, bcn]), { ...options, text: 'huevos', store: 'Barcelona' }),
+  ).toEqual([bcn]);
+});
+test('admite SKU alfanumérico de DIA con su envase; exige declarar esa fuente en el catálogo', () => {
+  const p: RetailPrice = {
+    ...row,
+    id: 'dia:504P6',
+    retailer: 'dia',
+    sku: '504P6',
+    group: 'category:milk',
+    name: 'Leche pack 6 x 1 L',
+    quantity: 'pack 6 x 1 L',
+    sourceUrl: 'https://www.dia.es/leche/p/504P6',
+  };
+  expect(() => parseRetailCatalog(feed([p]))).toThrow();
+  const data = feed([p]);
+  data.sources.push({ retailer: 'dia', status: 'ok', attemptedAt: date });
+  expect(parseRetailCatalog(data).entries[0]).toMatchObject({
+    sku: '504P6',
+    quantity: 'pack 6 x 1 L',
+  });
 });
 test('conserva SKU sin fabricar GTIN, filtra tienda/acentos y conserva milésimas', () => {
   const catalog = parseRetailCatalog(feed());
@@ -65,12 +96,12 @@ test('encuentra singular al buscar patatas y entiende la variante de escritura L
 });
 test('buscar huevos de Mercadona usa su categoría, sin colar pasta al huevo como huevos baratos', () => {
   const catalog = feed([
-    { ...row, retailer: 'mercadona', group: 'category:77', name: 'Huevos grandes L' },
+    { ...row, retailer: 'mercadona', group: 'category:77@bcn1', name: 'Huevos grandes L' },
     {
       ...row,
       id: 'pasta',
       retailer: 'mercadona',
-      group: 'category:120',
+      group: 'category:120@bcn1',
       name: 'Pasta al huevo',
       amountMilli: 900,
     },

@@ -1,5 +1,7 @@
 # Precios de Mercadona, Aldi y Lidl
 
+> **Contrato vigente ampliado en iteración 20:** [Supermercados de Barcelona](PRECIOS_BARCELONA.md): DIA, Caprabo y Ametller, referencia Mercadona `bcn1` separada de Valencia, selector de cadena y 44 lecturas máximas del actualizador. Este documento conserva el alcance y la evidencia de la iteración 19.
+
 **Iteración 19 · 04-11-2026 · SUP-01.** El buscador de Comparar incorpora precios web reales de estas tres cadenas, además de las observaciones Open Prices y las anotaciones privadas. No necesita Firebase, cuenta, claves de proveedores ni backend contratado.
 
 ## Qué puede probarse

@@ -17,11 +17,11 @@ function catalog() {
       {
         retailer: 'mercadona',
         sku: '1',
-        group: 'category:29',
+        group: 'category:29@bcn1',
         name: 'Patatas de ensayo Mercadona',
         quantity: '1 kg',
         amountMilli: 1550,
-        scope: 'Online · almacén vlc1 (Valencia)',
+        scope: 'Online · almacén bcn1 (Barcelona)',
         sourceUrl: 'https://tienda.mercadona.es/product/1/patatas',
         isOffer: false,
         conditions: '',
@@ -53,18 +53,18 @@ function catalog() {
       {
         retailer: 'mercadona',
         sku: '4',
-        group: 'category:120',
+        group: 'category:120@bcn1',
         name: 'Pasta con patatas de ensayo',
         quantity: '250 g',
         amountMilli: 900,
-        scope: 'Online · almacén vlc1 (Valencia)',
+        scope: 'Online · almacén bcn1 (Barcelona)',
         sourceUrl: 'https://tienda.mercadona.es/product/4/pasta',
         isOffer: false,
         conditions: '',
       },
     ].map((row) => ({
       ...row,
-      id: `${row.retailer}:${row.sku}`,
+      id: `${row.retailer}:${row.sku}${row.retailer === 'mercadona' ? ':bcn1' : ''}`,
       checkedAt: now,
       startsAt: null as string | null,
       endsAt: new Date(Date.now() + 86400000).toISOString(),
@@ -111,7 +111,7 @@ test('Mercadona, Aldi y Lidl aparecen con precios ordenados, formatos, ámbito y
   await expect(prices.nth(2)).toContainText('2,85');
   await expect(page.getByText('Formato publicado: 3 kg.', { exact: true })).toBeVisible();
   await expect(page.getByText('Requiere Lidl Plus', { exact: true })).toBeVisible();
-  await expect(page.getByText('Online · almacén vlc1 (Valencia)', { exact: true })).toBeVisible();
+  await expect(page.getByText('Online · almacén bcn1 (Barcelona)', { exact: true })).toBeVisible();
   expect(requests).toEqual([raw]);
   await page.getByRole('heading', { name: 'Supermercados', exact: true }).scrollIntoViewIfNeeded();
   await page.screenshot({ path: test.info().outputPath('supermercados.png') });

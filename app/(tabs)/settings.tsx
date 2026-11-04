@@ -53,9 +53,10 @@ export default function SettingsScreen() {
           no se publican al comparar.
         </Copy>
         <Copy muted>
-          Precios web de Mercadona y ofertas de Aldi y Lidl: cada resultado enlaza su fuente oficial
-          y muestra formato, zona y fecha. Son una muestra; confirma las condiciones y existencias.
-          Los datos de esas tiendas tienen sus propias condiciones, distintas de Open Prices.
+          Precios web de Mercadona, DIA, Caprabo, Ametller Origen y ofertas de Aldi y Lidl: cada
+          resultado enlaza su fuente oficial y muestra formato, zona y fecha. Son una muestra;
+          confirma las condiciones y existencias. Los datos de esas tiendas tienen sus propias
+          condiciones, distintas de Open Prices.
         </Copy>
         <Action
           title="Información sobre Open Prices"
@@ -106,9 +107,10 @@ export default function SettingsScreen() {
         </Copy>
         <Copy muted>
           Buscar por nombre lo envía a Open Prices. En móvil también consulta categorías de
-          Mercadona y páginas de ofertas de Aldi y Lidl; en web descarga un catálogo público de
-          GitHub. Esos servidores reciben la solicitud y datos de conexión. No se les envían tus
-          anotaciones, historial, cesta o ubicación precisa. La tienda se filtra en el dispositivo.
+          Mercadona, DIA, Caprabo, Ametller Origen y páginas de ofertas de Aldi y Lidl; en web
+          descarga un catálogo público de GitHub. Esos servidores reciben la solicitud y datos de
+          conexión. No se les envían tus anotaciones, historial, cesta o ubicación precisa. La
+          tienda se filtra en el dispositivo.
         </Copy>
         <Copy muted>
           Los permisos de cámara solo se utilizan al activar el escáner. Puedes seguir usando la

@@ -1,5 +1,9 @@
 # Arquitectura · Comparador local y evolución a cesta
 
+## Iteración 20 · Registro y grupos de proveedores
+
+[SUP-02](PRECIOS_BARCELONA.md) centraliza seis cadenas y páginas aprobadas en `retailSources`. `retailCatalog` exige fuente declarada, dominio/ruta y grupo conocido; admite SKU alfanuméricos de DIA. Mercadona Barcelona usa identidad `:bcn1` y grupo `@bcn1`; las filas legacy de Valencia no entran en la nueva búsqueda. Los adaptadores nuevos leen datos embebidos, sin ejecutar scripts, enviar analítica o crear cuentas. El actualizador valida/sustituye por grupo y conserva fechas de grupos fallidos; detiene la cadena ante 403/429. La consulta móvil limita a dos categorías por nuevo proveedor y mantiene caché/cancelación. Copias privadas v4, GTIN y nube permanecen independientes.
+
 ## Iteración 19 · Adaptadores de supermercados
 
 [SUP-01](PRECIOS_SUPERMERCADOS.md) mantiene `RetailPrice` separado de `PriceQuote`: SKU/grupo y ámbito web, sin GTIN o sucursal fabricados. `retailCatalog` valida lista blanca, fuentes, dinero y fechas; `retailPrices` aplica vigencia y filtros. `src/data/retail/live.ts` selecciona categorías localmente y consulta fuentes en móvil; reutiliza los parsers puros del actualizador. Caché por fuente/categoría, cancelación, fallos con fechas intactas y sustitución de grupos completos. `client.ts` valida la descarga estática de GitHub para web; el JSON incluido permite búsqueda offline. `useCatalogSearch` combina operaciones independientes en paralelo sin persistir el catálogo en biblioteca/copias. `RetailResults` presenta estos datos antes de las aportaciones por GTIN. El cron web solo se activará en la rama predeterminada; revisar conjuntamente la referencia remota al promover. Sin nuevo backend, dependencias o esquema.
