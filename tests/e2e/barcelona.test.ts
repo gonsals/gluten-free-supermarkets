@@ -72,14 +72,16 @@ function catalog() {
 test('compara seis cadenas de Barcelona, separa Valencia y permite elegir DIA sin volver a descargar', async ({
   page,
 }) => {
-  let downloads = 0;
+  let downloads = 0,
+    communityRequests = 0;
   await page.route(raw, (route) => {
     downloads++;
     return route.fulfill({ json: catalog() });
   });
-  await page.route('https://prices.openfoodfacts.org/api/v1/**', (route) =>
-    route.fulfill({ json: { items: [], page: 1, pages: 1, total: 0, size: 20 } }),
-  );
+  await page.route('https://prices.openfoodfacts.org/api/v1/**', (route) => {
+    communityRequests++;
+    return route.fulfill({ json: { items: [], page: 1, pages: 1, total: 0, size: 20 } });
+  });
   await page.goto('/prices');
   await page.getByRole('textbox', { name: 'Buscar productos', exact: true }).fill('huevos');
   await page.getByRole('button', { name: 'Buscar precios', exact: true }).click();
@@ -96,6 +98,7 @@ test('compara seis cadenas de Barcelona, separa Valencia y permite elegir DIA si
   await expect(page.getByText(/€ · DIA$/)).toHaveCount(1);
   await expect(page.getByText(/€ · Mercadona$/)).toHaveCount(0);
   expect(downloads).toBe(1);
+  expect(communityRequests).toBe(1);
 });
 test('DIA sigue disponible con la copia incluida y las cadenas pendientes se identifican sin precios inventados', async ({
   page,

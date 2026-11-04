@@ -100,6 +100,10 @@ test('variable-weight, unpublished, unavailable and off-origin Mercadona product
   for (const price of [{ approx_size: true }, { selling_method: 1 }, { bunch_selector: true }])
     assert.deepEqual(mercadona(m({}, price), checkedAt), []);
   for (const extra of [
+    { id: null },
+    { id: undefined },
+    { id: [] },
+    { id: NaN },
     { published: false },
     { unavailable_from: '2026-11-03' },
     { share_url: 'https://evil.test/product/12/huevos' },

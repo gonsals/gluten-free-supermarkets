@@ -63,7 +63,8 @@ export function useCatalogSearch() {
           : Platform.OS === 'web'
             ? fetchRetailCatalog(controller.signal).then((catalog) => ({ catalog, failed: false }))
             : fetchLiveRetailCatalog(retailCatalog, input.text, input.store, controller.signal),
-        publicPricesClient.searchCatalog(input.text, input.store, page, controller.signal),
+        // Fetch/cache the same public sample once; namedPrices applies the selected store locally.
+        publicPricesClient.searchCatalog(input.text, '', page, controller.signal),
       ]);
       if (generation.current !== token) return;
       setNow(Date.now());

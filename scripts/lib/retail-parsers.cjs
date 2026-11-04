@@ -42,7 +42,13 @@ function officialUrl(value, retailer) {
 }
 function base(retailer, sku, name, sourceUrl, checkedAt) {
   const clean = text(name);
-  if (!/^[\w-]{1,80}$/.test(String(sku)) || !clean || !officialUrl(sourceUrl, retailer))
+  if (
+    (typeof sku !== 'string' && typeof sku !== 'number') ||
+    (typeof sku === 'number' && (!Number.isSafeInteger(sku) || sku <= 0)) ||
+    !/^[\w-]{1,80}$/.test(String(sku)) ||
+    !clean ||
+    !officialUrl(sourceUrl, retailer)
+  )
     return null;
   return {
     id: `${retailer}:${sku}`,
